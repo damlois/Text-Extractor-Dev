@@ -6,6 +6,7 @@ const { Header, Content } = Layout;
 
 interface PageLayoutProps {
   showNavBar?: boolean;
+  showBgImage?: boolean;
   children: React.ReactNode;
 }
 
@@ -17,11 +18,17 @@ const navLinks = [
   { name: "Sign in", path: "/sign-in" },
 ];
 
-const PageLayout: React.FC<PageLayoutProps> = ({ showNavBar, children }) => {
+const PageLayout: React.FC<PageLayoutProps> = ({
+  showNavBar,
+  showBgImage,
+  children,
+}) => {
   return (
     <Layout
       style={{
-        backgroundImage: "url('/assets/images/page-bg.png')",
+        backgroundImage: showBgImage
+          ? "url('/assets/images/page-bg.png')"
+          : "none",
         backgroundSize: "cover",
         backgroundColor: "#1D1E18",
       }}
