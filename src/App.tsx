@@ -6,7 +6,7 @@ const routes = [{ path: "/", element: <LandingPage />, showNavBar: true }];
 
 const App = () => {
   return (
-    <div style={{ width: "100%", height: "100vh" }}>
+    <div className="flex flex-col items-center justify-center w-full min-h-screen m-0 p-0">
       <Router>
         <Routes>
           {routes.map(({ path, element, showNavBar }) => (

@@ -1,16 +1,17 @@
 import AppButton from "../../components/AppButton";
+import { Image } from "antd";
 
 const LandingPage = () => {
   return (
-    <main className="flex flex-col items-center justify-center text-center text-white mt-20 font-montserrat">
-      <h1 className="text-5xl font-extrabold mb-4">
-        Effortless Data Extraction,
+    <main className="flex flex-col items-center justify-center text-center font-montserrat min-h-screen p-8 sm:p-16 md:px-48 lg:px-64">
+      <Image width={32} height={32} src="/assets/images/logo.png" alt="logo" />
+      <h1 className="text-white text-[32px] pt-8 font-medium leading-tight md:text-[48px] lg:text-[64px]">
+        Effortless Data Extraction, Maximum Efficiency.
       </h1>
-      <h2 className="text-4xl font-bold mb-4">Maximum Efficiency.</h2>
-      <p className="text-lg mb-8">
+      <p className="text-light-gray text-[12px] pt-4 pb-16 font-normal leading-normal md:text-[16px] lg:text-[16px]">
         Extract text, images, and tables with precision, speed, and accuracy.
       </p>
-      <AppButton text="Try it out" width= "182px" />
+      <AppButton text="Try it out" width="182px" />
     </main>
   );
 };
