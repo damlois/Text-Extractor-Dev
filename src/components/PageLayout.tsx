@@ -11,10 +11,10 @@ interface PageLayoutProps {
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Team", path: "team" },
-  { name: "Pricing", path: "pricing" },
-  { name: "Documentation", path: "documentation" },
-  { name: "Sign in", path: "sign-in" },
+  { name: "Team", path: "/team" },
+  { name: "Pricing", path: "/pricing" },
+  { name: "Documentation", path: "/documentation" },
+  { name: "Sign in", path: "/sign-in" },
 ];
 
 const PageLayout: React.FC<PageLayoutProps> = ({ showNavBar, children }) => {
