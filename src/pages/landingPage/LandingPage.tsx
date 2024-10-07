@@ -1,5 +1,6 @@
 import AppButton from "../../components/AppButton";
 import { Image } from "antd";
+import { FiArrowUpRight } from 'react-icons/fi'; // This is the feather version
 
 const LandingPage = () => {
   return (
@@ -11,7 +12,12 @@ const LandingPage = () => {
       <p className="text-light-gray text-[12px] pt-4 pb-16 font-normal leading-normal md:text-[16px] lg:text-[16px]">
         Extract text, images, and tables with precision, speed, and accuracy.
       </p>
-      <AppButton text="Try it out" width="182px" />
+      <AppButton width="182px">
+        <span className="!inline-flex items-center">
+          Try it out
+          <FiArrowUpRight size={24} className="ml-2" />
+        </span>
+      </AppButton>
     </main>
   );
 };
