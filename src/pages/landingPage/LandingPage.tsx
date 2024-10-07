@@ -1,6 +1,6 @@
 import AppButton from "../../components/AppButton";
 import { Image } from "antd";
-import { FiArrowUpRight } from 'react-icons/fi'; // This is the feather version
+import { FiArrowUpRight } from 'react-icons/fi';
 
 const LandingPage = () => {
   return (
