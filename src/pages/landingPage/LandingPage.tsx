@@ -9,7 +9,7 @@ const LandingPage = () => {
       <h1 className="text-white text-[32px] pt-8 font-medium leading-tight md:text-[48px] lg:text-[64px]">
         Effortless Data Extraction, Maximum Efficiency.
       </h1>
-      <p className="text-light-gray text-[12px] pt-4 pb-16 font-normal leading-normal md:text-[16px] lg:text-[16px]">
+      <p className="text-light-gray text-[12px] pt-4 pb-16 font-normal leading-normal md:text-[16px]">
         Extract text, images, and tables with precision, speed, and accuracy.
       </p>
       <AppButton width="182px">

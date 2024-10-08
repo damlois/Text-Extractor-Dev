@@ -1,4 +1,3 @@
-import { Button } from "antd";
 import { ReactNode } from "react";
 
 interface AppButtonProps {
@@ -12,20 +11,21 @@ interface AppButtonProps {
 
 const AppButton = ({
   bgColor = "bg-yellow",
-  hoverbgColor = "!hover:bg-white",
+  hoverbgColor = "hover:bg-white",
   textColor = "text-[#1D1E18]",
-  hoverTextColor = "!hover:text-[#1D1E18]",
+  hoverTextColor = "hover:text-[#1D1E18]",
   width,
   children,
 }: AppButtonProps) => {
   return (
-    <Button
-      className={`font-montserratAlternates p-6 ${bgColor} ${hoverbgColor} ${textColor} ${hoverTextColor} 
+    <button
+      className={`font-montserratAlternates px-6 py-4 ${bgColor} duration-300 ease-in-out 
+      ${hoverbgColor} hover:scale-105 ${textColor} ${hoverTextColor} 
       rounded-full text-lg font-medium border-none ring-0`}
       style={{ width: width || "100%" }}
     >
       {children}
-    </Button>
+    </button>
   );
 };
 
