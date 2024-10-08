@@ -32,7 +32,6 @@ const PageLayout: React.FC<PageLayoutProps> = ({
         backgroundSize: "cover",
         backgroundColor: "#1D1E18",
         width: "100%",
-        minHeight: "100vh",
       }}
     >
       <Header
