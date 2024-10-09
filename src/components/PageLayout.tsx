@@ -35,7 +35,9 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       }}
     >
       <Header
-        className={`font-montserratAlternates w-full bg-transparent flex gap-8 items-center px-4 sm:px-6 md:px-10 lg:px-14 sm:my-8 md:my-6`}
+        className={`font-montserratAlternates w-full justify-${
+          showNavBar ? "between" : "center"
+        } bg-transparent flex gap-8 items-center px-4 sm:px-6 md:px-10 lg:px-14 sm:my-8 md:my-6`}
       >
         <div className="flex gap-2 items-center">
           <Image
@@ -47,23 +49,27 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           <h2 className="text-white text-lg font-bold">Vorlux</h2>
         </div>
 
-        <div className="flex-grow" />
-
         {showNavBar && (
-          <nav>
-            <ul className="flex flex-wrap space-x-2 sm:space-x-3 md:space-x-10 lg:space-x-16">
-              {navLinks.map((link) => (
-                <li className="inline-block p-0 m-0 leading-normal" key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-light-gray hover:text-white transition duration-300 ease-in-out"
+          <>
+            <div className="flex-grow" />
+            <nav>
+              <ul className="flex flex-wrap space-x-2 sm:space-x-3 md:space-x-10 lg:space-x-16">
+                {navLinks.map((link) => (
+                  <li
+                    className="inline-block p-0 m-0 leading-normal"
+                    key={link.path}
                   >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                    <Link
+                      to={link.path}
+                      className="text-light-gray hover:text-white transition duration-300 ease-in-out"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </>
         )}
       </Header>
 
