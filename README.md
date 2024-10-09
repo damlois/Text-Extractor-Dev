@@ -13,5 +13,10 @@ Make sure you have Node.js and yarn installed on your machine.
 yarn install
 
 ### 3. Run the development server
+## With Docker
+docker-compose up --build
+
+## Without Docker
 yarn start
+
 This will open the app in your browser at http://localhost:3000

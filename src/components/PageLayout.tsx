@@ -31,27 +31,29 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           : "none",
         backgroundSize: "cover",
         backgroundColor: "#1D1E18",
+        width: "100%",
       }}
     >
       <Header
-        className={`font-montserratAlternates mt-[22px] mx-[56px] bg-transparent flex justify-${
-          showNavBar ? "between" : "center"
-        } items-center flex-wrap h-[64px]`}
+        className={`font-montserratAlternates w-full bg-transparent flex gap-8 items-center px-4 sm:px-6 md:px-10 lg:px-14 sm:my-8 md:my-6`}
       >
-        <div className="flex items-center">
+        <div className="flex gap-2 items-center">
           <Image
             width={25}
             height={24}
             src="/assets/images/logo.png"
             alt="logo"
           />
-          <h2 className="ml-2 text-white text-lg font-bold">Vorlux</h2>
+          <h2 className="text-white text-lg font-bold">Vorlux</h2>
         </div>
+
+        <div className="flex-grow" />
+
         {showNavBar && (
-          <nav className="flex ml-auto">
-            <ul className="flex space-x-3 md:space-x-16">
+          <nav>
+            <ul className="flex flex-wrap space-x-2 sm:space-x-3 md:space-x-10 lg:space-x-16">
               {navLinks.map((link) => (
-                <li key={link.path}>
+                <li className="inline-block p-0 m-0 leading-normal" key={link.path}>
                   <Link
                     to={link.path}
                     className="text-light-gray hover:text-white transition duration-300 ease-in-out"
