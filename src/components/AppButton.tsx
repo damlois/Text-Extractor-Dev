@@ -5,25 +5,35 @@ interface AppButtonProps {
   hoverbgColor?: string;
   textColor?: string;
   hoverTextColor?: string;
-  text?: string;
-  width: string;
+  children?: string;
+  width?: string;
+  disabled?: boolean;
+  className?: string;
+  onClick: () => void;
 }
 
 const AppButton = ({
-  bgColor = "bg-yellow",
+  bgColor = "bg-[#004763]",
   hoverbgColor = "!hover:bg-white",
-  textColor = "text-gray-800",
-  hoverTextColor = "!hover:text-gray-800",
+  textColor = "text-white",
+  hoverTextColor = "!hover:text-[#004763]",
   width,
-  text,
+  disabled,
+  children,
+  className,
+  onClick,
 }: AppButtonProps) => {
   return (
     <Button
-      className={`font-montserratAlternates py-6 ${bgColor} ${hoverbgColor} ${textColor} ${hoverTextColor} 
-      rounded-full text-lg font-medium border-none ring-0`}
+      className={`font-inter px-[15px] py-[4px] ${className} ${bgColor} ${hoverbgColor} ${textColor} ${hoverTextColor} 
+        ${disabled ? "bg-gray-400" : "bg-[#004763]"} 
+        hover:border-[#004763] border border-transparent 
+        text-[14px] h-[30px] rounded-sm transition-all`}
       style={{ width: width || "100%" }}
+      disabled={disabled}
+      onClick={onClick}
     >
-      {text}
+      {children}
     </Button>
   );
 };
