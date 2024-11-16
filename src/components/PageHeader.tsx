@@ -1,13 +1,31 @@
-interface PageHeaderProps{
-    previousPage: string;
-    currentPage: string;
+import { useNavigate } from "react-router-dom";
+
+interface PageHeaderProps {
+  previousPage: string;
+  currentPage: string;
+  noBorder?: boolean;
 }
 
-const PageHeader = ({previousPage, currentPage} : PageHeaderProps) => {
+const PageHeader = ({
+  previousPage,
+  currentPage,
+  noBorder,
+}: PageHeaderProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="px-[24px] py-[16px] space-y-4 border-b w-full border-[#F0F0F0] text-[14px]">
+    <div
+      className={`px-[24px] py-[16px] space-y-4  w-full ${
+        noBorder ? "" : "border-b border-[#F0F0F0]"
+      } text-[14px]`}
+    >
       <div className="flex space-x-2 text-gray-600">
-        <span className="text-gray">{previousPage}</span>
+        <span
+          className="text-gray cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          {previousPage}
+        </span>
         <span className="text-gray">/</span>
         <span className="text-dark-grey">{currentPage}</span>
       </div>

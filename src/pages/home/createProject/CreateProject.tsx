@@ -4,17 +4,16 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
 import PageHeader from "../../../components/PageHeader";
 import { useNavigate } from "react-router-dom";
+import AppInput from "../../../components/AppInput";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setProjectName(value);
-    setIsButtonDisabled(value.length < 2);
   };
 
   return (
@@ -22,32 +21,23 @@ const CreateProject = () => {
       <PageHeader previousPage="Home" currentPage="New Project" />
 
       <div className="flex flex-col items-center w-full p-6">
-        <h2 className="text-black text-[6] text-[24px] mb-6">
-          Name your project
-        </h2>
+        <h2 className="text-black text-[6] text-[24px]">Name your project</h2>
 
         <div className="flex flex-col w-[50%] mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <label className="text-gray-700 align-middle">Project name</label>
-            <Tooltip title="Enter the name of your project">
-              <InfoCircleOutlined className="text-gray-500" />
-            </Tooltip>
-          </div>
-          <div className="flex flex-col items-center space-y-6">
-            <Input
-              placeholder="e.g Comparison Report"
-              value={projectName}
-              onChange={handleInputChange}
-              className="px-[12px] py-[8px] h-[40px] rounded-sm border-[#D9D9D9] "
-            />
-
+          <AppInput
+            label="Project name"
+            tooltip="Enter the name of your project"
+            placeholder="e.g Comparison Report"
+            onChange={handleInputChange}
+          />
+          <div className="flex flex-col items-center mt-6">
             <AppButton
-              disabled={isButtonDisabled}
+              disabled={projectName.length < 2}
               onClick={() =>
                 navigate(`/upload-files?projectName=${projectName}`)
               }
             >
-              Save
+              Save and Proceed
             </AppButton>
           </div>
         </div>

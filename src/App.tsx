@@ -3,11 +3,13 @@ import LandingPage from "./pages/landingPage";
 import PageLayout from "./components/PageLayout";
 import CreateProject from "./pages/home/createProject";
 import UploadFiles from "./pages/home/uplaodFiles";
+import ProcessFiles from "./pages/home/processFiles";
 
 const routes = [
-  { path: "/index", element: <LandingPage />, showLayout: true },
+  // { path: "/index", element: <LandingPage />, showLayout: true },
   { path: "/", element: <CreateProject />, showLayout: true },
   { path: "/upload-files", element: <UploadFiles />, showLayout: true },
+  { path: "/process-files", element: <ProcessFiles />, showLayout: true },
 ];
 
 const App = () => {
