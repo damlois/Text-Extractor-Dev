@@ -10,7 +10,7 @@ import { useCreateProject } from "../../../hooks/useFileProcessor";
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const navigate = useNavigate();
-  const createProject = useCreateProject();
+  const { createProject } = useCreateProject();
   const description = "";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,15 +18,9 @@ const CreateProject = () => {
     setProjectName(value);
   };
 
-  const handleCreateProject = () => {
-    createProject.mutate(
-      { name: projectName, description },
-      {
-        onSuccess: (data) => {
-          navigate(`/upload-files?projectName=${data.name}`);
-        },
-      }
-    );
+  const handleCreateProject = async () => {
+    const data = await createProject({ name: projectName, description });
+    navigate(`/upload-files?projectName=${data.name}`);
   };
 
   return (
@@ -47,7 +41,6 @@ const CreateProject = () => {
             <AppButton
               disabled={projectName.length < 2}
               onClick={handleCreateProject}
-              loading={createProject.status === 'pending'}
             >
               Save and Proceed
             </AppButton>

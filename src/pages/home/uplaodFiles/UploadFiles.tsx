@@ -9,6 +9,14 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
+import { useFileProcessor } from "../../../context/FileProcessorContext";
+import { useUploadFiles } from "../../../hooks/useFileProcessor";
+
+interface UploadFile extends File {
+  status: 'uploading' | 'done' | 'error';
+  percent?: number;
+  uid: string;
+}
 
 const UploadFiles = () => {
   const location = useLocation();
@@ -17,11 +25,13 @@ const UploadFiles = () => {
   const projectName = queryParams.get("projectName");
 
   const { Dragger } = Upload;
-  const [fileList, setFileList] = useState<any[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [allFilesUploaded, setAllFilesUploaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(fileList);
+  const { currentUser, projects, chatSessions, chatMessages } = useFileProcessor();
+  const projectId = projects.find(p => p.name === projectName)?.id;
+  const { uploadFiles } = useUploadFiles(projectId || 0);
 
   useEffect(() => {
     if (!projectName) navigate("/");
@@ -32,12 +42,24 @@ const UploadFiles = () => {
     setAllFilesUploaded(allUploaded);
   }, [fileList]);
 
-  console.log(fileList);
+  useEffect(() => {
+    console.log("Current User:", currentUser);
+    console.log("Projects:", projects);
+    console.log("Chat Sessions:", chatSessions);
+    console.log("Chat Messages:", chatMessages);
+  }, [currentUser, projects, chatSessions, chatMessages]);
 
-  const handleExtraction = () => {
-    // setIsLoading(true);
+  const handleExtraction = async () => {
+    if (!projectId) return;
 
-    navigate(`/process-files?projectName=${projectName}`);
+    setIsLoading(true);
+    try {
+      await uploadFiles(fileList);
+      navigate(`/process-files?projectName=${projectName}`);
+    } catch (error) {
+      console.error('Failed to upload files:', error);
+    }
+    setIsLoading(false);
   };
 
   const uploadProps = {
@@ -58,10 +80,10 @@ const UploadFiles = () => {
       });
     },
     beforeUpload(file: File) {
-      setFileList((prevFiles) => [
-        ...prevFiles,
-        { name: file.name, status: "uploading", percent: 0 },
-      ]);
+      // setFileList((prevFiles) => [
+      //   ...prevFiles,
+      //   { name: file.name, status: "uploading", percent: 0 },
+      // ]);
 
       return false;
     },

@@ -6,12 +6,12 @@ const api = axios.create({
 });
 
 export const fileProcessorApi = {
-  getCurrentUser: () => 
+  getCurrentUser: () =>
     api.get<User>('/users/me'),
 
   createProject: (data: { name: string; description?: string }) =>
     api.post<Project>('/projects', data),
-  
+
   getProjects: () =>
     api.get<Project[]>('/projects'),
 

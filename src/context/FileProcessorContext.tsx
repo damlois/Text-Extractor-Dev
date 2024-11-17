@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
 import { User, Project, ChatSession, ChatMessage } from '../types';
 
 interface FileProcessorContextProps {
@@ -6,10 +6,10 @@ interface FileProcessorContextProps {
   projects: Project[];
   chatSessions: ChatSession[];
   chatMessages: ChatMessage[];
-  setCurrentUser: (user: User) => void;
-  setProjects: (projects: Project[]) => void;
-  setChatSessions: (sessions: ChatSession[]) => void;
-  setChatMessages: (messages: ChatMessage[]) => void;
+  setCurrentUser: Dispatch<SetStateAction<User | null>>;
+  setProjects: Dispatch<SetStateAction<Project[]>>;
+  setChatSessions: Dispatch<SetStateAction<ChatSession[]>>;
+  setChatMessages: Dispatch<SetStateAction<ChatMessage[]>>;
 }
 
 interface FileProcessorProviderProps {
