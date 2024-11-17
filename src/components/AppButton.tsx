@@ -28,31 +28,31 @@ const AppButton = ({
   onClick,
 }: AppButtonProps) => {
   const isPrimary = variant === "primary";
-  const defaultBgColor = isPrimary ? "!bg-[#004763]" : "!bg-white";
-  const defaultHoverBgColor = isPrimary
-    ? "!hover:bg-white"
-    : "!hover:bg-[#004763]";
-  const defaultTextColor = isPrimary ? "!text-white" : "!text-[#004763]";
-  const defaultHoverTextColor = isPrimary
-    ? "!hover:text-[#004763]"
-    : "!hover:text-white";
-  const defaultBorderColor = isPrimary
-    ? "!border-transparent"
-    : "!border-[#004763]";
-  const defaultHoverBorderColor = isPrimary
-    ? "!hover:border-[#004763]"
-    : "!border-transparent";
+
+  const defaultStyles = `
+    font-inter px-[15px] py-[4px] text-[14px] h-[30px] rounded-sm transition-all flex items-center mx-auto
+  `;
+
+  const hoverStyles = `
+    ${hoverbgColor || (isPrimary ? "hover:bg-white" : "hover:bg-[#004763]")}
+    ${hoverTextColor || (isPrimary ? "hover:text-[#004763]" : "hover:text-white")}
+  `;
+
+  const defaultBg = bgColor || (isPrimary ? "bg-[#004763]" : "bg-white");
+  const defaultText = textColor || (isPrimary ? "text-white" : "text-[#004763]");
+
+  const disabledStyles = `
+    bg-gray-100 
+    !border-[1px] !border-[#D9D9D9] 
+    !text-[rgba(0,0,0,0.25)] 
+    cursor-not-allowed
+  `;
 
   return (
     <Button
-      className={`font-inter px-[15px] py-[4px] ${className} ${
-        !disabled ? bgColor || defaultBgColor : ""
-      } 
-        ${hoverbgColor || defaultHoverBgColor} ${textColor || defaultTextColor} 
-        ${hoverTextColor || defaultHoverTextColor}
-        ${disabled || loading ? "bg-gray-400 cursor-not-allowed" : ""}
-        border ${defaultBorderColor} ${defaultHoverBorderColor}
-        text-[14px] h-[30px] rounded-sm transition-all flex items-center mx-auto`}
+      className={`${defaultStyles} ${defaultBg} ${defaultText} ${
+        !disabled ? hoverStyles : disabledStyles
+      } ${className}`}
       style={{ width: width || "100%" }}
       disabled={disabled || loading}
       onClick={onClick}
