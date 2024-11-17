@@ -111,15 +111,19 @@ const AppInput: React.FC<AppInputProps> = ({
             )
           }
           addonAfter={
-            !loading ? (
-              <span onClick={(e) => handleSend(e)} style={{ cursor: "pointer" }}>
+            rightIcon &&
+            (!loading ? (
+              <span
+                onClick={(e) => handleSend(e)}
+                style={{ cursor: "pointer" }}
+              >
                 {rightIcon}
               </span>
             ) : (
               <span style={{ cursor: "not-allowed", opacity: 0.5 }}>
                 {rightIcon}
               </span>
-            )
+            ))
           }
           onPressEnter={(e) => handleSend(e)}
         />
