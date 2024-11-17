@@ -32,27 +32,30 @@ export const useProjects = () => {
 };
 
 export const useCreateProject = () => {
-  const { setProjects } = useFileProcessor();
+  const { setProjects, setCurrentProject } = useFileProcessor();
 
   const createProject = async (data: { name: string; description?: string }) => {
     const response = await fileProcessorApi.createProject(data);
-    setProjects((prevProjects: Project[]) => [...prevProjects, response.data]);
+    setCurrentProject(response.data);
+    setProjects(prevProjects => [...prevProjects, response.data]);
     return response.data;
   };
 
   return { createProject };
 };
 
-export const useUploadFiles = (projectId: number) => {
-  const { setProjects } = useFileProcessor();
+export const useUploadFiles = () => {
+  const { currentProject, setProjects } = useFileProcessor();
 
   const uploadFiles = async (files: File[]) => {
+    if (!currentProject) throw new Error('No project selected');
+
     const fileList = new DataTransfer();
     files.forEach(file => fileList.items.add(file));
 
-    const response = await fileProcessorApi.uploadFiles(projectId, fileList.files);
-    setProjects((prevProjects: Project[]) => prevProjects.map(project =>
-      project.id === projectId ? { ...project, files: response.data } : project
+    const response = await fileProcessorApi.uploadFiles(currentProject.id, fileList.files);
+    setProjects(prevProjects => prevProjects.map(project =>
+      project.id === currentProject.id ? { ...project, files: response.data } : project
     ));
     return response.data;
   };
@@ -60,35 +63,34 @@ export const useUploadFiles = (projectId: number) => {
   return { uploadFiles };
 };
 
-export const useChatSessions = (projectId: number, type?: 'document' | 'image') => {
-  const { setChatSessions } = useFileProcessor();
+export const useChatSessions = (type?: 'document' | 'image') => {
+  const { currentProject, setChatSessions } = useFileProcessor();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fileProcessorApi.getChatSessions(projectId, type).then(res => {
+    if (!currentProject) return;
+
+    fileProcessorApi.getChatSessions(currentProject.id, type).then(res => {
       setChatSessions(res.data);
       setLoading(false);
     });
-  }, [projectId, type, setChatSessions]);
+  }, [currentProject, type, setChatSessions]);
 
   return { loading };
 };
 
 export const useCreateChatSession = () => {
-  const { setChatSessions } = useFileProcessor();
+  const { currentProject, setChatSessions } = useFileProcessor();
 
   const createChatSession = async (data: {
-    projectId: number;
     name?: string;
     file_ids: number[];
     session_type: 'document' | 'image';
   }) => {
-    const response = await fileProcessorApi.createChatSession(data.projectId, {
-      name: data.name,
-      file_ids: data.file_ids,
-      session_type: data.session_type,
-    });
-    setChatSessions((prevSessions: ChatSession[]) => [...prevSessions, response.data]);
+    if (!currentProject) throw new Error('No project selected');
+
+    const response = await fileProcessorApi.createChatSession(currentProject.id, data);
+    setChatSessions(prevSessions => [...prevSessions, response.data]);
     return response.data;
   };
 
