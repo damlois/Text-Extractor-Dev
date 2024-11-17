@@ -97,8 +97,9 @@ const FieldExtraction = () => {
                   inputState.description.length < 2
                 }
                 onClick={handleAddLabel}
+                variant="secondary"
               >
-                Add label
+                <span className="mr-[10px] text-[16px]">+</span>Add label
               </AppButton>
               <AppButton disabled={!labels.length} onClick={handleExtraction}>
                 Extract Data

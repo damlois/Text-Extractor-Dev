@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Tooltip } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
 import PageHeader from "../../../components/PageHeader";
 import AppInput from "../../../components/AppInput";
