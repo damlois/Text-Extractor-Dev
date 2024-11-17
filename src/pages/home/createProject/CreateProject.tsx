@@ -1,19 +1,26 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Input, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
 import PageHeader from "../../../components/PageHeader";
-import { useNavigate } from "react-router-dom";
 import AppInput from "../../../components/AppInput";
+import { useCreateProject } from "../../../hooks/useFileProcessor";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
-
   const navigate = useNavigate();
+  const { createProject } = useCreateProject();
+  const description = "";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setProjectName(value);
+  };
+
+  const handleCreateProject = async () => {
+    const data = await createProject({ name: projectName, description });
+    navigate(`/upload-files?projectName=${data.name}`);
   };
 
   return (
@@ -21,7 +28,7 @@ const CreateProject = () => {
       <PageHeader previousPage="Home" currentPage="New Project" />
 
       <div className="flex flex-col items-center w-full p-6">
-        <h2 className="text-black text-[6] text-[24px]">Name your project</h2>
+        <h2 className="text-black text-[24px]">Name your project</h2>
 
         <div className="flex flex-col w-[50%] mb-6">
           <AppInput
@@ -33,9 +40,7 @@ const CreateProject = () => {
           <div className="flex flex-col items-center mt-6">
             <AppButton
               disabled={projectName.length < 2}
-              onClick={() =>
-                navigate(`/upload-files?projectName=${projectName}`)
-              }
+              onClick={handleCreateProject}
             >
               Save and Proceed
             </AppButton>
