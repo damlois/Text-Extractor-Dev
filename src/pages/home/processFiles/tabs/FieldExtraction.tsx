@@ -8,15 +8,12 @@ import ExtractionResults from "../components/ExtractionResults";
 import { useAnalyzeFiles } from "../../../../hooks/useFileProcessor";
 import { Instruction } from "../../../../types";
 import { showNotification } from "../../../../utils/notification";
+import { initialInputState } from "../constants";
 
 const FieldExtraction = () => {
   const [labels, setLabels] = useState<LabelT[]>([]);
   const [loading, setLoading] = useState(false);
-  const [inputState, setInputState] = useState<LabelT>({
-    id: 0,
-    name: "",
-    description: "",
-  });
+  const [inputState, setInputState] = useState<LabelT>(initialInputState);
   const [showResult, setShowResult] = useState(false);
 
   const { analyzeFiles } = useAnalyzeFiles();
@@ -43,6 +40,7 @@ const FieldExtraction = () => {
 
   const handleAddLabel = () => {
     setLabels([...labels, inputState]);
+    setInputState(initialInputState);
   };
 
   const handleLabelRemoval = (selectedLabelId: number) => {
@@ -58,7 +56,7 @@ const FieldExtraction = () => {
 
     try {
       setLoading(true);
-      const analysis = await analyzeFiles(instructions);
+      await analyzeFiles(instructions);
       setLoading(false);
       showNotification("success", `Data extracted successfuly!`);
       setShowResult(!showResult);
@@ -93,6 +91,7 @@ const FieldExtraction = () => {
               label="Label name"
               tooltip="Enter label name"
               placeholder="Enter a label name"
+              value={inputState.name}
               onChange={handleLabelInputChange}
               required
             />
@@ -100,6 +99,7 @@ const FieldExtraction = () => {
               label="Description"
               tooltip="Describe your label name"
               placeholder="Describe your label name"
+              value={inputState.description}
               onChange={handleDescriptionInputChange}
               required
             />
@@ -114,7 +114,11 @@ const FieldExtraction = () => {
               >
                 <span className="mr-[10px] text-[16px]">+</span>Add label
               </AppButton>
-              <AppButton disabled={!labels.length} onClick={handleExtraction} loading={loading}>
+              <AppButton
+                disabled={!labels.length}
+                onClick={handleExtraction}
+                loading={loading}
+              >
                 Extract Data
               </AppButton>
             </div>
