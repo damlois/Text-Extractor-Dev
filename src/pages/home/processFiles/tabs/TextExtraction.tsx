@@ -1,12 +1,56 @@
-import { Card, Image } from "antd";
+import { Card, Image, notification } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
+import { useFileProcessor } from "../../../../context/FileProcessorContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const TextExtraction = () => {
+  const { currentProject, projects } = useFileProcessor();
+  const [fileSize, setFileSize] = useState<string>("0");
+  const [blob, setBlob] = useState<Blob | null>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const projectData = projects.find(
+      (project) => project.id === currentProject?.id
+    );
+
+    console.log(projectData);
+
+    if (!projectData) {
+      navigate("/home");
+      notification.error({
+        message: "Project not found, Create a project first",
+      });
+    }
+
+    const extractedTextArray = projectData?.filesData.files.map((file) => ({
+      file_name: file.file_name,
+      content: file.content,
+    }));
+    if (extractedTextArray) {
+      const jsonString = JSON.stringify(extractedTextArray, null, 4);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      console.log(blob);
+      setBlob(blob);
+      setFileSize((blob.size / 1024).toFixed(2));
+    }
+  }, []);
+
+  const handleDownload = () => {
+    if (blob) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${currentProject?.name?.replace(/\s+/g, "-")}.json`;
+      link.click();
+    }
+  };
+
   return (
     <div className="flex flex-start">
       <div className="flex justify-center items-center pt-6 ">
         <Card
-          className="w-[24opx] border-1 border-[#F0F0F0] rounded-none"
+          className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none"
           bodyStyle={{
             display: "flex",
             flexDirection: "column",
@@ -18,15 +62,18 @@ const TextExtraction = () => {
             <Image src="/assets/icons/file.svg" alt="file icon" />
           </div>
 
-          <div className="p-4 font-inter text-sm border-b border-1 border-[#F0F0F0]">
+          <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0]">
             <p className="text-dark-gray font-medium mb-2">
-              Contract Comparison 2024.JSON
+              {`${currentProject?.name}.JSON`}
             </p>
-            <p className="text-gray">5MB</p>
+            <p className="text-gray">{fileSize} KB</p>
           </div>
 
-          <div className="p-3 cursor-pointer w-full flex justify-center">
-            <DownloadOutlined className="text-[20px] text-gray-600 hover:text-gray-900r" />
+          <div
+            className="p-3 cursor-pointer w-full flex justify-center hover:text-white hover:bg-deep-blue"
+            onClick={handleDownload}
+          >
+            <DownloadOutlined className="text-[20px] text-gray-600" />
           </div>
         </Card>
       </div>
