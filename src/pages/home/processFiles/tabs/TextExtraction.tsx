@@ -15,8 +15,6 @@ const TextExtraction = () => {
       (project) => project.id === currentProject?.id
     );
 
-    console.log(projectData);
-
     if (!projectData) {
       navigate("/home");
       notification.error({
@@ -24,14 +22,13 @@ const TextExtraction = () => {
       });
     }
 
-    const extractedTextArray = projectData?.filesData.files.map((file) => ({
+    const extractedTextArray = projectData?.files_data.files.map((file) => ({
       file_name: file.file_name,
       content: file.content,
     }));
     if (extractedTextArray) {
       const jsonString = JSON.stringify(extractedTextArray, null, 4);
       const blob = new Blob([jsonString], { type: "application/json" });
-      console.log(blob);
       setBlob(blob);
       setFileSize((blob.size / 1024).toFixed(2));
     }

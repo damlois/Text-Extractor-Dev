@@ -22,10 +22,11 @@ export interface Project {
   name: string;
   description?: string;
   created_at: string;
-  filesData: {
+  files_data: {
     files: ExtractedText[];
     message: string;
   };
+  analysis_data: any;
 }
 
 export interface ChatSession {
@@ -47,4 +48,10 @@ export interface AnalysisInstruction {
   title: string;
   data_type: "string" | "number";
   description: string;
+}
+
+export interface Instruction {
+  title: string;
+  description: string;
+  data_type?: string;
 }

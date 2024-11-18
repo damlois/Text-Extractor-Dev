@@ -5,25 +5,21 @@ import { LabelT } from "../types";
 import AppTextArea from "../../../../components/AppTextArea";
 import LabelTag from "../components/LabelTag";
 import ExtractionResults from "../components/ExtractionResults";
+import { useAnalyzeFiles } from "../../../../hooks/useFileProcessor";
+import { Instruction } from "../../../../types";
+import { showNotification } from "../../../../utils/notification";
 
 const FieldExtraction = () => {
   const [labels, setLabels] = useState<LabelT[]>([]);
+  const [loading, setLoading] = useState(false);
   const [inputState, setInputState] = useState<LabelT>({
     id: 0,
     name: "",
     description: "",
   });
   const [showResult, setShowResult] = useState(false);
-  const [result, setResult] = useState<any>([
-    { id: 1, name: "John Doe", age: 28, email: "johndoe@example.com" },
-    { id: 2, name: "Jane Smith", age: 32, email: "janesmith@example.com" },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      age: 24,
-      email: "alicejohnson@example.com",
-    },
-  ]);
+
+  const { analyzeFiles } = useAnalyzeFiles();
 
   const handleLabelInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -55,8 +51,26 @@ const FieldExtraction = () => {
     setLabels(newLables);
   };
 
-  const handleExtraction = () => {
-    setShowResult(!showResult);
+  const handleExtraction = async () => {
+    const instructions: Instruction[] = labels.map((label) => ({
+      title: label.name,
+      description: label.description,
+    }));
+
+    try {
+      setLoading(true);
+      const analysis = await analyzeFiles(instructions);
+      setLoading(false);
+      showNotification("success", `Data extracted successfuly!`);
+      setShowResult(!showResult);
+    } catch (error) {
+      setLoading(false);
+      showNotification(
+        "error",
+        "Extraction failed",
+        "There was an issue extracting your data. Please try again."
+      );
+    }
   };
 
   return (
@@ -101,14 +115,14 @@ const FieldExtraction = () => {
               >
                 <span className="mr-[10px] text-[16px]">+</span>Add label
               </AppButton>
-              <AppButton disabled={!labels.length} onClick={handleExtraction}>
+              <AppButton disabled={!labels.length} onClick={handleExtraction} loading={loading}>
                 Extract Data
               </AppButton>
             </div>
           </div>
         </div>
       ) : (
-        <ExtractionResults result={result} />
+        <ExtractionResults />
       )}
     </div>
   );
