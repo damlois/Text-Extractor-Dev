@@ -22,7 +22,7 @@ const PageHeader = ({
       <div className="flex space-x-2 text-gray-600">
         <span
           className="text-gray cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           {previousPage}
         </span>

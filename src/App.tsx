@@ -1,17 +1,16 @@
-import React from 'react';
 import { FileProcessorProvider } from './context/FileProcessorContext';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./pages/landingPage";
 import PageLayout from "./components/PageLayout";
 import CreateProject from "./pages/home/createProject/CreateProject";
 import UploadFiles from "./pages/home/uplaodFiles/UploadFiles";
 import ProcessFiles from "./pages/home/processFiles/ProcessFiles";
+import LandingPage from './pages/landingPage';
 
 const routes = [
-  // { path: "/index", element: <LandingPage />, showLayout: true },
-  { path: "/", element: <CreateProject />, showLayout: true },
-  { path: "/upload-files", element: <UploadFiles />, showLayout: true },
-  { path: "/process-files", element: <ProcessFiles />, showLayout: true },
+  { path: "/", element: <LandingPage />, showLayout: false },
+  { path: "/home", element: <CreateProject />, showLayout: true },
+  { path: "/home/upload-files", element: <UploadFiles />, showLayout: true },
+  { path: "/home/process-files", element: <ProcessFiles />, showLayout: true },
 ];
 
 const App = () => {

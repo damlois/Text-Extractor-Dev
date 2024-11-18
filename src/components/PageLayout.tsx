@@ -17,7 +17,7 @@ interface PageLayoutProps {
 }
 
 const navLinks = [
-  { name: "Home", path: "/", icon: <HomeOutlined /> },
+  { name: "Home", path: "/home", icon: <HomeOutlined /> },
   { name: "Upload", path: "/upload", icon: <UploadOutlined /> },
   { name: "Archives", path: "/archives", icon: <FolderOpenOutlined /> },
   { name: "Account", path: "/account", icon: <UserOutlined /> },
@@ -45,38 +45,33 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
             width="15%"
           >
             <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
-              <img
-                src="/assets/images/logo.png"
-                alt="interprAIs Logo"
-              />
+              <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
             <Menu
               mode="inline"
               selectedKeys={[location.pathname]}
               className="menu-items font-inter"
             >
-              {navLinks.map((link) => (
-                <Menu.Item
-                  key={link.path}
-                  icon={link.icon}
-                  className="text-dark-gray hover:bg-light-blue m-0 w-full"
-                  style={{
-                    width: "100%",
-                    borderRight:
-                      location.pathname === link.path
-                        ? "5px solid #006A94"
-                        : "none",
-                    backgroundColor:
-                      location.pathname === link.path
-                        ? "#CCE1EA"
-                        : "transparent",
-                  }}
-                >
-                  <Link to={link.path} className="text-inherit">
-                    {link.name}
-                  </Link>
-                </Menu.Item>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  location.pathname.split("/")[1] === link.path.split("/")[1];
+                return (
+                  <Menu.Item
+                    key={link.path}
+                    icon={link.icon}
+                    className="text-dark-gray hover:bg-light-blue m-0 w-full"
+                    style={{
+                      width: "100%",
+                      borderRight: isActive ? "5px solid #006A94" : "none",
+                      backgroundColor: isActive ? "#CCE1EA" : "transparent",
+                    }}
+                  >
+                    <Link to={link.path} className="text-inherit">
+                      {link.name}
+                    </Link>
+                  </Menu.Item>
+                );
+              })}
             </Menu>
           </Sider>
 

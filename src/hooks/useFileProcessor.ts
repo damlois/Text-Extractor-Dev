@@ -55,7 +55,7 @@ export const useUploadFiles = () => {
 
     const response = await fileProcessorApi.uploadFiles(currentProject.id, fileList.files);
     setProjects(prevProjects => prevProjects.map(project =>
-      project.id === currentProject.id ? { ...project, files: response.data } : project
+      project.id === currentProject.id ? { ...project, filesData: response.data } : project
     ));
     return response.data;
   };
@@ -70,10 +70,10 @@ export const useChatSessions = (type?: 'document' | 'image') => {
   useEffect(() => {
     if (!currentProject) return;
 
-    fileProcessorApi.getChatSessions(currentProject.id, type).then(res => {
-      setChatSessions(res.data);
-      setLoading(false);
-    });
+    // fileProcessorApi.getChatSessions(currentProject.id, type).then(res => {
+    //   setChatSessions(res.data);
+    //   setLoading(false);
+    // });
   }, [currentProject, type, setChatSessions]);
 
   return { loading };
@@ -89,9 +89,9 @@ export const useCreateChatSession = () => {
   }) => {
     if (!currentProject) throw new Error('No project selected');
 
-    const response = await fileProcessorApi.createChatSession(currentProject.id, data);
-    setChatSessions(prevSessions => [...prevSessions, response.data]);
-    return response.data;
+    // const response = await fileProcessorApi.createChatSession(currentProject.id, data);
+    // setChatSessions(prevSessions => [...prevSessions, response.data]);
+    // return response.data;
   };
 
   return { createChatSession };
@@ -101,12 +101,12 @@ export const useChatMessages = (sessionId: number) => {
   const { setChatMessages } = useFileProcessor();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fileProcessorApi.getChatMessages(sessionId).then(res => {
-      setChatMessages(res.data.messages);
-      setLoading(false);
-    });
-  }, [sessionId, setChatMessages]);
+  // useEffect(() => {
+  //   fileProcessorApi.getChatMessages(sessionId).then(res => {
+  //     setChatMessages(res.data.messages);
+  //     setLoading(false);
+  //   });
+  // }, [sessionId, setChatMessages]);
 
   return { loading };
 };
@@ -114,11 +114,11 @@ export const useChatMessages = (sessionId: number) => {
 export const useSendMessage = (sessionId: number) => {
   const { setChatMessages } = useFileProcessor();
 
-  const sendMessage = async (data: { content: string; additional_data?: Record<string, any> }) => {
-    const response = await fileProcessorApi.sendMessage(sessionId, data);
-    setChatMessages((prevMessages: ChatMessage[]) => [...prevMessages, response.data as unknown as ChatMessage]);
-    return response.data;
-  };
+  // const sendMessage = async (data: { content: string; additional_data?: Record<string, any> }) => {
+  //   const response = await fileProcessorApi.sendMessage(sessionId, data);
+  //   setChatMessages((prevMessages: ChatMessage[]) => [...prevMessages, response.data as unknown as ChatMessage]);
+  //   return response.data;
+  // };
 
-  return { sendMessage };
+  // return { sendMessage };
 };
