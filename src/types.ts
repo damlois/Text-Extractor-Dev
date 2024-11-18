@@ -17,30 +17,42 @@ export type Message = {
     created_at: string;
   }
 
-  export interface ChatSession {
-    id: number;
-    name?: string;
-    files: number[];
-    session_type: 'document' | 'image';
-    created_at: string;
-  }
 
-  export interface ChatMessage {
-    role: 'user' | 'assistant';
-    content: string;
-    timestamp: string;
-    additional_data?: Record<string, any>;
-  }
-
-  export interface AnalysisInstruction {
+export interface AnalysisInstruction {
     title: string;
-    data_type: 'string' | 'number';
     description: string;
-  }
+    data_type: string;
+}
 
-  export interface FileResponse {
-      id: number;
-      name: string;
-      content: number;
-      created_at: string;
-  }
+export interface ChatMessage {
+    role: "user" | "assistant";
+    content: string;
+    timestamp?: string;
+}
+
+export interface Project {
+    id: number;
+    name: string;
+    description?: string;
+    created_at: string;
+}
+
+export interface User {
+    id: string;
+    username: string;
+    role: string;
+}
+
+export interface AnalysisResponse {
+    id: number;
+    instructions: AnalysisInstruction[];
+    results: Record<string, any>;
+    created_at: string;
+}
+
+export interface FileResponse {
+    id: number;
+    file_name: string;
+    content: string;
+    created_at: string;
+}

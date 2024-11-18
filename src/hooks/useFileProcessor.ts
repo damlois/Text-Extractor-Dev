@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fileProcessorApi } from '../api/api';
 import { useFileProcessor } from '../context/FileProcessorContext';
-import { Project, ChatSession, ChatMessage } from '../types';
+import { Project, FileResponse, ChatMessage } from '../types';
 
 export const useCurrentUser = () => {
   const { setCurrentUser } = useFileProcessor();
@@ -63,60 +63,18 @@ export const useUploadFiles = () => {
   return { uploadFiles };
 };
 
-export const useChatSessions = (type?: 'document' | 'image') => {
-  const { currentProject, setChatSessions } = useFileProcessor();
-  const [loading, setLoading] = useState(true);
+export const useSendMessage = () => {
+  const { currentProject, setChatHistory } = useFileProcessor();
 
-  useEffect(() => {
-    if (!currentProject) return;
-
-    fileProcessorApi.getChatSessions(currentProject.id, type).then(res => {
-      setChatSessions(res.data);
-      setLoading(false);
-    });
-  }, [currentProject, type, setChatSessions]);
-
-  return { loading };
-};
-
-export const useCreateChatSession = () => {
-  const { currentProject, setChatSessions } = useFileProcessor();
-
-  const createChatSession = async (data: {
-    name?: string;
-    file_ids: number[];
-    session_type: 'document' | 'image';
+  const sendMessage = async (data: {
+    prompt: string;
+    chat_type: 'document' | 'image';
+    image_data?: string;
   }) => {
     if (!currentProject) throw new Error('No project selected');
 
-    const response = await fileProcessorApi.createChatSession(currentProject.id, data);
-    setChatSessions(prevSessions => [...prevSessions, response.data]);
-    return response.data;
-  };
-
-  return { createChatSession };
-};
-
-export const useChatMessages = (sessionId: number) => {
-  const { setChatMessages } = useFileProcessor();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fileProcessorApi.getChatMessages(sessionId).then(res => {
-      setChatMessages(res.data.messages);
-      setLoading(false);
-    });
-  }, [sessionId, setChatMessages]);
-
-  return { loading };
-};
-
-export const useSendMessage = (sessionId: number) => {
-  const { setChatMessages } = useFileProcessor();
-
-  const sendMessage = async (data: { content: string; additional_data?: Record<string, any> }) => {
-    const response = await fileProcessorApi.sendMessage(sessionId, data);
-    setChatMessages((prevMessages: ChatMessage[]) => [...prevMessages, response.data as unknown as ChatMessage]);
+    const response = await fileProcessorApi.sendMessage(currentProject.id, data);
+    setChatHistory(prev => [...prev, response.data]);
     return response.data;
   };
 
