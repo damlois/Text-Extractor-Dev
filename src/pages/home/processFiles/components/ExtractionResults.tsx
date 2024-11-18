@@ -16,8 +16,6 @@ const ExtractionResults = () => {
       (project) => project.id === currentProject?.id
     );
 
-    console.log(projectData);
-
     if (!projectData) {
       navigate("/home");
       notification.error({

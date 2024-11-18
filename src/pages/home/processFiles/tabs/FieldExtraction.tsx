@@ -23,7 +23,6 @@ const FieldExtraction = () => {
 
   const handleLabelInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log(e.target.value);
     setInputState({
       ...inputState,
       name: value,
