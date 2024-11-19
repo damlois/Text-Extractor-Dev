@@ -53,7 +53,7 @@ li.ant-menu-item.ant-menu-item-selected {
 }
 
 /*Tab styles*/
-*/ .custom-tabs .ant-tabs-tab {
+.custom-tabs .ant-tabs-tab {
     font-size: 16px;
     font-weight: 500;
     margin: 0 16px;
