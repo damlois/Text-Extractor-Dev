@@ -1,12 +1,36 @@
-import { Table } from "antd";
+import { notification, Table } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import AppButton from "../../../../components/AppButton";
+import { useFileProcessor } from "../../../../context/FileProcessorContext";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { extractKeyValuePairs } from "../utils";
 
-interface ExtractionResultsProps {
-  result: any;
-}
+const ExtractionResults = () => {
+  const { currentProject, projects } = useFileProcessor();
+  const [result, setResult] = useState<any[]>([]);
+  const navigate = useNavigate();
 
-const ExtractionResults = ({ result }: ExtractionResultsProps) => {
+  useEffect(() => {
+    const projectData = projects.find(
+      (project) => project.id === currentProject?.id
+    );
+
+    if (!projectData) {
+      navigate("/home");
+      notification.error({
+        message: "Project not found, Create a project first",
+      });
+    }
+
+    console.log(projectData)
+
+    const analysisResult = projectData?.analysis_data.results.per_document;
+    const resultArray = extractKeyValuePairs(analysisResult);
+
+    setResult(resultArray);
+  }, []);
+
   const columns =
     result.length > 0
       ? Object.keys(result[0]).map((key) => ({
@@ -17,11 +41,34 @@ const ExtractionResults = ({ result }: ExtractionResultsProps) => {
       : [];
 
   const downloadAsCSV = () => {
-    console.log("download as CSV clicked");
+    const csvRows = [];
+    const headers = Object.keys(result[0]);
+    csvRows.push(headers.join(","));
+
+    for (const row of result) {
+      const values = headers.map((header) => row[header]);
+      csvRows.push(values.join(","));
+    }
+
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${currentProject?.name?.replace(/\s+/g, "-")}.csv`;
+
+    link.click();
   };
 
   const downloadAsJSON = () => {
-    console.log("download as CSV clicked");
+    const jsonString = JSON.stringify(result, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${currentProject?.name?.replace(/\s+/g, "-")}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

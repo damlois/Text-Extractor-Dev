@@ -11,16 +11,15 @@ export interface User {
 }
 
 export interface Project {
-    id: number;
-    name: string;
-    description?: string;
-    created_at: string;
-}
-
-export interface AnalysisInstruction {
-    title: string;
-    description: string;
-    data_type: string;
+  id: number;
+  name: string;
+  description?: string;
+  created_at: string;
+  files_data: {
+    files: ExtractedText[];
+    message: string;
+  };
+  analysis_data: any;
 }
 
 export interface ChatMessage {
@@ -36,24 +35,10 @@ export interface chatHistoryRecord {
     timestamp: string;
 }
 
-export interface Project {
-    id: number;
-    name: string;
-    description?: string;
-    created_at: string;
-}
-
 export interface User {
     id: string;
     username: string;
     role: string;
-}
-
-export interface AnalysisResponse {
-    id: number;
-    instructions: AnalysisInstruction[];
-    results: Record<string, any>;
-    created_at: string;
 }
 
 export interface FileResponse {
@@ -79,4 +64,10 @@ export interface Project {
         files: ExtractedText[];
         message: string;
     };
+}
+
+export interface Instruction {
+  title: string;
+  description: string;
+  data_type?: string;
 }

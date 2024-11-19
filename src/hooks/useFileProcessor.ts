@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { fileProcessorApi } from '../api/api';
 import { useFileProcessor } from '../context/FileProcessorContext';
-import { Project, FileResponse, ChatMessage } from '../types';
+import { Instruction } from '../types';
 
 export const useCurrentUser = () => {
   const { setCurrentUser } = useFileProcessor();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fileProcessorApi.getCurrentUser().then(res => {
+    fileProcessorApi.getCurrentUser().then((res) => {
       setCurrentUser(res.data);
       setLoading(false);
     });
@@ -22,7 +22,7 @@ export const useProjects = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fileProcessorApi.getProjects().then(res => {
+    fileProcessorApi.getProjects().then((res) => {
       setProjects(res.data);
       setLoading(false);
     });
@@ -34,10 +34,13 @@ export const useProjects = () => {
 export const useCreateProject = () => {
   const { setProjects, setCurrentProject } = useFileProcessor();
 
-  const createProject = async (data: { name: string; description?: string }) => {
+  const createProject = async (data: {
+    name: string;
+    description?: string;
+  }) => {
     const response = await fileProcessorApi.createProject(data);
     setCurrentProject(response.data);
-    setProjects(prevProjects => [...prevProjects, response.data]);
+    setProjects((prevProjects) => [...prevProjects, response.data]);
     return response.data;
   };
 
@@ -48,19 +51,51 @@ export const useUploadFiles = () => {
   const { currentProject, setProjects } = useFileProcessor();
 
   const uploadFiles = async (files: File[]) => {
-    if (!currentProject) throw new Error('No project selected');
+    if (!currentProject) throw new Error("No project selected");
 
     const fileList = new DataTransfer();
-    files.forEach(file => fileList.items.add(file));
+    files.forEach((file) => fileList.items.add(file));
 
-    const response = await fileProcessorApi.uploadFiles(currentProject.id, fileList.files);
-    setProjects(prevProjects => prevProjects.map(project =>
-      project.id === currentProject.id ? { ...project, filesData: response.data } : project
-    ));
+    const response = await fileProcessorApi.uploadFiles(
+      currentProject.id,
+      fileList.files
+    );
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === currentProject.id
+          ? { ...project, files_data: response.data }
+          : project
+      )
+    );
     return response.data;
   };
 
   return { uploadFiles };
+};
+
+export const useAnalyzeFiles = () => {
+  const { currentProject, setProjects } = useFileProcessor();
+
+  const analyzeFiles = async (instructions: Instruction[]) => {
+    if (!currentProject) throw new Error("No project selected");
+
+    const response = await fileProcessorApi.analyzeFiles(
+      currentProject.id,
+      instructions
+    );
+
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === currentProject.id
+          ? { ...project, analysis_data: response.data }
+          : project
+      )
+    );
+
+    return response.data;
+  };
+
+  return { analyzeFiles };
 };
 
 export const useSendMessage = () => {
@@ -71,7 +106,7 @@ export const useSendMessage = () => {
     chat_type: 'document' | 'image';
     image_data?: string;
   }) => {
-    if (!currentProject) throw new Error('No project selected');
+    if (!currentProject) throw new Error("No project selected");
 
     const response = await fileProcessorApi.sendMessage(currentProject.id, data);
     return response.data;

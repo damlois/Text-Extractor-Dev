@@ -41,11 +41,15 @@ ol {
 
 li.ant-menu-item,
 li.ant-menu-item.ant-menu-item-selected {
-    border-radius: 0;
-    padding: "9px 16px";
-    font-size: "14px";
-    margin: 0;
-    padding-left: 16px !important;
+  border-radius: 0 !important;
+  padding: "9px 16px";
+  font-size: "14px";
+  margin: 0 !important;
+  padding-left: 16px !important;
+}
+
+li.ant-menu-item.ant-menu-item-selected {
+  color: rgb(0, 106, 148) !important;
 }
 
 /*Tab styles*/
