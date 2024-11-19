@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "https://18.171.150.196:8000/api/v1/*",
+        "destination": "http://18.171.150.196:8000/api/v1/*"
+      }
+    ]
+  }
+  
