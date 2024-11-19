@@ -80,13 +80,13 @@ const ImageProcessing: React.FC = () => {
   };
 
   // Cleanup preview URL when component unmounts
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (previewUrl) {
+  //       URL.revokeObjectURL(previewUrl);
+  //     }
+  //   };
+  // }, [previewUrl]);
 
   useEffect(() => {
     if (messageListRef.current) {
