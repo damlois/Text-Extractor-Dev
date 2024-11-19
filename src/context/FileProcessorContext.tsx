@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
-import { User, Project, ChatMessage } from '../types';
+import { User, Project, ChatMessage, chatHistoryRecord } from '../types';
 
 interface FileProcessorContextProps {
   currentUser: User | null;
   currentProject: Project | null;
   projects: Project[];
-  chatHistory: ChatMessage[];
+  chatHistory: chatHistoryRecord[];
   setCurrentUser: Dispatch<SetStateAction<User | null>>;
   setCurrentProject: Dispatch<SetStateAction<Project | null>>;
   setProjects: Dispatch<SetStateAction<Project[]>>;
-  setChatHistory: Dispatch<SetStateAction<ChatMessage[]>>;
+  setChatHistory: Dispatch<SetStateAction<chatHistoryRecord[]>>;
 }
 
 interface FileProcessorProviderProps {
@@ -22,7 +22,7 @@ export const FileProcessorProvider: React.FC<FileProcessorProviderProps> = ({ ch
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [chatHistory, setChatHistory] = useState<chatHistoryRecord[]>([]);
 
   return (
     <FileProcessorContext.Provider

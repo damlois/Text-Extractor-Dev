@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { Tabs } from "antd";
+import { notification, Tabs } from "antd";
 import TextExtraction from "./tabs/TextExtraction";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/PageHeader";
 import FieldExtraction from "./tabs/FieldExtraction";
 import GenerateInsight from "./tabs/GenerateInsight";
 import ImageProcessing from "./tabs/ImageProcessing";
+import { useFileProcessor } from "../../../context/FileProcessorContext";
 
 const ProcessFiles = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const projectName = queryParams.get("projectName");
+  const { currentProject } = useFileProcessor();
 
   const [activeKey, setActiveKey] = useState("1");
 
@@ -20,8 +19,8 @@ const ProcessFiles = () => {
   };
 
   useEffect(() => {
-    if (!projectName) navigate("/");
-  }, [projectName, navigate]);
+    if (!currentProject) navigate("/home");
+  }, []);
 
   const tabItems = [
     { key: "1", label: "Text Extraction" },
@@ -41,7 +40,7 @@ const ProcessFiles = () => {
     <div className="flex flex-col items-start min-h-screen font-inter">
       <PageHeader
         previousPage="Home"
-        currentPage={projectName as string}
+        currentPage={currentProject?.name as string}
         noBorder
       />
 

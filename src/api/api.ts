@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
     AnalysisInstruction,
+    chatHistoryRecord,
     ChatMessage,
     FileResponse,
     Project,
@@ -46,7 +47,7 @@ export const fileProcessorApi = {
     ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
     getChatHistory: (projectId: number, chatType?: "document" | "image") =>
-        api.get<{ history: ChatMessage[] }>(
+        api.get<{ history: chatHistoryRecord[] }>(
             `/projects/${projectId}/chat-history`,
             {
                 params: { chat_type: chatType },

@@ -73,7 +73,7 @@ const AppInput: React.FC<AppInputProps> = ({
 
   return (
     <div>
-      <div className={`${className} flex items-center gap-2 mb-2 mt-6`}>
+      <div className={`${className} flex items-center gap-2 mb-2 `}>
         {label && (
           <label className="text-gray-700 align-middle flex items-center">
             {required && <span className="text-red-500 mr-1">*</span>}

@@ -55,7 +55,7 @@ export const useUploadFiles = () => {
 
     const response = await fileProcessorApi.uploadFiles(currentProject.id, fileList.files);
     setProjects(prevProjects => prevProjects.map(project =>
-      project.id === currentProject.id ? { ...project, files: response.data } : project
+      project.id === currentProject.id ? { ...project, filesData: response.data } : project
     ));
     return response.data;
   };
@@ -64,7 +64,7 @@ export const useUploadFiles = () => {
 };
 
 export const useSendMessage = () => {
-  const { currentProject, setChatHistory } = useFileProcessor();
+  const { currentProject } = useFileProcessor();
 
   const sendMessage = async (data: {
     prompt: string;
@@ -74,9 +74,27 @@ export const useSendMessage = () => {
     if (!currentProject) throw new Error('No project selected');
 
     const response = await fileProcessorApi.sendMessage(currentProject.id, data);
-    setChatHistory(prev => [...prev, response.data]);
     return response.data;
   };
 
   return { sendMessage };
 };
+
+export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
+  const { currentProject, setChatHistory } = useFileProcessor();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      if (!currentProject) return;
+
+      const response = await fileProcessorApi.getChatHistory(currentProject.id, chatType);
+      setChatHistory(response.data.history);
+      setLoading(false);
+    };
+
+    fetchChatHistory();
+  }, [chatType, currentProject, setChatHistory]);
+
+  return { loading };
+}

@@ -4,9 +4,11 @@ import AppButton from "../../../components/AppButton";
 import PageHeader from "../../../components/PageHeader";
 import AppInput from "../../../components/AppInput";
 import { useCreateProject } from "../../../hooks/useFileProcessor";
+import { showNotification } from "../../../utils/notification";
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { createProject } = useCreateProject();
   const description = "";
@@ -17,8 +19,24 @@ const CreateProject = () => {
   };
 
   const handleCreateProject = async () => {
-    const data = await createProject({ name: projectName, description });
-    navigate(`/upload-files?projectName=${data.name}`);
+    try {
+      setLoading(true);
+      const data = await createProject({ name: projectName, description });
+      setLoading(false);
+      showNotification(
+        "success",
+        `Project "${data.name}" Created Successfully!`,
+        "Your project has been created and you can now upload files."
+      );
+      navigate(`/home/upload-files`);
+    } catch (error) {
+      setLoading(false);
+      showNotification(
+        "error",
+        "Project Creation Failed",
+        "There was an issue creating your project. Please try again."
+      );
+    }
   };
 
   return (
@@ -34,17 +52,21 @@ const CreateProject = () => {
             tooltip="Enter the name of your project"
             placeholder="e.g Comparison Report"
             onChange={handleInputChange}
+            onPressEnter={handleCreateProject}
           />
           <div className="flex flex-col items-center mt-6">
             <AppButton
               disabled={projectName.length < 2}
               onClick={handleCreateProject}
+              loading={loading}
             >
               Save and Proceed
             </AppButton>
           </div>
         </div>
-      </div>
+
+        <div className="border-b-[0.5px] border-[#0000000F] mt-10 w-full"></div>
+        </div>
     </div>
   );
 };
