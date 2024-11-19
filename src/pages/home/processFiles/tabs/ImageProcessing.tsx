@@ -66,8 +66,6 @@ const ImageProcessing: React.FC = () => {
       );
       setChatHistory(response.data.history);
       setInput("");
-      setImage(null);
-      setPreviewUrl(null);
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
