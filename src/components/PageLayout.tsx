@@ -32,7 +32,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
   };
 
   return (
-    <Layout className="w-full">
+    <Layout className="w-full h-screen">
       {showLayout ? (
         <>
           <Sider
@@ -43,6 +43,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
             collapsedWidth="0"
             className="bg-white border-r border-[#F0F0F0]"
             width="15%"
+            trigger={null}
           >
             <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
@@ -75,7 +76,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
             </Menu>
           </Sider>
 
-          <Layout style={{ flex: 1, width: "85%" }}>
+          <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
             <Header className="header bg-white p-0 border-b border-[#F0F0F0]">
               <div className="toolbar flex items-center px-4">
                 <Button
@@ -89,14 +90,20 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
               </div>
             </Header>
 
-            <Content>
-              <div className="content bg-white shadow-sm">{children}</div>
+            <Content
+              className="overflow-auto bg-white shadow-sm"
+              style={{ height: "calc(100vh - 300px)" }}
+            >
+              <div>{children}</div>
             </Content>
           </Layout>
         </>
       ) : (
-        <Content>
-          <div className="content bg-white shadow-sm">{children}</div>
+        <Content
+          className="overflow-auto bg-white shadow-sm"
+          style={{ height: "calc(100vh - 64px)" }}
+        >
+          <div>{children}</div>
         </Content>
       )}
     </Layout>

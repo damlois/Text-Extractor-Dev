@@ -37,7 +37,7 @@ const ProcessFiles = () => {
   ];
 
   return (
-    <div className="flex flex-col items-start min-h-screen font-inter">
+    <div className="flex flex-col items-start font-inter">
       <PageHeader
         previousPage="Home"
         currentPage={currentProject?.name as string}
