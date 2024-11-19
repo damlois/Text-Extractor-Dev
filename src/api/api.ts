@@ -1,11 +1,12 @@
 import axios from "axios";
 import {
     AnalysisInstruction,
+    chatHistoryRecord,
     ChatMessage,
+    FileResponse,
     Project,
     User,
     // AnalysisResponse,
-    // FileResponse,
 } from "../types";
 
 const api = axios.create({
@@ -28,11 +29,13 @@ export const fileProcessorApi = {
         return api.post(`/projects/${projectId}/files`, formData);
     },
 
-    // getFiles: (projectId: number) =>
-    //     api.get<FileResponse[]>(`/projects/${projectId}/files`),
+    getFiles: (projectId: number) =>
+        api.get<FileResponse[]>(`/projects/${projectId}/files`),
 
-    // runAnalysis: (projectId: number, instructions: AnalysisInstruction[]) =>
-    //     api.post<AnalysisResponse>(`/projects/${projectId}/analyze`, { instructions }),
+    runAnalysis: (projectId: number, instructions: AnalysisInstruction[]) =>
+        api.post(`/projects/${projectId}/analyze`, {
+            instructions,
+        }),
 
     sendMessage: (
         projectId: number,
@@ -41,14 +44,13 @@ export const fileProcessorApi = {
             chat_type: "document" | "image";
             image_data?: string;
         }
-    ) =>
-        api.post<ChatMessage>(
-            `/projects/${projectId}/chat`,
-            data
-        ),
+    ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
     getChatHistory: (projectId: number, chatType?: "document" | "image") =>
-        api.get<{ history: ChatMessage[] }>(`/projects/${projectId}/chat-history`, {
-            params: { chat_type: chatType },
-        }),
+        api.get<{ history: chatHistoryRecord[] }>(
+            `/projects/${projectId}/chat-history`,
+            {
+                params: { chat_type: chatType },
+            }
+        ),
 };

@@ -1,17 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
-import { User, Project, ChatSession, ChatMessage } from '../types';
+import { User, Project, ChatMessage, chatHistoryRecord } from '../types';
 
 interface FileProcessorContextProps {
   currentUser: User | null;
   currentProject: Project | null;
   projects: Project[];
-  chatSessions: ChatSession[];
-  chatMessages: ChatMessage[];
+  chatHistory: chatHistoryRecord[];
   setCurrentUser: Dispatch<SetStateAction<User | null>>;
   setCurrentProject: Dispatch<SetStateAction<Project | null>>;
   setProjects: Dispatch<SetStateAction<Project[]>>;
-  setChatSessions: Dispatch<SetStateAction<ChatSession[]>>;
-  setChatMessages: Dispatch<SetStateAction<ChatMessage[]>>;
+  setChatHistory: Dispatch<SetStateAction<chatHistoryRecord[]>>;
 }
 
 interface FileProcessorProviderProps {
@@ -24,8 +22,7 @@ export const FileProcessorProvider: React.FC<FileProcessorProviderProps> = ({ ch
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatHistory, setChatHistory] = useState<chatHistoryRecord[]>([]);
 
   return (
     <FileProcessorContext.Provider
@@ -33,13 +30,11 @@ export const FileProcessorProvider: React.FC<FileProcessorProviderProps> = ({ ch
         currentUser,
         currentProject,
         projects,
-        chatSessions,
-        chatMessages,
+        chatHistory,
         setCurrentUser,
         setCurrentProject,
         setProjects,
-        setChatSessions,
-        setChatMessages
+        setChatHistory
       }}
     >
       {children}

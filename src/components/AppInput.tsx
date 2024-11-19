@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tooltip, Input, Image } from "antd";
+import { Tooltip, Input, Image, Spin } from "antd";
 import { InfoCircleOutlined, PaperClipOutlined } from "@ant-design/icons";
 
 interface AppInputProps {
@@ -20,6 +20,8 @@ interface AppInputProps {
   onFileChange?: (file: File | null) => void;
   style?: React.CSSProperties;
   loading?: boolean;
+  maxCount?: number;
+  fileType?: string;
 }
 
 const AppInput: React.FC<AppInputProps> = ({
@@ -36,6 +38,8 @@ const AppInput: React.FC<AppInputProps> = ({
   onFileChange,
   style,
   loading = false,
+  maxCount,
+  fileType,
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -73,7 +77,7 @@ const AppInput: React.FC<AppInputProps> = ({
 
   return (
     <div>
-      <div className={`${className} flex items-center gap-2 mb-2 mt-6`}>
+      <div className={`${className} flex items-center gap-2 mb-2 `}>
         {label && (
           <label className="text-gray-700 align-middle flex items-center">
             {required && <span className="text-red-500 mr-1">*</span>}
@@ -106,6 +110,8 @@ const AppInput: React.FC<AppInputProps> = ({
                   type="file"
                   className="absolute top-0 right-0 opacity-0 cursor-pointer w-full"
                   onChange={handleFileChange}
+                  max={maxCount}
+                  accept={fileType}
                 />
               </>
             )
@@ -121,7 +127,7 @@ const AppInput: React.FC<AppInputProps> = ({
               </span>
             ) : (
               <span style={{ cursor: "not-allowed", opacity: 0.5 }}>
-                {rightIcon}
+                <Spin />
               </span>
             ))
           }
