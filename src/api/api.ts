@@ -9,7 +9,7 @@ import {
 } from "../types";
 
 const api = axios.create({
-  baseURL: "http://18.175.117.175:8000/api/v1",
+  baseURL: process.env.REACT_APP_API_URL,
 });
 
 export const fileProcessorApi = {

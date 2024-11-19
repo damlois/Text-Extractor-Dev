@@ -62,7 +62,7 @@ const GenerateInsight: React.FC = () => {
       <>
           {chatHistory.length === 0 ? (
               <div className="mt-[100px] mx-auto text-center w-7/12">
-                  <h2 className="text-[24px] text-black mb-[-16px]">
+                  <h2 className="text-[24px] text-black mb-6">
                       Analyze and generate insight with interprAIs
                   </h2>
                   <AppInput
