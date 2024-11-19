@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tooltip, Input, Image } from "antd";
+import { Tooltip, Input, Image, Spin } from "antd";
 import { InfoCircleOutlined, PaperClipOutlined } from "@ant-design/icons";
 
 interface AppInputProps {
@@ -121,7 +121,7 @@ const AppInput: React.FC<AppInputProps> = ({
               </span>
             ) : (
               <span style={{ cursor: "not-allowed", opacity: 0.5 }}>
-                {rightIcon}
+                <Spin />
               </span>
             ))
           }
