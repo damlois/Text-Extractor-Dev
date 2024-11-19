@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { fileProcessorApi } from "../api/api";
 import { useFileProcessor } from "../context/FileProcessorContext";
 import { Project, ChatSession, ChatMessage, Instruction } from "../types";
+=======
+import { useState, useEffect } from 'react';
+import { fileProcessorApi } from '../api/api';
+import { useFileProcessor } from '../context/FileProcessorContext';
+import { Project, FileResponse, ChatMessage } from '../types';
+>>>>>>> e2dcecfada3e0846af6e44149574b634ed875eac
 
 export const useCurrentUser = () => {
   const { setCurrentUser } = useFileProcessor();
@@ -73,6 +80,7 @@ export const useUploadFiles = () => {
   return { uploadFiles };
 };
 
+<<<<<<< HEAD
 export const useAnalyzeFiles = () => {
   const { currentProject, setProjects } = useFileProcessor();
 
@@ -123,39 +131,41 @@ export const useCreateChatSession = () => {
     name?: string;
     file_ids: number[];
     session_type: "document" | "image";
+=======
+export const useSendMessage = () => {
+  const { currentProject } = useFileProcessor();
+
+  const sendMessage = async (data: {
+    prompt: string;
+    chat_type: 'document' | 'image';
+    image_data?: string;
+>>>>>>> e2dcecfada3e0846af6e44149574b634ed875eac
   }) => {
     if (!currentProject) throw new Error("No project selected");
 
-    // const response = await fileProcessorApi.createChatSession(currentProject.id, data);
-    // setChatSessions(prevSessions => [...prevSessions, response.data]);
-    // return response.data;
+    const response = await fileProcessorApi.sendMessage(currentProject.id, data);
+    return response.data;
   };
 
-  return { createChatSession };
+  return { sendMessage };
 };
 
-export const useChatMessages = (sessionId: number) => {
-  const { setChatMessages } = useFileProcessor();
+
+export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
+  const { currentProject, setChatHistory } = useFileProcessor();
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   fileProcessorApi.getChatMessages(sessionId).then(res => {
-  //     setChatMessages(res.data.messages);
-  //     setLoading(false);
-  //   });
-  // }, [sessionId, setChatMessages]);
+  useEffect(() => {
+    const fetchChatHistory = async () => {
+      if (!currentProject) return;
+
+      const response = await fileProcessorApi.getChatHistory(currentProject.id, chatType);
+      setChatHistory(response.data.history);
+      setLoading(false);
+    };
+
+    fetchChatHistory();
+  }, [chatType, currentProject, setChatHistory]);
 
   return { loading };
-};
-
-export const useSendMessage = (sessionId: number) => {
-  const { setChatMessages } = useFileProcessor();
-
-  // const sendMessage = async (data: { content: string; additional_data?: Record<string, any> }) => {
-  //   const response = await fileProcessorApi.sendMessage(sessionId, data);
-  //   setChatMessages((prevMessages: ChatMessage[]) => [...prevMessages, response.data as unknown as ChatMessage]);
-  //   return response.data;
-  // };
-
-  // return { sendMessage };
-};
+}

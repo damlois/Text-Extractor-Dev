@@ -1,12 +1,11 @@
 import axios from "axios";
 import {
-  AnalysisInstruction,
   ChatMessage,
   Instruction,
   Project,
   User,
-  // AnalysisResponse,
-  // FileResponse,
+  chatHistoryRecord,
+  FileResponse,
 } from "../types";
 
 const api = axios.create({
@@ -31,12 +30,9 @@ export const fileProcessorApi = {
 
   analyzeFiles: (projectId: number, instructions: Instruction[]) =>
     api.post(`/projects/${projectId}/analyze`, { instructions }),
-  
-  // getFiles: (projectId: number) =>
-  //     api.get<FileResponse[]>(`/projects/${projectId}/files`),
 
-  // runAnalysis: (projectId: number, instructions: AnalysisInstruction[]) =>
-  //     api.post<AnalysisResponse>(`/projects/${projectId}/analyze`, { instructions }),
+  getFiles: (projectId: number) =>
+    api.get<FileResponse[]>(`/projects/${projectId}/files`),
 
   sendMessage: (
     projectId: number,
@@ -48,7 +44,10 @@ export const fileProcessorApi = {
   ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
   getChatHistory: (projectId: number, chatType?: "document" | "image") =>
-    api.get<{ history: ChatMessage[] }>(`/projects/${projectId}/chat-history`, {
-      params: { chat_type: chatType },
-    }),
+    api.get<{ history: chatHistoryRecord[] }>(
+      `/projects/${projectId}/chat-history`,
+      {
+        params: { chat_type: chatType },
+      }
+    ),
 };
