@@ -54,46 +54,31 @@ const UploadFiles = () => {
     name: "file",
     multiple: true,
     fileList,
-    customRequest(info: any) {
-      const { file, onSuccess, onProgress } = info;
-
-      const reader = new FileReader();
-      reader.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded / event.total) * 100);
-
-          setFileList((prevFiles) =>
-            prevFiles.map((f) =>
-              f.uid === file.uid
-                ? {
-                    ...f,
-                    percent,
-                    status: percent === 100 ? "done" : "uploading",
-                  }
-                : f
-            )
-          );
-
-          onProgress({ percent });
-        }
-      };
-
-      reader.onload = () => {
-        onSuccess("File loaded successfully");
-
-        message.success(`${file.name} loaded to browser memory.`);
-      };
-
-      reader.onerror = () => {
-        message.error(`${file.name} failed to load.`);
-      };
-
-      reader.readAsArrayBuffer(file);
-    },
+    accept: ".pdf,.csv,.xls,.xlsx,.docx",
+    showUploadList: false,
 
     beforeUpload(file: File) {
-      const uid = `${file.name}-${Date.now()}`;
+      const allowedTypes = [
+        "application/pdf",
+        "text/csv",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
 
+      const isAllowedType = allowedTypes.includes(file.type);
+      if (!isAllowedType) {
+        message.error(`${file.name} is not a valid file type.`);
+        return Upload.LIST_IGNORE;
+      }
+
+      const isUnderSizeLimit = file.size / 1024 / 1024 <= 200;
+      if (!isUnderSizeLimit) {
+        message.error(`${file.name} exceeds the 200MB size limit.`);
+        return Upload.LIST_IGNORE;
+      }
+
+      const uid = `${file.name}-${Date.now()}`;
       setFileList((prevFiles) => [
         ...prevFiles,
         {
@@ -108,11 +93,15 @@ const UploadFiles = () => {
       return false;
     },
 
-    onRemove(file: any) {
-      setFileList((prevFiles) => prevFiles.filter((f) => f.uid !== file.uid));
+    onChange({ file, fileList }: any) {
+      console.log("File added:", file);
+      console.log("Updated file list:", fileList);
     },
 
-    showUploadList: false,
+    onRemove(file: any) {
+      setLoading(false);
+      setFileList((prevFiles) => prevFiles.filter((f) => f.uid !== file.uid));
+    },
   };
 
   const handleDelete = (fileName: string) => {
@@ -175,18 +164,18 @@ const UploadFiles = () => {
                   {file.name}
                 </span>
 
-                {file.status === "uploading" && (
+                {/* {file.status === "done" && (
                   <span className="flex items-center text-gray italic mr-3">
                     Uploading...
                   </span>
                 )}
 
-                {file.status === "done" && (
+                {file.status === "uploading" && (
                   <span className="flex items-center text-gray italic mr-3">
                     Upload complete
                     <CheckCircleOutlined className="ml-2 text-green-600" />
                   </span>
-                )}
+                )} */}
 
                 <DeleteOutlined
                   className="text-red-500 cursor-pointer"

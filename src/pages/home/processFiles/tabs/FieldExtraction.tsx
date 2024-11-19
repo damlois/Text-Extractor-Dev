@@ -80,6 +80,7 @@ const FieldExtraction = () => {
             <div className="flex flex-wrap gap-4 items-start">
               {labels.map((label) => (
                 <LabelTag
+                  key={label.id}
                   id={label.id}
                   name={label.name}
                   handleRemove={handleLabelRemoval}

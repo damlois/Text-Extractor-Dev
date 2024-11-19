@@ -79,6 +79,8 @@ export const useAnalyzeFiles = () => {
   const analyzeFiles = async (instructions: Instruction[]) => {
     if (!currentProject) throw new Error("No project selected");
 
+
+    console.log("about to analyze")
     const response = await fileProcessorApi.analyzeFiles(
       currentProject.id,
       instructions

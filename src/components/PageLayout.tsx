@@ -49,7 +49,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
             </div>
             <Menu
               mode="inline"
-              selectedKeys={[location.pathname]}
+              selectedKeys={[`/${location.pathname.split("/")[1]}`]}
               className="menu-items font-inter"
             >
               {navLinks.map((link) => {
