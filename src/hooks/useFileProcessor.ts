@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
-import { fileProcessorApi } from "../api/api";
-import { useFileProcessor } from "../context/FileProcessorContext";
-import { Project, ChatSession, ChatMessage, Instruction } from "../types";
-=======
 import { useState, useEffect } from 'react';
 import { fileProcessorApi } from '../api/api';
 import { useFileProcessor } from '../context/FileProcessorContext';
-import { Project, FileResponse, ChatMessage } from '../types';
->>>>>>> e2dcecfada3e0846af6e44149574b634ed875eac
+import { Instruction } from '../types';
 
 export const useCurrentUser = () => {
   const { setCurrentUser } = useFileProcessor();
@@ -80,7 +73,6 @@ export const useUploadFiles = () => {
   return { uploadFiles };
 };
 
-<<<<<<< HEAD
 export const useAnalyzeFiles = () => {
   const { currentProject, setProjects } = useFileProcessor();
 
@@ -108,30 +100,6 @@ export const useAnalyzeFiles = () => {
   return { analyzeFiles };
 };
 
-export const useChatSessions = (type?: "document" | "image") => {
-  const { currentProject, setChatSessions } = useFileProcessor();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!currentProject) return;
-
-    // fileProcessorApi.getChatSessions(currentProject.id, type).then(res => {
-    //   setChatSessions(res.data);
-    //   setLoading(false);
-    // });
-  }, [currentProject, type, setChatSessions]);
-
-  return { loading };
-};
-
-export const useCreateChatSession = () => {
-  const { currentProject, setChatSessions } = useFileProcessor();
-
-  const createChatSession = async (data: {
-    name?: string;
-    file_ids: number[];
-    session_type: "document" | "image";
-=======
 export const useSendMessage = () => {
   const { currentProject } = useFileProcessor();
 
@@ -139,7 +107,6 @@ export const useSendMessage = () => {
     prompt: string;
     chat_type: 'document' | 'image';
     image_data?: string;
->>>>>>> e2dcecfada3e0846af6e44149574b634ed875eac
   }) => {
     if (!currentProject) throw new Error("No project selected");
 

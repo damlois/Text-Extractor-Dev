@@ -74,10 +74,10 @@ const FieldExtraction = () => {
     <div>
       {!showResult ? (
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-black text-[6] text-[24px] mb-2">Add a label</h2>
+          <h2 className="text-black text-[6] text-[24px] mb-6">Add a label</h2>
 
           <div className="flex flex-col w-[40%] mb-6">
-            <div className="flex flex-wrap gap-4 items-start">
+            <div className="flex flex-wrap gap-4 items-start mb-4">
               {labels.map((label) => (
                 <LabelTag
                   key={label.id}

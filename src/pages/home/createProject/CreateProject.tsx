@@ -44,7 +44,7 @@ const CreateProject = () => {
       <PageHeader previousPage="Home" currentPage="New Project" />
 
       <div className="flex flex-col items-center w-full p-6">
-        <h2 className="text-black text-[24px]">Name your project</h2>
+        <h2 className="text-black text-[24px] mb-6">Name your project</h2>
 
         <div className="flex flex-col w-[50%] mb-6">
           <AppInput
