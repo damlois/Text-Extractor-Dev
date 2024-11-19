@@ -23,6 +23,8 @@ const ExtractionResults = () => {
       });
     }
 
+    console.log(projectData)
+
     const analysisResult = projectData?.analysis_data.results.per_document;
     const resultArray = extractKeyValuePairs(analysisResult);
 

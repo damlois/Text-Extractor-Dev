@@ -79,8 +79,6 @@ export const useAnalyzeFiles = () => {
   const analyzeFiles = async (instructions: Instruction[]) => {
     if (!currentProject) throw new Error("No project selected");
 
-
-    console.log("about to analyze")
     const response = await fileProcessorApi.analyzeFiles(
       currentProject.id,
       instructions
@@ -89,7 +87,7 @@ export const useAnalyzeFiles = () => {
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
         project.id === currentProject.id
-          ? { ...project, analysis_data: response.data.analysis_data }
+          ? { ...project, analysis_data: response.data }
           : project
       )
     );
