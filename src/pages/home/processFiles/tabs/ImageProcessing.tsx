@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SendOutlined } from "@ant-design/icons";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import AppInput from "../../../../components/AppInput";
 import { Image, Spin } from "antd";
 import { useFileProcessor } from "../../../../context/FileProcessorContext";
@@ -21,10 +21,13 @@ const ImageProcessing: React.FC = () => {
     const fetchChatHistory = async () => {
       if (!currentProject) return;
       try {
-        const response = await fileProcessorApi.getChatHistory(currentProject.id, 'image');
+        const response = await fileProcessorApi.getChatHistory(
+          currentProject.id,
+          "image"
+        );
         setChatHistory(response.data.history);
       } catch (error) {
-        console.error('Failed to fetch chat history:', error);
+        console.error("Failed to fetch chat history:", error);
       }
     };
 
@@ -43,8 +46,8 @@ const ImageProcessing: React.FC = () => {
         reader.readAsDataURL(image);
         imageData = await new Promise((resolve) => {
           reader.onloadend = () => {
-        const base64Image = reader.result?.toString().split(",")[1];
-        resolve(base64Image);
+            const base64Image = reader.result?.toString().split(",")[1];
+            resolve(base64Image);
           };
         });
       }
@@ -52,18 +55,21 @@ const ImageProcessing: React.FC = () => {
       // Send message with image
       await fileProcessorApi.sendMessage(currentProject.id, {
         prompt: input,
-        chat_type: 'image',
-        image_data: imageData?.toString()
+        chat_type: "image",
+        image_data: imageData?.toString(),
       });
 
       // Refresh chat history
-      const response = await fileProcessorApi.getChatHistory(currentProject.id, 'image');
+      const response = await fileProcessorApi.getChatHistory(
+        currentProject.id,
+        "image"
+      );
       setChatHistory(response.data.history);
       setInput("");
       setImage(null);
       setPreviewUrl(null);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error("Failed to send message:", error);
     } finally {
       setLoading(false);
     }
@@ -101,6 +107,27 @@ const ImageProcessing: React.FC = () => {
           <h2 className="text-[24px] text-black mb-4">
             Image Analysis with InterprAIs
           </h2>
+          {(previewUrl || image) && (
+            <div className="w-full mb-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-sm text-gray-500 mb-2">Current Image</h3>
+              <div className="relative w-fit mx-auto">
+                <Image
+                  src={previewUrl || ""}
+                  alt="Preview"
+                  className="max-h-[200px] object-contain rounded-lg"
+                />
+                <button
+                  onClick={() => {
+                    setImage(null);
+                    setPreviewUrl(null);
+                  }}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
           <AppInput
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -121,7 +148,7 @@ const ImageProcessing: React.FC = () => {
               <h3 className="text-sm text-gray-500 mb-2">Current Image</h3>
               <div className="relative w-fit mx-auto">
                 <Image
-                  src={previewUrl || ''}
+                  src={previewUrl || ""}
                   alt="Preview"
                   className="max-h-[200px] object-contain rounded-lg"
                 />
@@ -182,9 +209,9 @@ const ImageProcessing: React.FC = () => {
               loading={loading}
               fileUpload
               onFileChange={handleImageChange}
-                className="mt-0"
-                maxCount={1}
-                fileType="image/*"
+              className="mt-0"
+              maxCount={1}
+              fileType="image/*"
             />
             <div className="flex justify-center items-center text-gray text-sm pt-[10px]">
               InterprAIs can make mistakes. Check important Info
