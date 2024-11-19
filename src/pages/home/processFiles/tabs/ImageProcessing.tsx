@@ -40,9 +40,12 @@ const ImageProcessing: React.FC = () => {
       if (image) {
         // Convert image to base64
         const reader = new FileReader();
+        reader.readAsDataURL(image);
         imageData = await new Promise((resolve) => {
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(image);
+          reader.onloadend = () => {
+        const base64Image = reader.result?.toString().split(",")[1];
+        resolve(base64Image);
+          };
         });
       }
 
@@ -50,7 +53,7 @@ const ImageProcessing: React.FC = () => {
       await fileProcessorApi.sendMessage(currentProject.id, {
         prompt: input,
         chat_type: 'image',
-        image_data: imageData as string
+        image_data: imageData?.toString()
       });
 
       // Refresh chat history

@@ -80,6 +80,7 @@ export const useSendMessage = () => {
   return { sendMessage };
 };
 
+
 export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
   const { currentProject, setChatHistory } = useFileProcessor();
   const [loading, setLoading] = useState(true);
