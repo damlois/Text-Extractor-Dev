@@ -20,6 +20,8 @@ interface AppInputProps {
   onFileChange?: (file: File | null) => void;
   style?: React.CSSProperties;
   loading?: boolean;
+  maxCount?: number;
+  fileType?: string;
 }
 
 const AppInput: React.FC<AppInputProps> = ({
@@ -36,6 +38,8 @@ const AppInput: React.FC<AppInputProps> = ({
   onFileChange,
   style,
   loading = false,
+  maxCount,
+  fileType,
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -106,6 +110,8 @@ const AppInput: React.FC<AppInputProps> = ({
                   type="file"
                   className="absolute top-0 right-0 opacity-0 cursor-pointer w-full"
                   onChange={handleFileChange}
+                  max={maxCount}
+                  accept={fileType}
                 />
               </>
             )
