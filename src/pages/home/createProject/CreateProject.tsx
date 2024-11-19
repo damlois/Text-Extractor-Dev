@@ -40,7 +40,7 @@ const CreateProject = () => {
   };
 
   return (
-    <div className="flex flex-col items-start min-h-screen font-inter">
+    <div className="flex flex-col items-start font-inter">
       <PageHeader previousPage="Home" currentPage="New Project" />
 
       <div className="flex flex-col items-center w-full p-6">
