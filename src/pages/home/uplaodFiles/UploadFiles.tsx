@@ -6,7 +6,6 @@ import {
   InboxOutlined,
   PaperClipOutlined,
   DeleteOutlined,
-  CheckCircleOutlined,
 } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
 import { useUploadFiles } from "../../../hooks/useFileProcessor";
@@ -21,17 +20,11 @@ const UploadFiles = () => {
   const { Dragger } = Upload;
 
   const [fileList, setFileList] = useState<any[]>([]);
-  const [allFilesUploaded, setAllFilesUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!currentProject) navigate("/home");
   }, []);
-
-  useEffect(() => {
-    const allUploaded = fileList.every((file) => file.status === "done");
-    setAllFilesUploaded(allUploaded);
-  }, [fileList]);
 
   const handleExtraction = async () => {
     try {
@@ -58,26 +51,26 @@ const UploadFiles = () => {
     showUploadList: false,
 
     beforeUpload(file: File) {
-      const allowedTypes = [
-        "application/pdf",
-        "text/csv",
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-
-      const isAllowedType = allowedTypes.includes(file.type);
-      if (!isAllowedType) {
-        message.error(`${file.name} is not a valid file type.`);
-        return Upload.LIST_IGNORE;
-      }
-
-      const isUnderSizeLimit = file.size / 1024 / 1024 <= 200;
-      if (!isUnderSizeLimit) {
+      const MAX_TOTAL_SIZE_MB = 200;
+      const MAX_FILE_SIZE_MB = 200;
+    
+      const totalSize = fileList.reduce(
+        (acc, currentFile) => acc + currentFile.originFileObj.size,
+        0
+      );
+      
+      const newTotalSize = totalSize + file.size;
+    
+      if (file.size / 1024 / 1024 > MAX_FILE_SIZE_MB) {
         message.error(`${file.name} exceeds the 200MB size limit.`);
         return Upload.LIST_IGNORE;
       }
-
+    
+      if (newTotalSize / 1024 / 1024 > MAX_TOTAL_SIZE_MB) {
+        message.error(`Total file size cannot be more than 200MB.`);
+        return Upload.LIST_IGNORE;
+      }
+    
       const uid = `${file.name}-${Date.now()}`;
       setFileList((prevFiles) => [
         ...prevFiles,
@@ -89,14 +82,10 @@ const UploadFiles = () => {
           originFileObj: file,
         },
       ]);
-
+    
       return false;
     },
-
-    onChange({ file, fileList }: any) {
-      console.log("File added:", file);
-      console.log("Updated file list:", fileList);
-    },
+    
 
     onRemove(file: any) {
       setLoading(false);
@@ -164,19 +153,6 @@ const UploadFiles = () => {
                   {file.name}
                 </span>
 
-                {/* {file.status === "done" && (
-                  <span className="flex items-center text-gray italic mr-3">
-                    Uploading...
-                  </span>
-                )}
-
-                {file.status === "uploading" && (
-                  <span className="flex items-center text-gray italic mr-3">
-                    Upload complete
-                    <CheckCircleOutlined className="ml-2 text-green-600" />
-                  </span>
-                )} */}
-
                 <DeleteOutlined
                   className="text-red-500 cursor-pointer"
                   onClick={() => handleDelete(file.name)}
@@ -188,7 +164,6 @@ const UploadFiles = () => {
           {fileList.length > 0 && (
             <AppButton
               className="mt-5"
-              disabled={allFilesUploaded}
               onClick={handleExtraction}
               loading={loading}
               width="80%"
