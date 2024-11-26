@@ -2,36 +2,206 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Montserrat+Alternates:wght@400;700&family=Inter:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=DM+Mono:wght@400;500;700&display=swap");
 
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Montserrat", "sans-serif";
-  height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", "sans-serif";
 }
+
 
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 ul,
 ol {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 /* AppButton.css */
 .ant-btn:focus,
 .ant-btn:active {
-  outline: none !important;
-  box-shadow: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .ant-btn {
-  transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
+.ant-menu-root {
+    border-inline-end: none !important;
+}
+
+li.ant-menu-item,
+li.ant-menu-item.ant-menu-item-selected {
+  border-radius: 0 !important;
+  padding: "9px 16px";
+  font-size: "14px";
+  margin: 0 !important;
+  padding-left: 16px !important;
+}
+
+li.ant-menu-item.ant-menu-item-selected {
+  color: rgb(0, 106, 148) !important;
+}
+
+/*Tab styles*/
+.custom-tabs .ant-tabs-tab {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 16px;
+    padding-bottom: 8px;
+}
+
+.custom-tabs .ant-tabs-tab-active {
+    color: #006a94 !important; /* Active tab text color */
+    font-weight: normal;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+    background-color: #006a94;
+    height: 2px;
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #006a94 !important;
+}
+
+.ant-tabs-top > .ant-tabs-nav {
+    margin-bottom: 0;
+}
+
+.ant-tabs-top > .ant-tabs-nav::before {
+    border: 0 !important;
+}
+
+.ant-input::placeholder {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 16px;
+    font-family: "Inter", "sans-serif";
+}
+
+/* Table styles */
+.ant-table-cell {
+    font-family: "DM Mono", "monospace";
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+}
+
+/* Input Styles */
+input {
+    height: 40px;
+    border-radius: 2px !important;
+}
+
+.ant-input-group .ant-input-group-addon {
+    border-radius: 2px;
+}
+
+.ant-input-affix-wrapper {
+    padding: 0 11px;
+    border-radius: 2px;
+}
+
+/* Card Styles */
+.custom-card .ant-card-body {
+    padding: 0 !important;
+}
+
+.markdown-body {
+    /* Basic markdown styles */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-weight: 600;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+    }
+
+    p {
+        margin: 0.5em 0;
+    }
+
+    ul,
+    ol {
+        padding-left: 1.5em;
+        margin: 0.5em 0;
+    }
+
+    li {
+        margin: 0.25em 0;
+    }
+
+    code {
+        background-color: #f3f4f6;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 0.9em;
+    }
+
+    .code-block {
+        display: block;
+        background-color: #f8f9fa;
+        padding: 1em;
+        margin: 0.5em 0;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    .inline-code {
+        background-color: #f3f4f6;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+    }
+
+    pre {
+        margin: 0.5em 0;
+        padding: 1em;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    blockquote {
+        border-left: 4px solid #e5e7eb;
+        padding-left: 1em;
+        margin: 1em 0;
+        color: #4b5563;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 1em 0;
+    }
+
+    th,
+    td {
+        border: 1px solid #e5e7eb;
+        padding: 0.5em;
+        text-align: left;
+    }
+
+    a {
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}

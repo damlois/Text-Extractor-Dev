@@ -1,79 +1,111 @@
-import React from "react";
-import { Layout, Image } from "antd";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Layout, Menu, Avatar, Button, Image } from "antd";
+import {
+  HomeOutlined,
+  UploadOutlined,
+  FolderOpenOutlined,
+  UserOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
+import { Link, useLocation } from "react-router-dom";
 
-const { Header, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 interface PageLayoutProps {
-  showNavBar?: boolean;
-  showBgImage?: boolean;
+  showLayout?: boolean;
   children: React.ReactNode;
 }
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Team", path: "/team" },
-  { name: "Pricing", path: "/pricing" },
-  { name: "Documentation", path: "/documentation" },
-  { name: "Sign in", path: "/sign-in" },
+  { name: "Home", path: "/home", icon: <HomeOutlined /> },
+  { name: "Upload", path: "/upload", icon: <UploadOutlined /> },
+  { name: "Archives", path: "/archives", icon: <FolderOpenOutlined /> },
+  { name: "Account", path: "/account", icon: <UserOutlined /> },
 ];
 
-const PageLayout: React.FC<PageLayoutProps> = ({
-  showNavBar,
-  showBgImage,
-  children,
-}) => {
-  return (
-    <Layout
-      style={{
-        backgroundImage: showBgImage
-          ? "url('/assets/images/page-bg.png')"
-          : "none",
-        backgroundSize: "cover",
-        backgroundColor: "#1D1E18",
-        width: "100%",
-      }}
-    >
-      <Header
-        className={`font-montserratAlternates w-full justify-${
-          showNavBar ? "between" : "center"
-        } bg-transparent flex gap-8 items-center px-4 sm:px-6 md:px-10 lg:px-14 sm:my-8 md:my-6`}
-      >
-        <div className="flex gap-2 items-center">
-          <Image
-            width={25}
-            height={24}
-            src="/assets/images/logo.png"
-            alt="logo"
-          />
-          <h2 className="text-white text-lg font-bold">Vorlux</h2>
-        </div>
+const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
-        {showNavBar && (
-          <>
-            <div className="flex-grow" />
-            <nav>
-              <ul className="flex flex-wrap space-x-2 sm:space-x-3 md:space-x-10 lg:space-x-16">
-                {navLinks.map((link) => (
-                  <li
-                    className="inline-block p-0 m-0 leading-normal"
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  return (
+    <Layout className="w-full h-screen">
+      {showLayout ? (
+        <>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={setCollapsed}
+            breakpoint="md"
+            collapsedWidth="0"
+            className="bg-white border-r border-[#F0F0F0]"
+            width="15%"
+            trigger={null}
+          >
+            <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
+              <img src="/assets/images/logo.png" alt="interprAIs Logo" />
+            </div>
+            <Menu
+              mode="inline"
+              selectedKeys={[`/${location.pathname.split("/")[1]}`]}
+              className="menu-items font-inter"
+            >
+              {navLinks.map((link) => {
+                const isActive =
+                  location.pathname.split("/")[1] === link.path.split("/")[1];
+                return (
+                  <Menu.Item
                     key={link.path}
+                    icon={link.icon}
+                    className="text-dark-gray hover:bg-light-blue m-0 w-full"
+                    style={{
+                      width: "100%",
+                      borderRight: isActive ? "5px solid #006A94" : "none",
+                      backgroundColor: isActive ? "#CCE1EA" : "transparent",
+                    }}
                   >
-                    <Link
-                      to={link.path}
-                      className="text-light-gray hover:text-white transition duration-300 ease-in-out"
-                    >
+                    <Link to={link.path} className="text-inherit">
                       {link.name}
                     </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </>
-        )}
-      </Header>
+                  </Menu.Item>
+                );
+              })}
+            </Menu>
+          </Sider>
 
-      <Content>{children}</Content>
+          <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
+            <Header className="header bg-white p-0 border-b border-[#F0F0F0]">
+              <div className="toolbar flex items-center px-4">
+                <Button
+                  type="text"
+                  icon={<MenuOutlined />}
+                  onClick={toggleCollapsed}
+                  className="menu-toggle hidden md:inline"
+                />
+                <Avatar icon={<UserOutlined />} className="ml-auto" />
+                <span className="ml-2">Steve Grace</span>
+              </div>
+            </Header>
+
+            <Content
+              className="overflow-auto bg-white shadow-sm"
+              style={{ height: "calc(100vh - 300px)" }}
+            >
+              <div>{children}</div>
+            </Content>
+          </Layout>
+        </>
+      ) : (
+        <Content
+          className="overflow-auto bg-white shadow-sm"
+          style={{ height: "calc(100vh - 64px)" }}
+        >
+          <div>{children}</div>
+        </Content>
+      )}
     </Layout>
   );
 };

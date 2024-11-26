@@ -4,13 +4,14 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        montserrat: ["Montserrat", "sans-serif"],
-        montserratAlternates: ["Montserrat Alternates", "sans-serif"],
         inter: ["Inter", "sans-serif"],
+        dmMono: ["DM Mono", 'monospace'],
       },
       colors: {
-        "light-gray": "rgba(255, 255, 255, 0.6)",
-        "yellow": "#EDD382",
+        "deep-blue": "#006A94",
+        "light-blue": "#CCE1EA",
+        "dark-gray": "rgba(0, 0, 0, 0.85)",
+        gray: "rgba(0, 0, 0, 0.45)",
       },
     },
   },

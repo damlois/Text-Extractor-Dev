@@ -20,3 +20,5 @@ docker-compose up --build
 yarn start
 
 This will open the app in your browser at http://localhost:3000
+
+
