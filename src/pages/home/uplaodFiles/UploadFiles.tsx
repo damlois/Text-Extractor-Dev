@@ -12,6 +12,7 @@ import AppButton from "../../../components/AppButton";
 import { useUploadFiles } from "../../../hooks/useFileProcessor";
 import { showNotification } from "../../../utils/notification";
 import { useFileProcessor } from "../../../context/FileProcessorContext";
+import ProgressDoughnut from "../../../components/ProgressDoughnut";
 
 const UploadFiles = () => {
   const navigate = useNavigate();
@@ -118,53 +119,57 @@ const UploadFiles = () => {
       />
 
       <div className="flex flex-col items-center w-full p-6">
-        <div className="w-9/12">
-          <h2 className="text-black text-[24px] text-center mb-6">
-            File Upload
-          </h2>
-          <Dragger
-            {...uploadProps}
-            className="bg-transparent text-center rounded-lg"
-            style={{
-              border: "1px solid #D9D9D9",
-            }}
-          >
-            <div className="flex justify-center items-center gap-10 font-inter">
-              <InboxOutlined className="text-deep-blue text-5xl" />
-              <div className="flex flex-col items-start">
-                <p className="text-dark-gray mb-2 text-[16px] font-medium">
-                  Select or drag file(s) from computer
-                </p>
-                <p className="text-dark-gray text-[14px]">
-                  Supports PDF, CSV, XLS, and DOCX files up to 200MB.
-                </p>
-              </div>
-            </div>
-          </Dragger>
-
-          <div className="mt-6">
-            {fileList.map((file) => (
-              <div
-                key={file.uid}
-                className="relative flex items-center my-2 px-4 py-2"
+        {loading ? (
+          <ProgressDoughnut percentage={20} />
+        ) : (
+          <>
+            <div className="w-9/12">
+              <h2 className="text-black text-[24px] text-center mb-6">
+                File Upload
+              </h2>
+              <Dragger
+                {...uploadProps}
+                className="bg-transparent text-center rounded-lg"
                 style={{
-                  border: "1px solid #E0E0E0",
-                  borderRadius: "5px",
-                  background:
-                    file.status === "uploading"
-                      ? `linear-gradient(to right, #4caf50 ${
-                          file.percent || 0
-                        }%, transparent ${file.percent || 0}%)`
-                      : "#FFFFFF",
-                  transition: "background 0.3s ease",
+                  border: "1px solid #D9D9D9",
                 }}
               >
-                <PaperClipOutlined className="text-gray-500 text-lg mr-3" />
-                <span className="text-black font-medium flex-1">
-                  {file.name}
-                </span>
+                <div className="flex justify-center items-center gap-10 font-inter">
+                  <InboxOutlined className="text-deep-blue text-5xl" />
+                  <div className="flex flex-col items-start">
+                    <p className="text-dark-gray mb-2 text-[16px] font-medium">
+                      Select or drag file(s) from computer
+                    </p>
+                    <p className="text-dark-gray text-[14px]">
+                      Supports PDF, CSV, XLS, and DOCX files up to 200MB.
+                    </p>
+                  </div>
+                </div>
+              </Dragger>
 
-                {/* {file.status === "done" && (
+              <div className="mt-6">
+                {fileList.map((file) => (
+                  <div
+                    key={file.uid}
+                    className="relative flex items-center my-2 px-4 py-2"
+                    style={{
+                      border: "1px solid #E0E0E0",
+                      borderRadius: "5px",
+                      background:
+                        file.status === "uploading"
+                          ? `linear-gradient(to right, #4caf50 ${
+                              file.percent || 0
+                            }%, transparent ${file.percent || 0}%)`
+                          : "#FFFFFF",
+                      transition: "background 0.3s ease",
+                    }}
+                  >
+                    <PaperClipOutlined className="text-gray-500 text-lg mr-3" />
+                    <span className="text-black font-medium flex-1">
+                      {file.name}
+                    </span>
+
+                    {/* {file.status === "done" && (
                   <span className="flex items-center text-gray italic mr-3">
                     Uploading...
                   </span>
@@ -177,28 +182,30 @@ const UploadFiles = () => {
                   </span>
                 )} */}
 
-                <DeleteOutlined
-                  className="text-red-500 cursor-pointer"
-                  onClick={() => handleDelete(file.name)}
-                />
+                    <DeleteOutlined
+                      className="text-red-500 cursor-pointer"
+                      onClick={() => handleDelete(file.name)}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {fileList.length > 0 && (
-            <AppButton
-              className="mt-5"
-              disabled={allFilesUploaded}
-              onClick={handleExtraction}
-              loading={loading}
-              width="80%"
-            >
-              Extract
-            </AppButton>
-          )}
-        </div>
+              {fileList.length > 0 && (
+                <AppButton
+                  className="mt-5"
+                  disabled={allFilesUploaded}
+                  onClick={handleExtraction}
+                  loading={loading}
+                  width="80%"
+                >
+                  Extract
+                </AppButton>
+              )}
+            </div>
 
-        <div className="border-b-[0.5px] border-[#0000000F] mt-10 w-full"></div>
+            <div className="border-b-[0.5px] border-[#0000000F] mt-10 w-full"></div>
+          </>
+        )}
       </div>
     </div>
   );
