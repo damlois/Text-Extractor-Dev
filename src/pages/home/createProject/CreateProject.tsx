@@ -46,7 +46,7 @@ const CreateProject = () => {
       <div className="flex flex-col items-center w-full p-6">
         <h2 className="text-black text-[24px] mb-6">Name your project</h2>
 
-        <div className="flex flex-col w-[50%] mb-6">
+        <div className="flex flex-col sm:w-[80%] md:w-[50%] mb-6">
           <AppInput
             label="Project name"
             tooltip="Enter the name of your project"

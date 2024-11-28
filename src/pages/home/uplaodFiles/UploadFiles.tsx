@@ -118,7 +118,7 @@ const UploadFiles = () => {
               border: "1px solid #D9D9D9",
             }}
           >
-            <div className="flex justify-center items-center gap-10 font-inter">
+            <div className="flex justify-center items-center gap-10 font-inter flex-wrap">
               <InboxOutlined className="text-deep-blue text-5xl" />
               <div className="flex flex-col items-start">
                 <p className="text-dark-gray mb-2 text-[16px] font-medium">
