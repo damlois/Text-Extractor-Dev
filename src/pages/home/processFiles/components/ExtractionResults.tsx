@@ -1,10 +1,11 @@
-import { notification, Table } from "antd";
+import { notification } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import AppButton from "../../../../components/AppButton";
 import { useFileProcessor } from "../../../../context/FileProcessorContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { extractKeyValuePairs } from "../utils";
+import CustomTable from "../../../../components/CustomTable";
 
 const ExtractionResults = () => {
   const { currentProject, projects } = useFileProcessor();
@@ -22,8 +23,6 @@ const ExtractionResults = () => {
         message: "Project not found, Create a project first",
       });
     }
-
-    console.log(projectData)
 
     const analysisResult = projectData?.analysis_data.results.per_document;
     const resultArray = extractKeyValuePairs(analysisResult);
@@ -105,12 +104,13 @@ const ExtractionResults = () => {
         </div>
       </div>
       <div className="p-6">
-        <Table
+        <CustomTable
           dataSource={result}
           columns={columns}
           rowKey="id"
-          pagination={result.length > 6 ? { pageSize: 6 } : false}
-          className="rounded-lg bg-white border border-[#F0F0F0]"
+          pagination={result.length > 7 ? { pageSize: 7 } : false}
+          bordered
+          striped
         />
       </div>
     </div>

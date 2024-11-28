@@ -11,17 +11,33 @@ interface AppTextAreaProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
   required?: boolean;
+  maxWords?: number;
 }
 
 const AppTextArea: React.FC<AppTextAreaProps> = ({
   label,
   tooltip,
   placeholder,
-  value,
+  value = "",
   onChange,
   className,
   required = false,
+  maxWords = 100,
 }) => {
+  const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = e.target.value;
+    const inputWordCount = inputValue
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+
+    if (inputWordCount <= maxWords || inputValue === "") {
+      onChange(e);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center gap-2 mb-2 mt-6">
@@ -40,10 +56,14 @@ const AppTextArea: React.FC<AppTextAreaProps> = ({
       <TextArea
         placeholder={placeholder}
         value={value}
-        onChange={onChange}
-        className={`px-[12px] py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
+        onChange={handleChange}
+        className={`px-[12px] py-[8px] rounded-sm border border-[#D9D9D9] resize-none ${className}`}
         rows={5}
       />
+
+      <div className="flex float-end text-sm text-[#D9D9D9] font-inter mt-1">
+        {wordCount}/{maxWords}
+      </div>
     </div>
   );
 };
