@@ -236,8 +236,8 @@ input {
 
 /* For WebKit browsers (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-    width: 1px; /* Horizontal scrollbar height */
-    height: 1px; /* Vertical scrollbar width */
+    width: 5px; /* Horizontal scrollbar height */
+    height: 5px; /* Vertical scrollbar width */
   }
   
   ::-webkit-scrollbar-thumb {
