@@ -17,7 +17,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   return (
     <Card
-      className="w-full max-w-[260px] border border-[#F0F0F0] rounded-sm font-inter cursor-pointer"
+      className="w-full max-w-[260px] border border-[#F0F0F0] rounded-sm font-inter cursor-pointer hover:border-deep-blue"
       title={
         <div className="font-medium text-black text-opacity-85">{title}</div>
       }

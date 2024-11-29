@@ -233,3 +233,25 @@ input {
 .border-dotted{
     border-style: dotted;
 }
+
+/* For WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 1px; /* Horizontal scrollbar height */
+    height: 1px; /* Vertical scrollbar width */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Optional: rounded corners */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Thumb color on hover */
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-width: thin; /* Options: auto, thin, none */
+    scrollbar-color: #888 #f5f5f5; /* Thumb color and track color */
+  }
+  
