@@ -6,12 +6,12 @@ import {
   InboxOutlined,
   PaperClipOutlined,
   DeleteOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import AppButton from "../../../components/AppButton";
 import { useUploadFiles } from "../../../hooks/useFileProcessor";
 import { showNotification } from "../../../utils/notification";
 import { useFileProcessor } from "../../../context/FileProcessorContext";
-import ProgressDoughnut from "../../../components/ProgressDoughnut";
 
 const UploadFiles = () => {
   const navigate = useNavigate();
@@ -22,61 +22,20 @@ const UploadFiles = () => {
 
   const [fileList, setFileList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0); // Add state for progress
 
   useEffect(() => {
     if (!currentProject) navigate("/home");
   }, []);
 
-  // const handleExtraction = async () => {
-  //   try {
-  //     setLoading(true);
-  //     await uploadFiles(fileList.map((file) => file.originFileObj));
-  //     setLoading(false);
-  //     showNotification("success", `Extraction done successfuly!`);
-  //     navigate(`/home/process-files`);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     showNotification(
-  //       "error",
-  //       "Text extraction failed",
-  //       "There was an issue extracting your data. Please try again."
-  //     );
-  //   }
-  // };
-
   const handleExtraction = async () => {
     try {
       setLoading(true);
-      setProgress(0); // Reset progress at the start
-
-      // Simulate progress over time (e.g., 10 seconds to simulate the extraction)
-      const totalDuration = 10000; // 10 seconds for the simulation
-      const progressInterval = 100; // Update every 100ms
-
-      // Start interval to simulate progress
-      const intervalId = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress >= 100) {
-            clearInterval(intervalId); // Clear interval when progress reaches 100
-            return 100;
-          }
-          return prevProgress + (100 / (totalDuration / progressInterval)); // Increase progress
-        });
-      }, progressInterval);
-
-      // Call the uploadFiles function after the interval starts
       await uploadFiles(fileList.map((file) => file.originFileObj));
-
-      // Once files are uploaded, stop the loading state and show success
       setLoading(false);
-      clearInterval(intervalId); // Ensure interval is cleared if the upload finishes before progress hits 100
-      setProgress(100); // Ensure we set progress to 100% at the end
-      showNotification("success", `Extraction done successfully!`);
+      showNotification("success", `Extraction done successfuly!`);
       navigate(`/home/process-files`);
     } catch (error) {
       setLoading(false);
-      setProgress(0); // Reset progress if error occurs
       showNotification(
         "error",
         "Text extraction failed",
@@ -149,7 +108,15 @@ const UploadFiles = () => {
 
       <div className="flex flex-col items-center w-full p-6">
         {loading ? (
-          <ProgressDoughnut percentage={20} />
+          <div
+            className="flex flex-col justify-center items-center"
+            style={{ height: "calc(100vh - 210px)" }}
+          >
+            <p className="text-[24px] text-black mb-6">
+              Please wait while we extract your data...
+            </p>
+            <LoadingOutlined className="text-[120px] text-deep-blue" />
+          </div>
         ) : (
           <>
             <div className="w-9/12">
@@ -210,7 +177,6 @@ const UploadFiles = () => {
                 <AppButton
                   className="mt-5"
                   onClick={handleExtraction}
-                  loading={loading}
                   width="80%"
                 >
                   Extract
