@@ -1,0 +1,9 @@
+{
+  "realm": "fileprocessor",
+  "auth-server-url": "http://localhost:8180/",
+  "ssl-required": "external",
+  "resource": "file-processor-client",
+  "public-client": true,
+  "verify-token-audience": true,
+  "confidential-port": 0
+}

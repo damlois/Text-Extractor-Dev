@@ -3,6 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { ConfigProvider } from "antd";
+import keycloakService from "./service/keycloakService";
+
+
+keycloakService.initkeycloak(() => {
+  console.log("Keycloak initialized successfully");
+});
 
 const theme = {
   token: {
@@ -23,3 +29,8 @@ root.render(
     </ConfigProvider>
   </React.StrictMode>
 );
+
+// keycloakService.initkeycloak(root)
+
+// http://localhost:8180/realms/fileprocessor/protocol/openid-connect/login-status-iframe.html/init?client_id=fileextraction-web&origin=http%3A%2F%2Flocalhost%3A3000
+// 
