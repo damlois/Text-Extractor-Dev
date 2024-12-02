@@ -1,7 +1,7 @@
 import PageHeader from "../../../components/PageHeader";
 import AppButton from "../../../components/AppButton";
 import { useNavigate } from "react-router-dom";
-import { Card, Dropdown, Menu, Button, Space, Image } from "antd";
+import { Card, Dropdown, Menu, Button, Space, Image, Pagination } from "antd";
 import {
   UnorderedListOutlined,
   AppstoreOutlined,
@@ -10,20 +10,33 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
-
-const projects = [
-  { name: "Contract Comparison 2024", date: "23 Nov 2024", files: 10 },
-  { name: "Sales Report Comparison", date: "24 Nov 2024", files: 5 },
-  { name: "Sales Report Comparison", date: "24 Nov 2024", files: 5 },
-  { name: "Sales Report Comparison", date: "24 Nov 2024", files: 5 },
-];
+import { useEffect, useState } from "react";
+import { Project } from "../../../types";
+import { useGetProjects } from "../../../hooks/useFileProcessor";
+import { formatDate } from "../../../utils/notification";
 
 const ProjectList = () => {
   const [activeView, setActtiveView] = useState<"List" | "Grid">("Grid");
-  const [results, setResults] = useState<any>([]);
-
+  const [results, setResults] = useState<Project[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(8);
   const navigate = useNavigate();
+
+  const { getProjects } = useGetProjects();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getProjects();
+      setResults(data);
+    };
+
+    fetchData();
+  }, []);
+
+  const paginatedResults = results.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -88,39 +101,53 @@ const ProjectList = () => {
                   : "grid-cols-1 gap-2"
               } w-full`}
             >
-              {projects.map((project, index) => (
+              {paginatedResults.map((project, index) => (
                 <Card
                   key={index}
-                  className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none"
+                  className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none flex flex-col"
                   bodyStyle={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     padding: 0,
+                    height: "100%",
                   }}
                 >
                   <div className="w-full h-[121px] flex justify-center items-center bg-[#F0F0F0]">
                     <FolderOutlined className="text-deep-blue text-[48px]" />
                   </div>
 
-                  <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0]">
+                  <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0] flex-grow">
                     <p className="text-dark-gray font-medium mb-2">
-                      Sales Report Comaprison
+                      {project.name}
                     </p>
                     <div className="flex gap-1 text-gray text-[14px]">
-                      <p>23 Nov 2024</p>
+                      <p>{formatDate(project.created_at)}</p>
                       <p>•</p>
                       <p>10 files</p>
                     </div>
                   </div>
 
-                  <div className="p-3 text-gray grid grid-cols-2 grid-flow-col w-full">
+                  <div className="p-3 text-gray grid grid-cols-2 grid-flow-col w-full mt-auto">
                     <EditOutlined className="text-[16px] flex justify-center items-center border-r border-[#f0f0f0]" />
-                    <DeleteOutlined className="text-[16px] justify-center items-center" />
+                    <DeleteOutlined className="text-[16px] flex justify-center items-center" />
                   </div>
                 </Card>
               ))}
-              <div className="flex justify-center items-center pt-6 "></div>
+
+              <div className="flex mt-6">
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={results.length}
+                  onChange={(page, size) => {
+                    setCurrentPage(page);
+                    setPageSize(size);
+                  }}
+                  showSizeChanger
+                  pageSizeOptions={["8", "12", "16", "20"]}
+                />
+              </div>
             </div>
           </>
         ) : (
