@@ -12,6 +12,7 @@ interface AppButtonProps {
   className?: string;
   onClick: () => void;
   loading?: boolean;
+  dottedBorder?: boolean;
 }
 
 const AppButton = ({
@@ -26,20 +27,29 @@ const AppButton = ({
   className,
   loading = false,
   onClick,
+  dottedBorder,
 }: AppButtonProps) => {
   const isPrimary = variant === "primary";
 
   const defaultStyles = `
-    font-inter px-[15px] py-[4px] text-[14px] h-[30px] rounded-sm transition-all flex items-center mx-auto
+    font-inter px-[15px] py-[4px] text-[14px] h-[30px] rounded-sm transition-all flex items-center mx-auto border-${
+      dottedBorder ? "dotted" : "solid"
+    }
   `;
 
   const hoverStyles = `
     ${hoverbgColor || (isPrimary ? "hover:bg-white" : "hover:bg-[#004763]")}
-    ${hoverTextColor || (isPrimary ? "hover:text-[#004763]" : "hover:text-white")}
+    ${
+      hoverTextColor ||
+      (isPrimary ? "hover:text-[#004763]" : "hover:text-white")
+    }
   `;
 
+  const borderStyles = isPrimary ? "transparent" : "border-[#004763]";
+
   const defaultBg = bgColor || (isPrimary ? "bg-[#004763]" : "bg-white");
-  const defaultText = textColor || (isPrimary ? "text-white" : "text-[#004763]");
+  const defaultText =
+    textColor || (isPrimary ? "text-white" : "text-[#004763]");
 
   const disabledStyles = `
     bg-gray-100 
@@ -50,9 +60,9 @@ const AppButton = ({
 
   return (
     <Button
-      className={`${defaultStyles} ${defaultBg} ${defaultText} ${
+      className={`${defaultStyles} ${defaultBg} ${defaultText} ${borderStyles} ${
         !disabled ? hoverStyles : disabledStyles
-      } ${className}`}
+      } ${className} border-1`}
       style={{ width: width || "100%" }}
       disabled={disabled || loading}
       onClick={onClick}

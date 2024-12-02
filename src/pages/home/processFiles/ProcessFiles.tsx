@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { notification, Tabs } from "antd";
+import { Tabs } from "antd";
 import TextExtraction from "./tabs/TextExtraction";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/PageHeader";
@@ -30,7 +30,7 @@ const ProcessFiles = () => {
   ];
 
   const pages = [
-    <TextExtraction />,
+    <TextExtraction setActiveKey= {setActiveKey}/>,
     <FieldExtraction />,
     <GenerateInsight />,
     <ImageProcessing />,
