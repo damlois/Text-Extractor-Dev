@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { fileProcessorApi } from '../api/api';
-import { useFileProcessor } from '../context/FileProcessorContext';
-import { Instruction } from '../types';
+import { useState, useEffect } from "react";
+import { fileProcessorApi } from "../api/api";
+import { useFileProcessor } from "../context/FileProcessorContext";
+import { Instruction } from "../types";
 
 export const useCurrentUser = () => {
   const { setCurrentUser } = useFileProcessor();
@@ -45,6 +45,18 @@ export const useCreateProject = () => {
   };
 
   return { createProject };
+};
+
+export const useGetProjects = () => {
+  const { setProjects } = useFileProcessor();
+
+  const getProjects = async () => {
+    const response = await fileProcessorApi.getProjects();
+    setProjects(response.data);
+    return response.data;
+  };
+
+  return { getProjects };
 };
 
 export const useUploadFiles = () => {
@@ -103,20 +115,22 @@ export const useSendMessage = () => {
 
   const sendMessage = async (data: {
     prompt: string;
-    chat_type: 'document' | 'image';
+    chat_type: "document" | "image";
     image_data?: string;
   }) => {
     if (!currentProject) throw new Error("No project selected");
 
-    const response = await fileProcessorApi.sendMessage(currentProject.id, data);
+    const response = await fileProcessorApi.sendMessage(
+      currentProject.id,
+      data
+    );
     return response.data;
   };
 
   return { sendMessage };
 };
 
-
-export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
+export const useChatHistory = (chatType: "document" | "image" | undefined) => {
   const { currentProject, setChatHistory } = useFileProcessor();
   const [loading, setLoading] = useState(true);
 
@@ -124,7 +138,10 @@ export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
     const fetchChatHistory = async () => {
       if (!currentProject) return;
 
-      const response = await fileProcessorApi.getChatHistory(currentProject.id, chatType);
+      const response = await fileProcessorApi.getChatHistory(
+        currentProject.id,
+        chatType
+      );
       setChatHistory(response.data.history);
       setLoading(false);
     };
@@ -133,4 +150,4 @@ export const useChatHistory = (chatType: 'document' | 'image' | undefined) => {
   }, [chatType, currentProject, setChatHistory]);
 
   return { loading };
-}
+};

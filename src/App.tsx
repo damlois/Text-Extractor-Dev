@@ -5,10 +5,12 @@ import CreateProject from "./pages/home/createProject/CreateProject";
 import UploadFiles from "./pages/home/uplaodFiles/UploadFiles";
 import ProcessFiles from "./pages/home/processFiles/ProcessFiles";
 import LandingPage from './pages/landingPage';
+import ProjectList from './pages/home/projectList/ProjectList';
 
 const routes = [
   { path: "/", element: <LandingPage />, showLayout: false },
-  { path: "/home", element: <CreateProject />, showLayout: true },
+  { path: "/home", element: <ProjectList />, showLayout: true },
+  { path: "/home/create-project", element: <CreateProject />, showLayout: true },
   { path: "/home/upload-files", element: <UploadFiles />, showLayout: true },
   { path: "/home/process-files", element: <ProcessFiles />, showLayout: true },
 ];
