@@ -4,8 +4,8 @@ import AppButton from "../../../../components/AppButton";
 import { useFileProcessor } from "../../../../context/FileProcessorContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { extractKeyValuePairs } from "../utils";
 import CustomTable from "../../../../components/CustomTable";
+import { extractKeyValuePairs } from "../../../../utils";
 
 const ExtractionResults = () => {
   const { currentProject, projects } = useFileProcessor();
