@@ -1,1 +1,1 @@
-export {default as TextExtraction} from './TextExtraction'
+export { default as TextExtraction } from "./TextExtraction";

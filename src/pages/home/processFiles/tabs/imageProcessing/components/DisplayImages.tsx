@@ -6,10 +6,6 @@ import { PageT } from "../types";
 import ImageModal from "./ImageModal";
 import NoImage from "./NoImage";
 
-// interface DisplayImagesProps {
-//   setPage: (page: PageT) => void;
-// }
-
 const DisplayImages: React.FC = () => {
   const [images, setImages] = useState<string[]>(["yoo", "yoo", "yoie", "ehk"]);
   const [nameToSearch, setNameToSearch] = useState<string>("");
@@ -62,7 +58,7 @@ const DisplayImages: React.FC = () => {
                   >
                     <div className="relative group cursor-pointer !h-full">
                       <img
-                        src="https://picsum.photos/id/237/600/300"
+                        src="/assets/images/test_image.jpeg"
                         className="!h-full !w-full object-cover"
                         style={{ width: "100%" }}
                         alt="an image"
@@ -72,7 +68,7 @@ const DisplayImages: React.FC = () => {
                           className="text-white text-lg font-semibold"
                           onClick={() =>
                             handleImageSelection(
-                              "https://picsum.photos/id/237/600/300"
+                              "/assets/images/test_image.jpeg"
                             )
                           }
                         >

@@ -104,7 +104,7 @@ const QueryImage: React.FC = () => {
 
           <div className="mx-auto text-center sm:w-9/12 md:w-7/12">
             <img
-              src="https://picsum.photos/id/237/600/300"
+              src="/assets/images/test_image.jpeg"
               className="w-[70%] mx-auto"
             />
 

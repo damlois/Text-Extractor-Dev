@@ -1,1 +1,1 @@
-export {default as FieldExtraction} from './FieldExtraction'
+export { default as FieldExtraction } from "./FieldExtraction";

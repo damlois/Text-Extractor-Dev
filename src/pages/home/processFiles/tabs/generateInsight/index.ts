@@ -1,1 +1,1 @@
-export {default as GenerateInsight} from './GenerateInsight'
+export { default as GenerateInsight } from "./GenerateInsight";
