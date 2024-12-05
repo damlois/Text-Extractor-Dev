@@ -31,6 +31,9 @@ export const fileProcessorApi = {
   analyzeFiles: (projectId: number, instructions: Instruction[]) =>
     api.post(`/projects/${projectId}/analyze`, { instructions }),
 
+  getProjectAnalyses: (projectId: number) =>
+    api.get(`/projects/${projectId}/analyses`),
+
   getFiles: (projectId: number) =>
     api.get<FileResponse[]>(`/projects/${projectId}/files`),
 

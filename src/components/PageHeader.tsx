@@ -45,9 +45,15 @@ const PageHeader = ({
         </div>
       </div>
 
-      <AppButton onClick={() => onActionClick} width="133px" className="mr-0">
-        {action}
-      </AppButton>
+      {action && (
+        <AppButton
+          onClick={onActionClick || (() => {})}
+          width="133px"
+          className="mr-0"
+        >
+          {action}
+        </AppButton>
+      )}
     </div>
   );
 };
