@@ -1,11 +1,11 @@
 {
   "headers": [
     {
-      "source": "/api/v1/(.*)",  // Apply headers to all serverless API routes
+      "source": "/api/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://interprais.vercel.app"  // Replace with your Vercel app URL
+          "value": "https://interprais.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -23,3 +23,4 @@
     }
   ]
 }
+
