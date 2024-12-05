@@ -27,16 +27,16 @@ const ProjectList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getProjects();
-      console.log("Data fetched from getProjects:", data);
-      setResults(Array.isArray(data) ? data : []);
+      setResults(data);
     };
 
     fetchData();
   }, []);
 
-  const paginatedResults = Array.isArray(results)
-    ? results.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    : [];
+  const paginatedResults = results.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -101,7 +101,7 @@ const ProjectList = () => {
                   : "grid-cols-1 gap-2"
               } w-full`}
             >
-              {(paginatedResults || []).map((project, index) => (
+              {paginatedResults.map((project, index) => (
                 <Card
                   key={index}
                   className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none flex flex-col"
