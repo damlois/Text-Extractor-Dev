@@ -24,7 +24,7 @@ const PageHeader = ({
         noBorder ? "" : "border-b border-[#F0F0F0]"
       } text-[14px] flex gap-4 flex-wrap justify-between`}
     >
-      <div>
+      <div className="flex gap-2 flex-col">
         <div className="flex space-x-2 text-gray-600">
           {previousPage && (
             <>
