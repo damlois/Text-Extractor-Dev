@@ -7,10 +7,10 @@ import {
 } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AppInput from "../../../../components/AppInput";
+import AppInput from "../../../../../components/AppInput";
 import { Image, Spin, Tooltip } from "antd";
-import { useFileProcessor } from "../../../../context/FileProcessorContext";
-import { fileProcessorApi } from "../../../../api/api";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
+import { fileProcessorApi } from "../../../../../api/api";
 import { PiUserDuotone } from "react-icons/pi";
 
 const GenerateInsight: React.FC = () => {

@@ -1,14 +1,14 @@
 import { Card, Image, notification } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
-import { useFileProcessor } from "../../../../context/FileProcessorContext";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import FeatureCard from "../components/FeatureCard";
+import FeatureCard from "../../components/FeatureCard";
 import {
   fieldExtractionFeatures,
   generateInsightFeatures,
   imageProcessingFeatures,
-} from "../constants";
+} from "./constants";
 
 const TextExtraction = ({
   setActiveKey,
@@ -70,7 +70,7 @@ const TextExtraction = ({
             }}
           >
             <div className="w-full h-[121px] flex justify-center items-center bg-[#F0F0F0]">
-              <Image src="/assets/icons/file.svg" alt="file icon" />
+              <img src="/assets/icons/file.svg" className="text-[40px]" alt="file icon" />
             </div>
 
             <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0]">

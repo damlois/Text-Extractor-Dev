@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Tabs } from "antd";
-import TextExtraction from "./tabs/TextExtraction";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../components/PageHeader";
-import FieldExtraction from "./tabs/FieldExtraction";
-import GenerateInsight from "./tabs/GenerateInsight";
-import ImageProcessing from "./tabs/ImageProcessing";
 import { useFileProcessor } from "../../../context/FileProcessorContext";
+import { FieldExtraction } from "./tabs/fieldExtraction";
+import { GenerateInsight } from "./tabs/generateInsight";
+import { ImageProcessing } from "./tabs/imageProcessing";
+import { TextExtraction } from "./tabs/textExtraction";
 
 const ProcessFiles = () => {
   const navigate = useNavigate();

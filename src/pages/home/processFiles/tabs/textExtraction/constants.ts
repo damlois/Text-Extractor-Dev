@@ -1,9 +1,3 @@
-export const initialInputState = {
-  id: 0,
-  name: "",
-  description: "",
-};
-
 export const fieldExtractionFeatures = [
   "Template creation and reuse",
   "Set extraction instructions for tables",

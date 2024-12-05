@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import AppInput from "../../../../components/AppInput";
-import AppButton from "../../../../components/AppButton";
-import { LabelT } from "../types";
-import AppTextArea from "../../../../components/AppTextArea";
-import LabelTag from "../components/LabelTag";
-import ExtractionResults from "../components/ExtractionResults";
-import { useAnalyzeFiles } from "../../../../hooks/useFileProcessor";
-import { Instruction } from "../../../../types";
-import { showNotification } from "../../../../utils/notification";
-import { initialInputState } from "../constants";
-import { useFileProcessor } from "../../../../context/FileProcessorContext";
+import AppInput from "../../../../../components/AppInput";
+import AppButton from "../../../../../components/AppButton";
+import { LabelT } from "./types";
+import AppTextArea from "../../../../../components/AppTextArea";
+import LabelTag from "../../components/LabelTag";
+import ExtractionResults from "../../components/ExtractionResults";
+import { useAnalyzeFiles } from "../../../../../hooks/useFileProcessor";
+import { Instruction } from "../../../../../types";
+import { showNotification } from "../../../../../utils/notification";
+import { initialInputState } from "./constants";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
 
 const FieldExtraction = () => {
   const [labels, setLabels] = useState<LabelT[]>([]);
