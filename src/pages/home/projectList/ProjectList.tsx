@@ -27,16 +27,16 @@ const ProjectList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getProjects();
-      setResults(data);
+      console.log("Data fetched from getProjects:", data);
+      setResults(Array.isArray(data) ? data : []);
     };
 
     fetchData();
   }, []);
 
-  const paginatedResults = results?.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const paginatedResults = Array.isArray(results)
+    ? results.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    : [];
 
   return (
     <div className="flex flex-col items-start font-inter">
