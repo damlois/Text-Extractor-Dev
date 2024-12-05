@@ -32,7 +32,7 @@ export const useProjects = () => {
 };
 
 export const useCreateProject = () => {
-  const { setProjects, setCurrentProject } = useFileProcessor();
+  const { setProjects, setCurrentProject, setSessionType } = useFileProcessor();
 
   const createProject = async (data: {
     name: string;
@@ -40,6 +40,7 @@ export const useCreateProject = () => {
   }) => {
     const response = await fileProcessorApi.createProject(data);
     setCurrentProject(response.data);
+    setSessionType("New");
     setProjects((prevProjects) => [...prevProjects, response.data]);
     return response.data;
   };
@@ -51,16 +52,41 @@ export const useGetProjects = () => {
   const { setProjects } = useFileProcessor();
 
   const getProjects = async () => {
-    const response = await fileProcessorApi.getProjects();
-    setProjects(response.data);
-    return response.data;
+    try {
+      const projectResponse = await fileProcessorApi.getProjects();
+
+      if (!projectResponse || !projectResponse.data) {
+        throw new Error("No project data found");
+      }
+
+      const response = await Promise.all(
+        projectResponse.data.map(async (project) => {
+          const files = await fileProcessorApi.getFiles(project.id);
+          return {
+            ...project,
+            files_data: { files: files.data.map((file) => file) },
+          };
+        })
+      );
+
+      setProjects(
+        response.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+      );
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching projects or files:", error);
+    }
   };
 
   return { getProjects };
 };
 
 export const useUploadFiles = () => {
-  const { currentProject, setProjects } = useFileProcessor();
+  const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
 
   const uploadFiles = async (files: File[]) => {
     if (!currentProject) throw new Error("No project selected");
@@ -72,6 +98,9 @@ export const useUploadFiles = () => {
       currentProject.id,
       fileList.files
     );
+
+    setCurrentProject({ ...currentProject, files_data: response.data });
+
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
         project.id === currentProject.id
@@ -86,7 +115,7 @@ export const useUploadFiles = () => {
 };
 
 export const useAnalyzeFiles = () => {
-  const { currentProject, setProjects } = useFileProcessor();
+  const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
 
   const analyzeFiles = async (instructions: Instruction[]) => {
     if (!currentProject) throw new Error("No project selected");
@@ -95,6 +124,8 @@ export const useAnalyzeFiles = () => {
       currentProject.id,
       instructions
     );
+
+    setCurrentProject({ ...currentProject, analysis_data: response.data });
 
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
@@ -108,6 +139,32 @@ export const useAnalyzeFiles = () => {
   };
 
   return { analyzeFiles };
+};
+
+export const useGetProjectAnalyses = () => {
+  const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
+
+  const getProjectAnalyses = async () => {
+    if (!currentProject) throw new Error("No project selected");
+
+    const response = await fileProcessorApi.getProjectAnalyses(
+      currentProject.id
+    );
+
+    setCurrentProject({ ...currentProject, analysis_data: response.data });
+
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.id === currentProject.id
+          ? { ...project, analysis_data: response.data }
+          : project
+      )
+    );
+
+    return response.data;
+  };
+
+  return { getProjectAnalyses };
 };
 
 export const useSendMessage = () => {
