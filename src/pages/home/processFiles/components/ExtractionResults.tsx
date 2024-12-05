@@ -1,4 +1,4 @@
-import { notification } from "antd";
+import { notification, Spin } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import AppButton from "../../../../components/AppButton";
 import { useFileProcessor } from "../../../../context/FileProcessorContext";
@@ -6,28 +6,54 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomTable from "../../../../components/CustomTable";
 import { extractKeyValuePairs } from "../../../../utils";
+import { useGetProjectAnalyses } from "../../../../hooks/useFileProcessor";
 
 const ExtractionResults = () => {
-  const { currentProject, projects } = useFileProcessor();
   const [result, setResult] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const projectData = projects.find(
-      (project) => project.id === currentProject?.id
-    );
+  const { currentProject, sessionType } = useFileProcessor();
 
-    if (!projectData) {
+  const { getProjectAnalyses } = useGetProjectAnalyses();
+
+  useEffect(() => {
+    if (!currentProject) {
       navigate("/home");
       notification.error({
-        message: "Project not found, Create a project first",
+        message:
+          "Project not found, Create a project or select an existing project",
       });
+      return;
     }
 
-    const analysisResult = projectData?.analysis_data.results.per_document;
-    const resultArray = extractKeyValuePairs(analysisResult);
+    const fetchAnalyses = async () => {
+      try {
+        if (sessionType === "Existing") {
+          setLoading(true);
+          const analysesResult = await getProjectAnalyses();
+          setLoading(false);
+          const resultArray = analysesResult
+            .map((item: any) =>
+              extractKeyValuePairs(item?.results?.per_document || {})
+            )
+            .flat();
+          setResult(resultArray);
+        } else {
+          const analysesResult =
+            currentProject?.analysis_data?.results?.per_document;
+          const resultArray = extractKeyValuePairs(analysesResult || {});
+          setResult(resultArray);
+        }
+      } catch (error) {
+        setLoading(false);
+        notification.error({
+          message: "Failed to fetch analyses",
+        });
+      }
+    };
 
-    setResult(resultArray);
+    fetchAnalyses();
   }, []);
 
   const columns =
@@ -71,49 +97,63 @@ const ExtractionResults = () => {
   };
 
   return (
-    <div className="w-full border border-[#F0F0F0] rounded-sm">
-      <div className="flex justify-between py-4 px-6 border-b border-[#F0F0F0]">
-        <div className="text-dark-gray text-[16px] font-medium">
-          Extract Preview
-        </div>
-        <div className="flex gap-2">
-          <AppButton
-            children={
-              <div>
-                <DownloadOutlined className="mr-2" />
-                CSV
+    <>
+      {loading ? (
+        <Spin className="mt-20 flex justify-center" size="large" />
+      ) : (
+        <>
+          {result.length ? (
+            <div className="w-full border border-[#F0F0F0] rounded-sm">
+              <div className="flex justify-between py-4 px-6 border-b border-[#F0F0F0]">
+                <div className="text-dark-gray text-[16px] font-medium">
+                  Extract Preview
+                </div>
+                <div className="flex gap-2">
+                  <AppButton
+                    children={
+                      <div>
+                        <DownloadOutlined className="mr-2" />
+                        CSV
+                      </div>
+                    }
+                    width="fit-content"
+                    onClick={downloadAsCSV}
+                    className="p-1"
+                    variant="secondary"
+                  />
+                  <AppButton
+                    children={
+                      <div>
+                        <DownloadOutlined className="mr-2" />
+                        JSON
+                      </div>
+                    }
+                    width="fit-content"
+                    onClick={downloadAsJSON}
+                    className="p-1"
+                    variant="secondary"
+                  />
+                </div>
               </div>
-            }
-            width="fit-content"
-            onClick={downloadAsCSV}
-            className="p-1"
-            variant="secondary"
-          />
-          <AppButton
-            children={
-              <div>
-                <DownloadOutlined className="mr-2" />
-                JSON
+              <div className="p-6">
+                <CustomTable
+                  dataSource={result}
+                  columns={columns}
+                  rowKey="id"
+                  pagination={result.length > 7 ? { pageSize: 7 } : false}
+                  bordered
+                  striped
+                />
               </div>
-            }
-            width="fit-content"
-            onClick={downloadAsJSON}
-            className="p-1"
-            variant="secondary"
-          />
-        </div>
-      </div>
-      <div className="p-6">
-        <CustomTable
-          dataSource={result}
-          columns={columns}
-          rowKey="id"
-          pagination={result.length > 7 ? { pageSize: 7 } : false}
-          bordered
-          striped
-        />
-      </div>
-    </div>
+            </div>
+          ) : (
+            <p className="mt-20 flex justify-center font-inter text-gray">
+              No Field was extracted
+            </p>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

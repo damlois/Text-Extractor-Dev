@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { LabelT } from "./types";
@@ -9,6 +9,7 @@ import { useAnalyzeFiles } from "../../../../../hooks/useFileProcessor";
 import { Instruction } from "../../../../../types";
 import { showNotification } from "../../../../../utils/notification";
 import { initialInputState } from "./constants";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
 
 const FieldExtraction = () => {
   const [labels, setLabels] = useState<LabelT[]>([]);
@@ -16,7 +17,12 @@ const FieldExtraction = () => {
   const [inputState, setInputState] = useState<LabelT>(initialInputState);
   const [showResult, setShowResult] = useState(false);
 
+  const { sessionType } = useFileProcessor();
   const { analyzeFiles } = useAnalyzeFiles();
+
+  useEffect(() => {
+    sessionType === "Existing" && setShowResult(true);
+  }, []);
 
   const handleLabelInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

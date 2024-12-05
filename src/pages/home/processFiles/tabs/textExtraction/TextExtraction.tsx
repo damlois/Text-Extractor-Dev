@@ -28,11 +28,14 @@ const TextExtraction = ({
     if (!projectData) {
       navigate("/home");
       notification.error({
-        message: "Project not found, Create a project first",
+        message:
+          "Project not found, Create a project or select an existing project",
       });
     }
 
-    const extractedTextArray = projectData?.files_data.files.map((file) => ({
+    console.log(projectData, "projectData");
+
+    const extractedTextArray = projectData?.files_data?.files.map((file) => ({
       file_name: file.file_name,
       content: file.content,
     }));
