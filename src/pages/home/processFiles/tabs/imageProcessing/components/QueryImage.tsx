@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SendOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, SendOutlined } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AppInput from "../../../../components/AppInput";
+import AppInput from "../../../../../../components/AppInput";
 import { Image, Spin } from "antd";
-import { useFileProcessor } from "../../../../context/FileProcessorContext";
-import { fileProcessorApi } from "../../../../api/api";
+import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
+import { fileProcessorApi } from "../../../../../../api/api";
 import { PiUserDuotone } from "react-icons/pi";
+import { useImageProcessor } from "../../../../../../context/ImageProcessorContext";
 
-const ImageProcessing: React.FC = () => {
+const QueryImage: React.FC = () => {
   const { currentProject, chatHistory, setChatHistory } = useFileProcessor();
   const [input, setInput] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
@@ -16,7 +17,8 @@ const ImageProcessing: React.FC = () => {
   const messageListRef = useRef<HTMLDivElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  // Fetch initial chat history
+  const { setCurrentPage } = useImageProcessor();
+
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (!currentProject) return;
@@ -83,15 +85,6 @@ const ImageProcessing: React.FC = () => {
     }
   };
 
-  // Cleanup preview URL when component unmounts
-  // useEffect(() => {
-  //   return () => {
-  //     if (previewUrl) {
-  //       URL.revokeObjectURL(previewUrl);
-  //     }
-  //   };
-  // }, [previewUrl]);
-
   useEffect(() => {
     if (messageListRef.current) {
       messageListRef.current.scrollTo(0, messageListRef.current.scrollHeight);
@@ -101,42 +94,35 @@ const ImageProcessing: React.FC = () => {
   return (
     <>
       {chatHistory.length === 0 ? (
-        <div className="mt-[100px] mx-auto text-center w-7/12">
-          <h2 className="text-[24px] text-black mb-4">
-            Image Analysis with InterprAIs
-          </h2>
-          {(previewUrl || image) && (
-            <div className="w-full mb-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-sm text-gray-500 mb-2">Current Image</h3>
-              <div className="relative w-fit mx-auto">
-                <Image
-                  src={previewUrl || ""}
-                  alt="Preview"
-                  className="max-h-[200px] object-contain rounded-lg"
-                />
-                <button
-                  onClick={() => {
-                    setImage(null);
-                    setPreviewUrl(null);
-                  }}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                >
-                  ✕
-                </button>
+        <div className="mt-[20px]">
+          <div
+            className="mb-[50px] text-deep-blue sm:px-[10%] md:px-[20%] cursor-pointer"
+            onClick={() => setCurrentPage("ImagesDisplay")}
+          >
+            <ArrowLeftOutlined className="mr-1" /> Back
+          </div>
+
+          <div className="mx-auto text-center sm:w-9/12 md:w-7/12">
+            <img
+              src="/assets/images/test_image.jpeg"
+              className="w-[70%] mx-auto"
+            />
+
+            <div>
+              <AppInput
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask me anything about the image"
+                rightIcon={<SendOutlined />}
+                onPressEnter={handleSendMessage}
+                loading={loading}
+                className="w-full"
+              />
+              <div className="flex justify-center items-center text-gray text-sm pt-[10px]">
+                InterprAIs can make mistakes. Check important Info
               </div>
             </div>
-          )}
-          <AppInput
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Upload an image and ask questions"
-            rightIcon={<SendOutlined />}
-            onPressEnter={handleSendMessage}
-            loading={loading}
-            fileUpload
-            onFileChange={handleImageChange}
-            className="w-full"
-          />
+          </div>
         </div>
       ) : (
         <div className="flex flex-col items-center mx-[10%] relative">
@@ -221,4 +207,4 @@ const ImageProcessing: React.FC = () => {
   );
 };
 
-export default ImageProcessing;
+export default QueryImage;

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import AppInput from "../../../../components/AppInput";
-import AppButton from "../../../../components/AppButton";
-import { LabelT } from "../types";
-import AppTextArea from "../../../../components/AppTextArea";
-import LabelTag from "../components/LabelTag";
-import ExtractionResults from "../components/ExtractionResults";
-import { useAnalyzeFiles } from "../../../../hooks/useFileProcessor";
-import { Instruction } from "../../../../types";
-import { showNotification } from "../../../../utils/notification";
-import { initialInputState } from "../constants";
+import React, { useEffect, useState } from "react";
+import AppInput from "../../../../../components/AppInput";
+import AppButton from "../../../../../components/AppButton";
+import { LabelT } from "./types";
+import AppTextArea from "../../../../../components/AppTextArea";
+import LabelTag from "../../components/LabelTag";
+import ExtractionResults from "../../components/ExtractionResults";
+import { useAnalyzeFiles } from "../../../../../hooks/useFileProcessor";
+import { Instruction } from "../../../../../types";
+import { showNotification } from "../../../../../utils/notification";
+import { initialInputState } from "./constants";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
 
 const FieldExtraction = () => {
   const [labels, setLabels] = useState<LabelT[]>([]);
@@ -16,7 +17,12 @@ const FieldExtraction = () => {
   const [inputState, setInputState] = useState<LabelT>(initialInputState);
   const [showResult, setShowResult] = useState(false);
 
+  const { sessionType } = useFileProcessor();
   const { analyzeFiles } = useAnalyzeFiles();
+
+  useEffect(() => {
+    sessionType === "Existing" && setShowResult(true);
+  }, []);
 
   const handleLabelInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -76,7 +82,7 @@ const FieldExtraction = () => {
         <div className="flex flex-col items-center w-full">
           <h2 className="text-black text-[6] text-[24px] mb-6">Add a label</h2>
 
-          <div className="flex flex-col w-[40%] mb-6">
+          <div className="flex flex-col sm:w-[80%] md:w-[40%] mb-6">
             <div className="flex flex-wrap gap-4 items-start mb-4">
               {labels.map((label) => (
                 <LabelTag
@@ -87,7 +93,6 @@ const FieldExtraction = () => {
                 />
               ))}
             </div>
-
             <AppInput
               label="Label name"
               tooltip="Enter label name"
@@ -112,6 +117,7 @@ const FieldExtraction = () => {
                 }
                 onClick={handleAddLabel}
                 variant="secondary"
+                dottedBorder
               >
                 <span className="mr-[10px] text-[16px]">+</span>Add label
               </AppButton>
