@@ -22,7 +22,7 @@ const TextExtraction = ({
 
   useEffect(() => {
     const projectData = projects.find(
-      (project) => project.id === currentProject?.id
+      (project) => project.project_id === currentProject?.project_id
     );
 
     if (!projectData) {
@@ -35,7 +35,7 @@ const TextExtraction = ({
 
     console.log(projectData, "projectData");
 
-    const extractedTextArray = projectData?.files_data?.files.map((file) => ({
+    const extractedTextArray = projectData?.files_data?.map((file) => ({
       file_name: file.file_name,
       content: file.content,
     }));
@@ -70,7 +70,11 @@ const TextExtraction = ({
             }}
           >
             <div className="w-full h-[121px] flex justify-center items-center bg-[#F0F0F0]">
-              <img src="/assets/icons/file.svg" className="text-[40px]" alt="file icon" />
+              <img
+                src="/assets/icons/file.svg"
+                className="text-[40px]"
+                alt="file icon"
+              />
             </div>
 
             <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0]">

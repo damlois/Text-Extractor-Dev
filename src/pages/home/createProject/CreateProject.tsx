@@ -44,15 +44,16 @@ const CreateProject = () => {
       <PageHeader previousPage="Home" currentPage="New Project" />
 
       <div className="flex flex-col items-center w-full p-6">
-        <h2 className="text-black text-[24px] mb-6">Name your project</h2>
+        <h2 className="text-black text-[24px] mb-6">Name Your Project</h2>
 
         <div className="flex flex-col sm:w-[80%] md:w-[50%] mb-6">
           <AppInput
-            label="Project name"
-            tooltip="Enter the name of your project"
+            label="Project Name"
+            tooltip="Choose a unique name for your project to easily identify and reuse it later"
             placeholder="e.g Comparison Report"
             onChange={handleInputChange}
             onPressEnter={handleCreateProject}
+            required
           />
           <div className="flex flex-col items-center mt-6">
             <AppButton
@@ -66,7 +67,7 @@ const CreateProject = () => {
         </div>
 
         <div className="border-b-[0.5px] border-[#0000000F] mt-10 w-full"></div>
-        </div>
+      </div>
     </div>
   );
 };

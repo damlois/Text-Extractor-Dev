@@ -26,7 +26,7 @@ const GenerateInsight: React.FC = () => {
       if (!currentProject) return;
       try {
         const response = await fileProcessorApi.getChatHistory(
-          currentProject.id,
+          currentProject.project_id,
           "document"
         );
         setChatHistory(response.data.history);
@@ -44,14 +44,14 @@ const GenerateInsight: React.FC = () => {
     setLoading(true);
     try {
       // Send message
-      await fileProcessorApi.sendMessage(currentProject.id, {
+      await fileProcessorApi.sendMessage(currentProject.project_id, {
         prompt: prompt || input,
         chat_type: "document",
       });
 
       // Refresh chat history
       const response = await fileProcessorApi.getChatHistory(
-        currentProject.id,
+        currentProject.project_id,
         "document"
       );
       setChatHistory(response.data.history);

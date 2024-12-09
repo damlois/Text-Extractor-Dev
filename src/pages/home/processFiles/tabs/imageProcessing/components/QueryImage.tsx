@@ -24,7 +24,7 @@ const QueryImage: React.FC = () => {
       if (!currentProject) return;
       try {
         const response = await fileProcessorApi.getChatHistory(
-          currentProject.id,
+          currentProject.project_id,
           "image"
         );
         setChatHistory(response.data.history);
@@ -55,7 +55,7 @@ const QueryImage: React.FC = () => {
       }
 
       // Send message with image
-      await fileProcessorApi.sendMessage(currentProject.id, {
+      await fileProcessorApi.sendMessage(currentProject.project_id, {
         prompt: input,
         chat_type: "image",
         image_data: imageData?.toString(),
@@ -63,7 +63,7 @@ const QueryImage: React.FC = () => {
 
       // Refresh chat history
       const response = await fileProcessorApi.getChatHistory(
-        currentProject.id,
+        currentProject.project_id,
         "image"
       );
       setChatHistory(response.data.history);

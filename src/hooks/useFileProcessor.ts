@@ -23,7 +23,7 @@ export const useProjects = () => {
 
   useEffect(() => {
     fileProcessorApi.getProjects().then((res) => {
-      setProjects(res.data);
+      setProjects(res.data.data);
       setLoading(false);
     });
   }, [setProjects]);
@@ -39,10 +39,11 @@ export const useCreateProject = () => {
     description?: string;
   }) => {
     const response = await fileProcessorApi.createProject(data);
-    setCurrentProject(response.data);
+    console.log(response);
+    setCurrentProject(response.data.data);
     setSessionType("New");
-    setProjects((prevProjects) => [...prevProjects, response.data]);
-    return response.data;
+    setProjects((prevProjects) => [...prevProjects, response.data.data]);
+    return response.data.data;
   };
 
   return { createProject };
@@ -55,13 +56,15 @@ export const useGetProjects = () => {
     try {
       const projectResponse = await fileProcessorApi.getProjects();
 
+      console.log(projectResponse);
+
       if (!projectResponse || !projectResponse.data) {
         throw new Error("No project data found");
       }
 
       const response = await Promise.all(
-        projectResponse.data.map(async (project) => {
-          const files = await fileProcessorApi.getFiles(project.id);
+        projectResponse.data.data.map(async (project) => {
+          const files = await fileProcessorApi.getFiles(project.project_id);
           return {
             ...project,
             files_data: { files: files.data.map((file) => file) },
@@ -69,12 +72,12 @@ export const useGetProjects = () => {
         })
       );
 
-      setProjects(
-        response.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        )
-      );
+      // setProjects(
+      //   response.sort(
+      //     (a, b) =>
+      //       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      //   )
+      // );
 
       return response;
     } catch (error) {
@@ -87,6 +90,7 @@ export const useGetProjects = () => {
 
 export const useUploadFiles = () => {
   const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
+  console.log(currentProject);
 
   const uploadFiles = async (files: File[]) => {
     if (!currentProject) throw new Error("No project selected");
@@ -95,20 +99,20 @@ export const useUploadFiles = () => {
     files.forEach((file) => fileList.items.add(file));
 
     const response = await fileProcessorApi.uploadFiles(
-      currentProject.id,
+      currentProject.project_id,
       fileList.files
     );
 
-    setCurrentProject({ ...currentProject, files_data: response.data });
+    setCurrentProject({ ...currentProject, files_data: response.data.data });
 
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
-        project.id === currentProject.id
-          ? { ...project, files_data: response.data }
+        project.project_id === currentProject.project_id
+          ? { ...project, files_data: response.data.data }
           : project
       )
     );
-    return response.data;
+    return response.data.data;
   };
 
   return { uploadFiles };
@@ -121,7 +125,7 @@ export const useAnalyzeFiles = () => {
     if (!currentProject) throw new Error("No project selected");
 
     const response = await fileProcessorApi.analyzeFiles(
-      currentProject.id,
+      currentProject.project_id,
       instructions
     );
 
@@ -129,7 +133,7 @@ export const useAnalyzeFiles = () => {
 
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
-        project.id === currentProject.id
+        project.project_id === currentProject.project_id
           ? { ...project, analysis_data: response.data }
           : project
       )
@@ -148,14 +152,14 @@ export const useGetProjectAnalyses = () => {
     if (!currentProject) throw new Error("No project selected");
 
     const response = await fileProcessorApi.getProjectAnalyses(
-      currentProject.id
+      currentProject.project_id
     );
 
     setCurrentProject({ ...currentProject, analysis_data: response.data });
 
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
-        project.id === currentProject.id
+        project.project_id === currentProject.project_id
           ? { ...project, analysis_data: response.data }
           : project
       )
@@ -178,7 +182,7 @@ export const useSendMessage = () => {
     if (!currentProject) throw new Error("No project selected");
 
     const response = await fileProcessorApi.sendMessage(
-      currentProject.id,
+      currentProject.project_id,
       data
     );
     return response.data;
@@ -196,7 +200,7 @@ export const useChatHistory = (chatType: "document" | "image" | undefined) => {
       if (!currentProject) return;
 
       const response = await fileProcessorApi.getChatHistory(
-        currentProject.id,
+        currentProject.project_id,
         chatType
       );
       setChatHistory(response.data.history);

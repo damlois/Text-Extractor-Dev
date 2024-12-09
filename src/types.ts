@@ -11,14 +11,11 @@ export interface User {
 }
 
 export interface Project {
-  id: number;
+  project_id: string;
   name: string;
   description?: string;
   created_at: string;
-  files_data: {
-    files: ExtractedText[];
-    message?: string;
-  };
+  files_data: ExtractedText[];
   analysis_data: any;
 }
 
@@ -51,7 +48,7 @@ export interface FileResponse {
 export interface ExtractedText {
   id?: number;
   file_name: string;
-  status?: string;
+  created_at?: string;
   content: string;
 }
 
