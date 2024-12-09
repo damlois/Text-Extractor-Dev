@@ -1,10 +1,12 @@
 import { Card, Image, Pagination } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppInput from "../../../../../../components/AppInput";
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { PageT } from "../types";
 import ImageModal from "./ImageModal";
 import NoImage from "./NoImage";
+import { useGetProjectImages } from "../../../../../../hooks/useFileProcessor";
+import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
 
 const DisplayImages: React.FC = () => {
   const [images, setImages] = useState<string[]>(["yoo", "yoo", "yoie", "ehk"]);
@@ -13,6 +15,15 @@ const DisplayImages: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(8);
+
+  const { getProjectImages } = useGetProjectImages();
+  const fetchImages = async () => {
+    console.log(await getProjectImages());
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   const paginatedResults = images.slice(
     (currentPage - 1) * pageSize,

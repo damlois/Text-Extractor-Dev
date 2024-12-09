@@ -55,6 +55,7 @@ export const useGetProjects = () => {
   const getProjects = async () => {
     try {
       const projectResponse = await fileProcessorApi.getProjects();
+      console.log(projectResponse);
 
       console.log(projectResponse);
 
@@ -169,6 +170,34 @@ export const useGetProjectAnalyses = () => {
   };
 
   return { getProjectAnalyses };
+};
+
+export const useGetProjectImages = () => {
+  const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
+
+  const getProjectImages = async () => {
+    if (!currentProject) throw new Error("No project selected");
+
+    const response = await fileProcessorApi.getProjectImages(
+      currentProject.project_id
+    );
+
+    console.log(response);
+
+    // setCurrentProject({ ...currentProject, analysis_data: response.data });
+
+    // setProjects((prevProjects) =>
+    //   prevProjects.map((project) =>
+    //     project.id === currentProject.id
+    //       ? { ...project, analysis_data: response.data }
+    //       : project
+    //   )
+    // );
+
+    return response.data;
+  };
+
+  return { getProjectImages };
 };
 
 export const useSendMessage = () => {
