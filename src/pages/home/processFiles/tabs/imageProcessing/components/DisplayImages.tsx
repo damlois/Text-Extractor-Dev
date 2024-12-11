@@ -51,7 +51,7 @@ const DisplayImages: React.FC = () => {
   const handleImageSelection = (image: ImageData) => {
     const imageUrl = URL.createObjectURL(base64ToBlob(image.image_path));
     setSelectedImage({ ...image, image_path_url: imageUrl });
-    setIsModalOpen(true); // Open modal on image click
+    setIsModalOpen(true);
   };
 
   const handleSearch = useCallback((input: string) => {
@@ -95,12 +95,13 @@ const DisplayImages: React.FC = () => {
                   return (
                     <Card
                       key={index}
-                      className="min-w-[200px] border-1 border-[#F0F0F0] rounded-none cursor-pointer"
+                      className="min-w-[200px] border-1 border-[#F0F0F0] rounded-none cursor-pointer flex-col"
                       bodyStyle={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
                         padding: 0,
+                        height: "100%"
                       }}
                     >
                       <div
@@ -123,7 +124,7 @@ const DisplayImages: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0]">
+                      <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0] flex-1">
                         <p className="text-dark-gray font-medium mb-2">
                           Source: {image.file_name}
                         </p>
