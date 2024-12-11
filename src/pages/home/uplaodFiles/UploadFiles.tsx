@@ -32,7 +32,7 @@ const UploadFiles = () => {
       setLoading(true);
       await uploadFiles(fileList.map((file) => file.originFileObj));
       setLoading(false);
-      showNotification("success", `Extraction done successfuly!`);
+      showNotification("success", `Extraction done successfully!`);
       navigate(`/home/process-files`);
     } catch (error) {
       setLoading(false);
