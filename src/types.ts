@@ -11,15 +11,22 @@ export interface User {
 }
 
 export interface Project {
-  id: number;
+  project_id: string;
   name: string;
   description?: string;
   created_at: string;
-  files_data: {
-    files: ExtractedText[];
-    message?: string;
-  };
+  files_data: FileResponse[];
   analysis_data: any;
+  image_data: ImageData[];
+}
+
+export interface ImageData {
+  craeted_at: string;
+  image_name: string;
+  image_path: string;
+  page_number: string;
+  image_path_url?: string;
+  file_name: string;
 }
 
 export interface ChatMessage {
@@ -31,6 +38,8 @@ export interface ChatMessage {
 export interface chatHistoryRecord {
   prompt: string;
   response: string;
+  image_url?: string;
+  session_id: string;
   type: string;
   timestamp: string;
 }
@@ -48,12 +57,6 @@ export interface FileResponse {
   created_at: string;
 }
 
-export interface ExtractedText {
-  id?: number;
-  file_name: string;
-  status?: string;
-  content: string;
-}
 
 export interface Instruction {
   title: string;

@@ -99,6 +99,7 @@ const AppInput: React.FC<AppInputProps> = ({
           onChange={onChange}
           className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
           style={style}
+          disabled={loading}
           prefix={
             fileUpload && (
               <>
@@ -131,7 +132,7 @@ const AppInput: React.FC<AppInputProps> = ({
               </span>
             ))
           }
-          onPressEnter={(e) => handleSend(e)}
+          onPressEnter={(e) => !loading && handleSend(e)}
         />
 
         {file && (

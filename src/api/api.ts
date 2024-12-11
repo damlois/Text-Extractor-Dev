@@ -6,22 +6,22 @@ import {
   User,
   chatHistoryRecord,
   FileResponse,
+  ImageData,
 } from "../types";
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_DEV_API_URL,
 });
 
-
 export const fileProcessorApi = {
   getCurrentUser: () => api.get<User>("/users/me"),
 
   createProject: (data: { name: string; description?: string }) =>
-    api.post<Project>("/projects", data),
+    api.post<{ data: Project }>("/projects", data),
 
-  getProjects: () => api.get<Project[]>("/projects"),
+  getProjects: () => api.get<{ data: Project[] }>("/projects"),
 
-  uploadFiles: (projectId: number, files: FileList) => {
+  uploadFiles: (projectId: string, files: FileList) => {
     const formData = new FormData();
     Array.from(files).forEach((file) => {
       formData.append("files", file);
@@ -29,26 +29,31 @@ export const fileProcessorApi = {
     return api.post(`/projects/${projectId}/files`, formData);
   },
 
-  analyzeFiles: (projectId: number, instructions: Instruction[]) =>
+  analyzeFiles: (projectId: string, instructions: Instruction[]) =>
     api.post(`/projects/${projectId}/analyze`, { instructions }),
 
-  getProjectAnalyses: (projectId: number) =>
+  getProjectImages: (projectId: string) =>
+    api.get<{ data: ImageData[] }>(`/projects/${projectId}/images`),
+
+  getProjectAnalyses: (projectId: string) =>
     api.get(`/projects/${projectId}/analyses`),
 
-  getFiles: (projectId: number) =>
-    api.get<FileResponse[]>(`/projects/${projectId}/files`),
+  getFiles: (projectId: string) =>
+    api.get<{data: FileResponse[]}>(`/projects/${projectId}/files`),
 
   sendMessage: (
-    projectId: number,
+    projectId: string,
     data: {
       prompt: string;
       chat_type: "document" | "image";
       image_data?: string;
+      image_url?: string;
+      session_id?: string;
     }
   ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
-  getChatHistory: (projectId: number, chatType?: "document" | "image") =>
-    api.get<{ history: chatHistoryRecord[] }>(
+  getChatHistory: (projectId: string, chatType?: "document" | "image") =>
+    api.get<{ data: chatHistoryRecord[] }>(
       `/projects/${projectId}/chat-history`,
       {
         params: { chat_type: chatType },
