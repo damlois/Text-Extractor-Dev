@@ -6,6 +6,7 @@ import {
   User,
   chatHistoryRecord,
   FileResponse,
+  ImageData,
 } from "../types";
 
 const api = axios.create({
@@ -32,13 +33,13 @@ export const fileProcessorApi = {
     api.post(`/projects/${projectId}/analyze`, { instructions }),
 
   getProjectImages: (projectId: string) =>
-    api.get(`/projects/${projectId}/images`),
+    api.get<{ data: ImageData[] }>(`/projects/${projectId}/images`),
 
   getProjectAnalyses: (projectId: string) =>
     api.get(`/projects/${projectId}/analyses`),
 
   getFiles: (projectId: string) =>
-    api.get<FileResponse[]>(`/projects/${projectId}/files`),
+    api.get<{data: FileResponse[]}>(`/projects/${projectId}/files`),
 
   sendMessage: (
     projectId: string,
@@ -46,11 +47,13 @@ export const fileProcessorApi = {
       prompt: string;
       chat_type: "document" | "image";
       image_data?: string;
+      image_url?: string;
+      session_id?: string;
     }
   ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
   getChatHistory: (projectId: string, chatType?: "document" | "image") =>
-    api.get<{ history: chatHistoryRecord[] }>(
+    api.get<{ data: chatHistoryRecord[] }>(
       `/projects/${projectId}/chat-history`,
       {
         params: { chat_type: chatType },

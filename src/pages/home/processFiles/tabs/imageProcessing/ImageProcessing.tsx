@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import DisplayImages from "./components/DisplayImages";
-import QueryImage from "./components/QueryImage";
 import { useImageProcessor } from "../../../../../context/ImageProcessorContext";
+import ImagesChat from "./components/ImagesChat";
+import InitialQuery from "./components/InitialQuery";
 
 const AnalyzeImage: React.FC = () => {
   const { currentPage, setCurrentPage } = useImageProcessor();
@@ -11,7 +12,15 @@ const AnalyzeImage: React.FC = () => {
   }, []);
 
   return (
-    <>{currentPage === "ImagesDisplay" ? <DisplayImages /> : <QueryImage />}</>
+    <>
+      {currentPage === "ImagesDisplay" ? (
+        <DisplayImages />
+      ) : currentPage === "InitialQuery" ? (
+        <InitialQuery />
+      ) : (
+        <ImagesChat />
+      )}
+    </>
   );
 };
 

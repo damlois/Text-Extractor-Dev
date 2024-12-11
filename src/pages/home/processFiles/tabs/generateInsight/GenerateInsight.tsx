@@ -29,7 +29,7 @@ const GenerateInsight: React.FC = () => {
           currentProject.project_id,
           "document"
         );
-        setChatHistory(response.data.history);
+        setChatHistory(response.data.data);
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
       }
@@ -47,6 +47,8 @@ const GenerateInsight: React.FC = () => {
       await fileProcessorApi.sendMessage(currentProject.project_id, {
         prompt: prompt || input,
         chat_type: "document",
+        image_url: "",
+        session_id: ""
       });
 
       // Refresh chat history
@@ -54,7 +56,7 @@ const GenerateInsight: React.FC = () => {
         currentProject.project_id,
         "document"
       );
-      setChatHistory(response.data.history);
+      setChatHistory(response.data.data);
       setInput("");
     } catch (error) {
       console.error("Failed to send message:", error);

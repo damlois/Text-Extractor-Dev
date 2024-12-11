@@ -109,13 +109,13 @@ const UploadFiles = () => {
       <div className="flex flex-col items-center w-full p-6">
         {loading ? (
           <div
-            className="flex flex-col justify-center items-center"
+            className="flex flex-col items-center mt-[60px]"
             style={{ height: "calc(100vh - 210px)" }}
           >
             <p className="text-[24px] text-black mb-6">
               Please wait while we extract your data...
             </p>
-            <LoadingOutlined className="text-[120px] text-deep-blue" />
+            <LoadingOutlined className="text-[120px] text-deep-blue mt-7" />
           </div>
         ) : (
           <>

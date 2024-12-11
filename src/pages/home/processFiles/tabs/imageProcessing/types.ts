@@ -1,1 +1,1 @@
-export type PageT = "ImagesDisplay" | "Chat";
+export type PageT = "ImagesDisplay" | "InitialQuery" | "Chat";

@@ -27,7 +27,7 @@ const ProjectList = () => {
       setLoading(true);
       const data = await getProjects();
       setLoading(false);
-      // setResults(data);
+      setResults(data);
     };
 
     fetchData();

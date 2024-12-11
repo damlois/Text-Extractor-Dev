@@ -34,7 +34,7 @@ const ExtractionResults = () => {
           setLoading(true);
           const analysesResult = await getProjectAnalyses();
           setLoading(false);
-          const resultArray = analysesResult
+          const resultArray = analysesResult.data
             .map((item: any) =>
               extractKeyValuePairs(item?.results?.per_document || {})
             )

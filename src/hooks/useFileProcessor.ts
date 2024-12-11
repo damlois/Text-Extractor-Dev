@@ -55,9 +55,7 @@ export const useGetProjects = () => {
   const getProjects = async () => {
     try {
       const projectResponse = await fileProcessorApi.getProjects();
-      console.log(projectResponse);
 
-      console.log(projectResponse);
 
       if (!projectResponse || !projectResponse.data) {
         throw new Error("No project data found");
@@ -68,17 +66,17 @@ export const useGetProjects = () => {
           const files = await fileProcessorApi.getFiles(project.project_id);
           return {
             ...project,
-            files_data: { files: files.data.map((file) => file) },
+            files_data: files.data.data.map((file) => file),
           };
         })
       );
 
-      // setProjects(
-      //   response.sort(
-      //     (a, b) =>
-      //       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      //   )
-      // );
+      setProjects(
+        response.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )
+      );
 
       return response;
     } catch (error) {
@@ -130,17 +128,17 @@ export const useAnalyzeFiles = () => {
       instructions
     );
 
-    setCurrentProject({ ...currentProject, analysis_data: response.data });
+    setCurrentProject({ ...currentProject, analysis_data: response.data.data });
 
     setProjects((prevProjects) =>
       prevProjects.map((project) =>
         project.project_id === currentProject.project_id
-          ? { ...project, analysis_data: response.data }
+          ? { ...project, analysis_data: response.data.data }
           : project
       )
     );
 
-    return response.data;
+    return response.data.data;
   };
 
   return { analyzeFiles };
@@ -182,19 +180,17 @@ export const useGetProjectImages = () => {
       currentProject.project_id
     );
 
-    console.log(response);
+    setCurrentProject({ ...currentProject, image_data: response.data.data });
 
-    // setCurrentProject({ ...currentProject, analysis_data: response.data });
+    setProjects((prevProjects) =>
+      prevProjects.map((project) =>
+        project.project_id === currentProject.project_id
+          ? { ...project, image_data: response.data.data }
+          : project
+      )
+    );
 
-    // setProjects((prevProjects) =>
-    //   prevProjects.map((project) =>
-    //     project.id === currentProject.id
-    //       ? { ...project, analysis_data: response.data }
-    //       : project
-    //   )
-    // );
-
-    return response.data;
+    return response.data.data;
   };
 
   return { getProjectImages };
@@ -232,7 +228,8 @@ export const useChatHistory = (chatType: "document" | "image" | undefined) => {
         currentProject.project_id,
         chatType
       );
-      setChatHistory(response.data.history);
+      
+      setChatHistory(response.data.data);
       setLoading(false);
     };
 

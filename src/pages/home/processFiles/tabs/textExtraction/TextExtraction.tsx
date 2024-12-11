@@ -33,8 +33,6 @@ const TextExtraction = ({
       });
     }
 
-    console.log(projectData, "projectData");
-
     const extractedTextArray = projectData?.files_data?.map((file) => ({
       file_name: file.file_name,
       content: file.content,
