@@ -18,7 +18,7 @@ const ImagesChat: React.FC = () => {
   const { currentProject, chatHistory, setChatHistory } = useFileProcessor();
   const [input, setInput] = useState<string>("");
   const [pageLoading, setPageLoading] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [responseLoading, setResponseLoading] = useState<boolean>(false);
   const messageListRef = useRef<HTMLDivElement>(null);
   const [tooltipText, setTooltipText] = useState<string>("Copy to clipboard");
 
@@ -46,7 +46,7 @@ const ImagesChat: React.FC = () => {
   const handleSendMessage = async (prompt?: string) => {
     if ((!prompt?.trim() && !input.trim()) || !currentProject) return;
 
-    setLoading(true);
+    setResponseLoading(true);
     try {
       await fileProcessorApi.sendMessage(currentProject.project_id, {
         prompt: prompt || input,
@@ -65,7 +65,7 @@ const ImagesChat: React.FC = () => {
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
-      setLoading(false);
+      setResponseLoading(false);
     }
   };
 
@@ -187,7 +187,7 @@ const ImagesChat: React.FC = () => {
                 placeholder="Message InterprAIs"
                 rightIcon={<SendOutlined />}
                 onPressEnter={() => handleSendMessage()}
-                loading={loading}
+                loading={responseLoading}
                 className="mt-0"
                 maxCount={1}
                 fileType="image/*"
