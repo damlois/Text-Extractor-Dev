@@ -10,7 +10,7 @@ import {
 } from "../types";
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: process.env.REACT_APP_DEV_API_URL,
 });
 
 export const fileProcessorApi = {
