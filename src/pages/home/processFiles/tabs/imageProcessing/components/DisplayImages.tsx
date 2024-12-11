@@ -166,7 +166,7 @@ const DisplayImages: React.FC = () => {
           <ImageModal
             isModalOpen={isModalOpen}
             imageData={selectedImage}
-            onCancel={() => setIsModalOpen(false)} // Close modal on cancel
+            onCancel={() => setIsModalOpen(false)}
           />
         </>
       )}

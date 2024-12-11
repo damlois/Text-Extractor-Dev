@@ -39,7 +39,6 @@ export const useCreateProject = () => {
     description?: string;
   }) => {
     const response = await fileProcessorApi.createProject(data);
-    console.log(response);
     setCurrentProject(response.data.data);
     setSessionType("New");
     setProjects((prevProjects) => [...prevProjects, response.data.data]);
@@ -89,7 +88,6 @@ export const useGetProjects = () => {
 
 export const useUploadFiles = () => {
   const { currentProject, setCurrentProject, setProjects } = useFileProcessor();
-  console.log(currentProject);
 
   const uploadFiles = async (files: File[]) => {
     if (!currentProject) throw new Error("No project selected");

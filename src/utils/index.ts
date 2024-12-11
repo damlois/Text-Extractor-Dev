@@ -66,6 +66,3 @@ export const generateGUID = () => {
     }
   );
 };
-
-const guid: string = generateGUID();
-console.log(guid);
