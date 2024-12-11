@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "../../../components/AppButton";
 import PageHeader from "../../../components/PageHeader";
 import AppInput from "../../../components/AppInput";
 import { useCreateProject } from "../../../hooks/useFileProcessor";
 import { showNotification } from "../../../utils/notification";
+import { fileProcessorApi } from '../../../api/api';
+
+
+
+
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
@@ -12,6 +17,14 @@ const CreateProject = () => {
   const navigate = useNavigate();
   const { createProject } = useCreateProject();
   const description = "";
+
+  useEffect(() => {
+    fileProcessorApi.getUser().then((res) => {
+      console.log(res.data);
+      
+    });
+  }, []);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

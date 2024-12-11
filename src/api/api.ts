@@ -8,12 +8,20 @@ import {
   FileResponse,
   ImageData,
 } from "../types";
+import HttpService from "../service/httpService";
+import keycloakService from '../service/keycloakService';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_DEV_API_URL,
 });
 
+
+
+
+HttpService.configure();
+
 export const fileProcessorApi = {
+  getUser: () => HttpService.getAxiosClient().get<User>('/users/me'),
   getCurrentUser: () => api.get<User>("/users/me"),
 
   createProject: (data: { name: string; description?: string }) =>

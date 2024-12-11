@@ -4,11 +4,7 @@ import "./index.css";
 import App from "./App";
 import { ConfigProvider } from "antd";
 import keycloakService from "./service/keycloakService";
-
-
-keycloakService.initkeycloak(() => {
-  console.log("Keycloak initialized successfully");
-});
+import HttpService from "./service/httpService";
 
 const theme = {
   token: {
@@ -18,19 +14,14 @@ const theme = {
   },
 };
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
 
-root.render(
-  <React.StrictMode>
-    <ConfigProvider theme={theme}>
-      <App />
-    </ConfigProvider>
+const renderApp = () =>
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+      <ConfigProvider theme={theme}>
+        <App />
+      </ConfigProvider>
   </React.StrictMode>
-);
+  );
 
-// keycloakService.initkeycloak(root)
-
-// http://localhost:8180/realms/fileprocessor/protocol/openid-connect/login-status-iframe.html/init?client_id=fileextraction-web&origin=http%3A%2F%2Flocalhost%3A3000
-// 
+keycloakService.initKeycloak(renderApp);
