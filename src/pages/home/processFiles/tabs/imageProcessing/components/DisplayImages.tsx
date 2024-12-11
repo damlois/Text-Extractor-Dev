@@ -43,6 +43,7 @@ const DisplayImages: React.FC = () => {
   const filteredImages = useMemo(() => {
     const trimmedSearchTerm = searchTerm.trim().toLowerCase();
     if (!trimmedSearchTerm) return images;
+    setCurrentPage(1);
     return images.filter((image) =>
       image.file_name?.toLowerCase().includes(trimmedSearchTerm)
     );
