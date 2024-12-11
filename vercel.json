@@ -9,7 +9,8 @@
     {
       "source": "/api/v1/:path*",
       "headers": [
-        { "key": "Host", "value": "54.75.138.9:8100" }
+        { "key": "Host", "value": "54.75.138.9:8100" },
+        { "key": "X-Forwarded-Proto", "value": "https" }
       ]
     }
   ]
