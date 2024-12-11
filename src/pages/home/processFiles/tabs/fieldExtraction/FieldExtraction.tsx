@@ -80,7 +80,7 @@ const FieldExtraction = () => {
     <div>
       {!showResult ? (
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-black text-[6] text-[24px] mb-6">Add a label</h2>
+          <h2 className="text-black text-[6] text-[24px] mb-6">Add a Label</h2>
 
           <div className="flex flex-col sm:w-[80%] md:w-[40%] mb-6">
             <div className="flex flex-wrap gap-4 items-start mb-4">

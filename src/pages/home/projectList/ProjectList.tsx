@@ -16,7 +16,7 @@ const ProjectList = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(8);
-  const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
+  const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const { getProjects } = useGetProjects();
@@ -50,6 +50,7 @@ const ProjectList = () => {
         currentPage="Home"
         action="+ New Project"
         onActionClick={() => navigate("/home/create-project")}
+        noBreadCrumb
       />
 
       <div className="flex flex-col items-center w-full p-6">
@@ -82,12 +83,12 @@ const ProjectList = () => {
                 >
                   {paginatedResults?.map((project) => (
                     <ProjectCard
-                      key={project.id}
+                      key={project.project_id}
                       project={project}
                       onClick={handleProjectClick}
-                      isHovered={hoveredProjectId === project.id}
+                      isHovered={hoveredProjectId === project.project_id}
                       setIsHovered={(hovered: boolean) =>
-                        setHoveredProjectId(hovered ? project.id : null)
+                        setHoveredProjectId(hovered ? project.project_id : null)
                       }
                     />
                   ))}

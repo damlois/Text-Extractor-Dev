@@ -23,7 +23,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   return (
     <Card
-      key={project.id}
+      key={project.project_id}
       className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none flex flex-col"
       bodyStyle={{
         display: "flex",
@@ -52,7 +52,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="flex gap-1 text-gray text-[14px]">
             <p>{formatDate(project.created_at)}</p>
             <p>•</p>
-            <p>{project.files_data.files.length} files</p>
+            <p>{project.files_data.length} files</p>
           </div>
         </div>
       </div>

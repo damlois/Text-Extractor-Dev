@@ -1,27 +1,29 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  SendOutlined,
-  ReloadOutlined,
   CopyOutlined,
+  ReloadOutlined,
+  SendOutlined,
   ShareAltOutlined,
 } from "@ant-design/icons";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AppInput from "../../../../../components/AppInput";
+import AppInput from "../../../../../../components/AppInput";
 import { Image, Spin, Tooltip } from "antd";
-import { useFileProcessor } from "../../../../../context/FileProcessorContext";
-import { fileProcessorApi } from "../../../../../api/api";
+import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
+import { fileProcessorApi } from "../../../../../../api/api";
 import { PiUserDuotone } from "react-icons/pi";
+import { useImageProcessor } from "../../../../../../context/ImageProcessorContext";
 
-const GenerateInsight: React.FC = () => {
+const ImagesChat: React.FC = () => {
   const { currentProject, chatHistory, setChatHistory } = useFileProcessor();
   const [input, setInput] = useState<string>("");
   const [pageLoading, setPageLoading] = useState(false);
   const [responseLoading, setResponseLoading] = useState<boolean>(false);
-  const [tooltipText, setTooltipText] = useState<string>("Copy to clipboard");
   const messageListRef = useRef<HTMLDivElement>(null);
+  const [tooltipText, setTooltipText] = useState<string>("Copy to clipboard");
 
-  // Fetch initial chat history
+  const { selectedImage, currentSessionId } = useImageProcessor();
+
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (!currentProject) return;
@@ -29,35 +31,34 @@ const GenerateInsight: React.FC = () => {
         setPageLoading(true);
         const response = await fileProcessorApi.getChatHistory(
           currentProject.project_id,
-          "document"
+          "image"
         );
-        setPageLoading(false);
         setChatHistory(response.data.data);
+        setPageLoading(false);
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
       }
     };
 
     fetchChatHistory();
-  }, [currentProject, setChatHistory]);
+  }, []);
 
   const handleSendMessage = async (prompt?: string) => {
     if ((!prompt?.trim() && !input.trim()) || !currentProject) return;
 
     setResponseLoading(true);
     try {
-      // Send message
       await fileProcessorApi.sendMessage(currentProject.project_id, {
         prompt: prompt || input,
-        chat_type: "document",
-        image_url: "",
-        session_id: "",
+        chat_type: "image",
+        image_data: selectedImage?.image_path,
+        image_url: selectedImage?.image_path_url,
+        session_id: currentSessionId as string,
       });
 
-      // Refresh chat history
       const response = await fileProcessorApi.getChatHistory(
         currentProject.project_id,
-        "document"
+        "image"
       );
       setChatHistory(response.data.data);
       setInput("");
@@ -67,6 +68,12 @@ const GenerateInsight: React.FC = () => {
       setResponseLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTo(0, messageListRef.current.scrollHeight);
+    }
+  }, [chatHistory]);
 
   const resendMessage = (prompt: string) => {
     setInput(prompt);
@@ -78,57 +85,48 @@ const GenerateInsight: React.FC = () => {
       await navigator.clipboard.writeText(text);
 
       setTooltipText("Copied!");
-      setTimeout(() => setTooltipText("Copy to clipboard"), 2000); // Reset tooltip text after 2 seconds
+      setTimeout(() => setTooltipText("Copy to clipboard"), 2000);
     } catch (err) {
       setTooltipText("Failed to copy!");
       setTimeout(() => setTooltipText("Copy to clipboard"), 2000);
     }
   };
 
-  useEffect(() => {
-    if (messageListRef.current) {
-      messageListRef.current.scrollTo(0, messageListRef.current.scrollHeight);
-    }
-  }, [chatHistory]);
-
   return (
     <>
       {!pageLoading ? (
         <>
-          {chatHistory.length === 0 ? (
-            <div className="mt-[100px] mx-auto text-center md:w-7/12 sm:w-10/12">
-              <h2 className="text-[24px] text-black mb-4">
-                Analyze and generate insight with interprAIs
-              </h2>
-              <AppInput
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Message InterprAIs"
-                rightIcon={<SendOutlined />}
-                onPressEnter={() => handleSendMessage()}
-                loading={responseLoading}
-                className="w-full"
-              />
-            </div>
-          ) : (
+          <div
+            className="flex flex-col items-center mx-[10%] relative"
+            style={{ marginTop: "-24px" }}
+          >
             <div
-              className="flex flex-col items-center mx-[10%] relative"
-              style={{ marginTop: "-24px" }}
+              className="chat-container flex flex-col w-full overflow-y-auto overflow-hidden"
+              style={{
+                height: "calc(100vh - 200px)",
+                paddingBottom: "110px",
+              }}
+              ref={messageListRef}
             >
-              <div
-                className="chat-container flex flex-col w-full overflow-y-auto overflow-hidden"
-                style={{
-                  height: "calc(100vh - 200px)",
-                  paddingBottom: "110px",
-                }}
-                ref={messageListRef}
-              >
-                {chatHistory.map((msg, index) => (
-                  <div key={index} className={`mt-1`}>
-                    {/* User Message */}
-                    <div className="message-bubble py-4 px-4 my-4 rounded-lg text-[14px] bg-[#f5f5f5] text-[#00000073] w-fit ml-auto flex gap-4 max-w-[75%]">
-                      {msg.prompt}
-                      <div>
+              {chatHistory?.map((msg, index) => {
+                const isFirstMessageOfSession =
+                  index === 0 ||
+                  msg.session_id !== chatHistory[index - 1]?.session_id;
+                return (
+                  <div key={index} className="mt-1">
+                    {/* User Message with Image */}
+                    <div>
+                      {isFirstMessageOfSession && (
+                        <div className="w-full flex justify-end">
+                          <Image
+                            src={msg.image_url}
+                            className="max-h-[250px] object-contain"
+                            preview
+                          />
+                        </div>
+                      )}
+                      <div className="message-bubble py-4 px-4 my-4 rounded-lg text-[14px] bg-[#f5f5f5] text-[#00000073] w-fit ml-auto text-right flex gap-4 items-center flex-wrap justify-end">
+                        {msg.prompt}
                         <PiUserDuotone className="h-6 w-8" />
                       </div>
                     </div>
@@ -175,28 +173,30 @@ const GenerateInsight: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
+            </div>
 
-              <div
-                className="message-input fixed bottom-[0] pb-[60px] bg-white mx-[10%]"
-                style={{ width: "-webkit-fill-available" }}
-              >
-                <AppInput
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Message InterprAIs"
-                  rightIcon={<SendOutlined />}
-                  onPressEnter={() => handleSendMessage()}
-                  loading={responseLoading}
-                  className="mt-0"
-                />
-                <div className="flex justify-center items-center text-gray text-sm pt-[10px]">
-                  InterprAIs can make mistakes. Check important Info
-                </div>
+            <div
+              className="message-input fixed bottom-[0] pb-[60px] bg-white mx-[10%]"
+              style={{ width: "-webkit-fill-available" }}
+            >
+              <AppInput
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Message InterprAIs"
+                rightIcon={<SendOutlined />}
+                onPressEnter={() => handleSendMessage()}
+                loading={responseLoading}
+                className="mt-0"
+                maxCount={1}
+                fileType="image/*"
+              />
+              <div className="flex justify-center items-center text-gray text-sm pt-[10px]">
+                InterprAIs can make mistakes. Check important Info
               </div>
             </div>
-          )}
+          </div>
         </>
       ) : (
         <div className="w-full flex justify-center">
@@ -207,4 +207,4 @@ const GenerateInsight: React.FC = () => {
   );
 };
 
-export default GenerateInsight;
+export default ImagesChat;
