@@ -49,10 +49,6 @@ const DisplayImages: React.FC = () => {
     );
   }, [searchTerm, images]);
 
-  console.log(images, "images");
-  console.log(filteredImages, "filtered");
-  console.log(searchTerm, "searchTerm");
-
   const handleSearch = (input: string) => {
     setSearchTerm(input);
     setCurrentPage(1);
