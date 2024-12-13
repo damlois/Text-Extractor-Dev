@@ -25,7 +25,65 @@ const UploadFiles = () => {
 
   useEffect(() => {
     if (!currentProject) navigate("/home");
+
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!e.dataTransfer) return;
+
+      const files = Array.from(e.dataTransfer.files);
+      processFiles(files);
+    };
+
+    window.addEventListener("dragover", handleDragOver);
+    window.addEventListener("drop", handleDrop);
+
+    return () => {
+      window.removeEventListener("dragover", handleDragOver);
+      window.removeEventListener("drop", handleDrop);
+    };
   }, []);
+
+  const processFiles = (files: File[]) => {
+    const MAX_TOTAL_SIZE_MB = 200;
+    const MAX_FILE_SIZE_MB = 200;
+
+    let newFiles: any[] = [];
+    let totalSize = fileList.reduce(
+      (acc, currentFile) => acc + currentFile.originFileObj.size,
+      0
+    );
+
+    files.forEach((file) => {
+      const newTotalSize = totalSize + file.size;
+
+      console.log(newTotalSize);
+
+      if (Math.floor(file.size / 1024 / 1024) > MAX_FILE_SIZE_MB) {
+        message.error(`${file.name} exceeds the 200MB size limit.`);
+      } else if (Math.floor(newTotalSize / 1024 / 1024) > MAX_TOTAL_SIZE_MB) {
+        message.error(`Total file size cannot be more than 200MB.`);
+      } else {
+        const uid = `${file.name}-${Date.now()}`;
+        newFiles.push({
+          uid,
+          name: file.name,
+          status: "uploading",
+          percent: 0,
+          originFileObj: file,
+        });
+        totalSize += file.size;
+      }
+    });
+
+    setFileList((prevFiles) => [...prevFiles, ...newFiles]);
+  };
 
   const handleExtraction = async () => {
     try {
@@ -52,38 +110,7 @@ const UploadFiles = () => {
     showUploadList: false,
 
     beforeUpload(file: File) {
-      const MAX_TOTAL_SIZE_MB = 200;
-      const MAX_FILE_SIZE_MB = 200;
-
-      const totalSize = fileList.reduce(
-        (acc, currentFile) => acc + currentFile.originFileObj.size,
-        0
-      );
-
-      const newTotalSize = totalSize + file.size;
-
-      if (file.size / 1024 / 1024 > MAX_FILE_SIZE_MB) {
-        message.error(`${file.name} exceeds the 200MB size limit.`);
-        return Upload.LIST_IGNORE;
-      }
-
-      if (newTotalSize / 1024 / 1024 > MAX_TOTAL_SIZE_MB) {
-        message.error(`Total file size cannot be more than 200MB.`);
-        return Upload.LIST_IGNORE;
-      }
-
-      const uid = `${file.name}-${Date.now()}`;
-      setFileList((prevFiles) => [
-        ...prevFiles,
-        {
-          uid,
-          name: file.name,
-          status: "uploading",
-          percent: 0,
-          originFileObj: file,
-        },
-      ]);
-
+      processFiles([file]);
       return false;
     },
 

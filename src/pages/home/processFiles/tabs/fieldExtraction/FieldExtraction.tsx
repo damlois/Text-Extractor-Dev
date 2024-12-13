@@ -94,7 +94,7 @@ const FieldExtraction = () => {
               ))}
             </div>
             <AppInput
-              label="Label name"
+              label="Label Name"
               tooltip="Enter a label name from the uploaded document(s)"
               placeholder="Enter a label name"
               value={inputState.name}
