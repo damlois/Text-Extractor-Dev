@@ -95,7 +95,7 @@ const FieldExtraction = () => {
             </div>
             <AppInput
               label="Label name"
-              tooltip="Enter label name"
+              tooltip="Enter a label name from the uploaded document(s)"
               placeholder="Enter a label name"
               value={inputState.name}
               onChange={handleLabelInputChange}
@@ -103,7 +103,7 @@ const FieldExtraction = () => {
             />
             <AppTextArea
               label="Description"
-              tooltip="Describe your label name"
+              tooltip="Provide a brief description related to the selected label from the uploaded document(s)"
               placeholder="Describe your label name"
               value={inputState.description}
               onChange={handleDescriptionInputChange}
