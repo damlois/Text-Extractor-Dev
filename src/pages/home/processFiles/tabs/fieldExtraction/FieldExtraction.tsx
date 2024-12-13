@@ -64,7 +64,7 @@ const FieldExtraction = () => {
       setLoading(true);
       await analyzeFiles(instructions);
       setLoading(false);
-      showNotification("success", `Data extracted successfuly!`);
+      showNotification("success", `Data extracted successfully!`);
       setShowResult(!showResult);
     } catch (error) {
       setLoading(false);

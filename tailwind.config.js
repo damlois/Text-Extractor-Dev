@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
-        dmMono: ["DM Mono", 'monospace'],
+        dmMono: ["DM Mono", "monospace"],
       },
       colors: {
         "deep-blue": "#006A94",
@@ -15,5 +15,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/line-clamp")],
 };

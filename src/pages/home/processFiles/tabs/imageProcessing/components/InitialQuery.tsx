@@ -64,7 +64,7 @@ const InitialQuery = () => {
           <AppInput
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything about the image"
+            placeholder="Generate insight from the image"
             rightIcon={<SendOutlined />}
             onPressEnter={() => handleSendMessage()}
             loading={loading}

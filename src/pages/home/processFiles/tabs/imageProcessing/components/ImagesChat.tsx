@@ -104,7 +104,7 @@ const ImagesChat: React.FC = () => {
               className="chat-container flex flex-col w-full overflow-y-auto overflow-hidden"
               style={{
                 height: "calc(100vh - 200px)",
-                paddingBottom: "110px",
+                paddingBottom: "150px",
               }}
               ref={messageListRef}
             >
@@ -184,7 +184,7 @@ const ImagesChat: React.FC = () => {
               <AppInput
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Message InterprAIs"
+                placeholder="Generate insight from image"
                 rightIcon={<SendOutlined />}
                 onPressEnter={() => handleSendMessage()}
                 loading={responseLoading}

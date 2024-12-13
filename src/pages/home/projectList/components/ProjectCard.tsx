@@ -48,7 +48,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0] flex-grow">
-          <p className="text-dark-gray font-medium mb-2">{project.name}</p>
+          <p className="text-dark-gray font-medium mb-2 line-clamp-2 break-words">{project.name}</p>
           <div className="flex gap-1 text-gray text-[14px]">
             <p>{formatDate(project.created_at)}</p>
             <p>•</p>

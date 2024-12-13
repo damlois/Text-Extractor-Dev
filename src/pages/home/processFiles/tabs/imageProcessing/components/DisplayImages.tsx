@@ -25,44 +25,46 @@ const DisplayImages: React.FC = () => {
   const { getProjectImages } = useGetProjectImages();
   const { currentProject } = useFileProcessor();
 
-  const fetchImages = useCallback(async () => {
+  const fetchImages = async () => {
+    setLoading(true);
+
     if (currentProject?.image_data?.length) {
       setImages(currentProject.image_data);
+      setLoading(false);
     } else {
-      setLoading(true);
       const fetchedImages = await getProjectImages();
-      setImages(fetchedImages);
+      if (fetchedImages.length) setImages(fetchedImages);
       setLoading(false);
     }
-  }, [currentProject, getProjectImages]);
+  };
 
   useEffect(() => {
     fetchImages();
-  }, [fetchImages]);
+  }, []);
 
   const filteredImages = useMemo(() => {
-    const trimmedSearchTerm = searchTerm.trim().toLowerCase();
-    if (!trimmedSearchTerm) return images;
-    setCurrentPage(1);
+    if (!(searchTerm.trim().length > 0)) return images;
     return images.filter((image) =>
-      image.file_name?.toLowerCase().includes(trimmedSearchTerm)
+      image.file_name?.toLowerCase().includes(searchTerm.trim().toLowerCase())
     );
   }, [searchTerm, images]);
+
+  const handleSearch = (input: string) => {
+    setSearchTerm(input);
+    setCurrentPage(1);
+  };
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedResults = filteredImages.slice(
+    startIndex,
+    startIndex + pageSize
+  );
 
   const handleImageSelection = (image: ImageData) => {
     const imageUrl = URL.createObjectURL(base64ToBlob(image.image_path));
     setSelectedImage({ ...image, image_path_url: imageUrl });
     setIsModalOpen(true);
   };
-
-  const handleSearch = useCallback((input: string) => {
-    setSearchTerm(input);
-  }, []);
-
-  const paginatedResults = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return filteredImages.slice(startIndex, startIndex + pageSize);
-  }, [currentPage, pageSize, filteredImages]);
 
   return (
     <>
@@ -72,22 +74,23 @@ const DisplayImages: React.FC = () => {
         </div>
       ) : (
         <>
-          <div>
-            <h5 className="text-dark-gray font-medium text-[16px] mb-1">
-              Extract visual insights with Intelligent Image Analysis
-            </h5>
-            <p className="text-[14px]">Select an image to analyze.</p>
-            <AppInput
-              placeholder="Search by document name"
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="mb-6 sm:w-full md:w-7/12"
-              rightIcon={<SearchOutlined className="text-[14px] text-gray" />}
-            />
-          </div>
-
-          {filteredImages.length > 0 ? (
+          {images.length > 0 ? (
             <>
+              <div>
+                <h5 className="text-dark-gray font-medium text-[16px] mb-1">
+                  Extract visual insights with Intelligent Image Analysis
+                </h5>
+                <p className="text-[14px]">Select an image to analyze.</p>
+                <AppInput
+                  placeholder="Search by document name"
+                  value={searchTerm}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="mb-6 sm:w-full md:w-7/12"
+                  rightIcon={
+                    <SearchOutlined className="text-[14px] text-gray" />
+                  }
+                />
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {paginatedResults.map((image, index) => {
                   const imageUrl = URL.createObjectURL(
@@ -102,7 +105,7 @@ const DisplayImages: React.FC = () => {
                         flexDirection: "column",
                         alignItems: "center",
                         padding: 0,
-                        height: "100%"
+                        height: "100%",
                       }}
                     >
                       <div
@@ -160,7 +163,7 @@ const DisplayImages: React.FC = () => {
               />
             </>
           ) : (
-            !loading && <NoImage />
+            <NoImage />
           )}
 
           <ImageModal
