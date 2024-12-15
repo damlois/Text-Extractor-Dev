@@ -16,6 +16,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
     .then((authenticated) => {
       if (authenticated) {
       onAuthenticatedCallback();
+      scheduleTokenRefresh();
       } else {
         doLogin();
       }
@@ -31,13 +32,28 @@ const getToken = () => _kc.token;
 const isLoggedIn = () => !!_kc.token;
 
 const updateToken = (successCallback) =>
-  _kc.updateToken(5)
+  _kc.updateToken(30)
     .then(successCallback)
     .catch(doLogin);
 
 const getUsername = () => _kc.tokenParsed?.preferred_username;
 
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
+
+const userAccount = _kc.accountManagement;
+
+
+const scheduleTokenRefresh = () => {
+  setInterval(() => {
+    updateToken((refreshed) => {
+      if (refreshed) {
+        console.log('Token refreshed successfully');
+      } else {
+        console.warn('Token is still valid');
+      }
+    });
+  }, 60000); 
+};
 
 const keycloakService = {
   initKeycloak,

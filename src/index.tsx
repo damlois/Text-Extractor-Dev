@@ -4,7 +4,6 @@ import "./index.css";
 import App from "./App";
 import { ConfigProvider } from "antd";
 import keycloakService from "./service/keycloakService";
-import HttpService from "./service/httpService";
 
 const theme = {
   token: {

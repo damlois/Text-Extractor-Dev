@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   ChatMessage,
   Instruction,
@@ -8,46 +7,36 @@ import {
   FileResponse,
   ImageData,
 } from "../types";
-import HttpService from "../service/httpService";
-import keycloakService from '../service/keycloakService';
+import apiClient from "../service/apiClient";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_DEV_API_URL,
-});
-
-
-
-
-HttpService.configure();
 
 export const fileProcessorApi = {
-  getUser: () => HttpService.getAxiosClient().get<User>('/users/me'),
-  getCurrentUser: () => api.get<User>("/users/me"),
+  getCurrentUser: () => apiClient.get<User>("/users/me"),
 
   createProject: (data: { name: string; description?: string }) =>
-    api.post<{ data: Project }>("/projects", data),
+    apiClient.post<{ data: Project }>("/projects", data),
 
-  getProjects: () => api.get<{ data: Project[] }>("/projects"),
+  getProjects: () => apiClient.get<{ data: Project[] }>("/projects"),
 
   uploadFiles: (projectId: string, files: FileList) => {
     const formData = new FormData();
     Array.from(files).forEach((file) => {
       formData.append("files", file);
     });
-    return api.post(`/projects/${projectId}/files`, formData);
+    return apiClient.post(`/projects/${projectId}/files`, formData);
   },
 
   analyzeFiles: (projectId: string, instructions: Instruction[]) =>
-    api.post(`/projects/${projectId}/analyze`, { instructions }),
+    apiClient.post(`/projects/${projectId}/analyze`, { instructions }),
 
   getProjectImages: (projectId: string) =>
-    api.get<{ data: ImageData[] }>(`/projects/${projectId}/images`),
+    apiClient.get<{ data: ImageData[] }>(`/projects/${projectId}/images`),
 
   getProjectAnalyses: (projectId: string) =>
-    api.get(`/projects/${projectId}/analyses`),
+    apiClient.get(`/projects/${projectId}/analyses`),
 
   getFiles: (projectId: string) =>
-    api.get<{data: FileResponse[]}>(`/projects/${projectId}/files`),
+    apiClient.get<{data: FileResponse[]}>(`/projects/${projectId}/files`),
 
   sendMessage: (
     projectId: string,
@@ -58,10 +47,10 @@ export const fileProcessorApi = {
       image_url?: string;
       session_id?: string;
     }
-  ) => api.post<ChatMessage>(`/projects/${projectId}/chat`, data),
+  ) => apiClient.post<ChatMessage>(`/projects/${projectId}/chat`, data),
 
   getChatHistory: (projectId: string, chatType?: "document" | "image") =>
-    api.get<{ data: chatHistoryRecord[] }>(
+    apiClient.get<{ data: chatHistoryRecord[] }>(
       `/projects/${projectId}/chat-history`,
       {
         params: { chat_type: chatType },
