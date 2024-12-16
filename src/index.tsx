@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { ConfigProvider } from "antd";
+import keycloakService from "./service/keycloakService";
 
 const theme = {
   token: {
@@ -12,14 +13,14 @@ const theme = {
   },
 };
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
 
-root.render(
-  <React.StrictMode>
-    <ConfigProvider theme={theme}>
-      <App />
-    </ConfigProvider>
+const renderApp = () =>
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+      <ConfigProvider theme={theme}>
+        <App />
+      </ConfigProvider>
   </React.StrictMode>
-);
+  );
+
+keycloakService.initKeycloak(renderApp);

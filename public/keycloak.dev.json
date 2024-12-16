@@ -1,0 +1,8 @@
+{
+  "realm": "fileprocessor",
+  "auth-server-url": "https://interprais-kc.dufuna.com/",
+  "ssl-required": "external",
+  "resource": "file-processor-client",
+  "public-client": true,
+  "confidential-port": 0
+}

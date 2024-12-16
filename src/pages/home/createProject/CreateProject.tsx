@@ -6,12 +6,14 @@ import AppInput from "../../../components/AppInput";
 import { useCreateProject } from "../../../hooks/useFileProcessor";
 import { showNotification } from "../../../utils/notification";
 
+
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { createProject } = useCreateProject();
   const description = "";
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

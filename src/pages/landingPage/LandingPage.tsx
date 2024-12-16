@@ -1,18 +1,29 @@
-import { Image } from "antd";
-import AppButton from "../../components/AppButton";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import KeycloakService from '../../service/keycloakService';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  return (
-    <main className="flex flex-col items-center justify-center text-center font-inter min-h-screen">
-      <Image src="/assets/images/logo.png" alt="logo" />
-      <h1 className="text-black text-[32px] font-medium leading-tight md:text-[48px] lg:text-[64px] mb-8">
-        Sign in!
-      </h1>
-      <AppButton width="40%" children="Sign In" onClick={() => navigate("/home")} />
-    </main>
-  );
-};
+  const [showDisplayMsg, setShowDisplayMsg] = useState(false);
+  const redirectUrl = process.env.REACT_APP_REDIRECT_URL  
+  
+  useEffect(() => {
+    if (KeycloakService) {
+      if (KeycloakService.isLoggedIn()) {
+        if (KeycloakService.hasRole(['ADMIN'])) {
+          navigate('/home');
+        } else {
+          setShowDisplayMsg(true);
+        }
+      } else {
+        KeycloakService.doLogin({ redirectUri: redirectUrl });
+      }
+
+    }
+}, []);
+
+  return <div>{showDisplayMsg && "User Doesn't have role or user's role not yet handled."}</div>;
+  
+}
 
 export default LandingPage;
