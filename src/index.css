@@ -49,6 +49,11 @@ li.ant-menu-item.ant-menu-item-selected {
 
 li.ant-menu-item.ant-menu-item-selected {
   color: rgb(0, 106, 148) !important;
+  border-right: 5px solid #006A94;
+}
+
+.ant-menu-inline .ant-menu-item {
+  width: 100% !important;
 }
 
 /*Tab styles*/

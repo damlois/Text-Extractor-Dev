@@ -1,26 +1,45 @@
-export const extractKeyValuePairs = (inputObj: any) => {
+interface ExtractionResult {
+  [key: string]: string | null;
+}
+
+interface InputObject {
+  [docName: string]: {
+    [field: string]:
+      | Array<{ value: string; confidence: string; source: string }>
+      | { value: string; confidence: string; source: string };
+  };
+}
+
+export const extractKeyValuePairs = (
+  inputObj: InputObject
+): ExtractionResult[] => {
   if (!inputObj || typeof inputObj !== "object") {
     throw new Error("Invalid input: inputObj must be a non-null object");
   }
 
-  const result: { [key: string]: string }[] = [];
+  const result: ExtractionResult[] = [];
 
   Object.entries(inputObj).forEach(([docName, fields]) => {
-    const transformed: { [key: string]: string } = {};
+    const transformed: ExtractionResult = { "Document Name": docName };
 
-    for (const [key, details] of Object.entries(
-      fields as {
-        [key: string]: {
-          value: string | string[];
-          confidence: string;
-          source: string;
-        };
+    for (const [key, details] of Object.entries(fields)) {
+      if (key === "documentName") {
+        continue;
       }
-    )) {
-      if (Array.isArray(details.value)) {
-        transformed[key] = details.value.join(", ");
+
+      if (Array.isArray(details)) {
+        transformed[key] = details
+          .map((detail) => detail?.value)
+          .filter(Boolean)
+          .join(", ");
+      } else if (details && typeof details === "object" && "value" in details) {
+        transformed[key] = Array.isArray(details.value)
+          ? details.value.join(", ")
+          : details.value;
+      } else if (details && typeof details === "object") {
+        transformed[key] = Object.values(details).join(", ");
       } else {
-        transformed[key] = details.value;
+        transformed[key] = details;
       }
     }
 

@@ -25,12 +25,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <Card
       key={project.project_id}
       className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none flex flex-col"
-      bodyStyle={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: 0,
-        height: "100%",
+      styles={{
+        body: {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: 0,
+          height: "100%",
+        },
       }}
     >
       <div
@@ -48,7 +50,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
 
         <div className="p-4 font-inter text-sm border-b border-1 w-full border-[#F0F0F0] flex-grow">
-          <p className="text-dark-gray font-medium mb-2 line-clamp-2 break-words">{project.name}</p>
+          <p className="text-dark-gray font-medium mb-2 line-clamp-2 break-words">
+            {project.name}
+          </p>
           <div className="flex gap-1 text-gray text-[14px]">
             <p>{formatDate(project.created_at)}</p>
             <p>•</p>

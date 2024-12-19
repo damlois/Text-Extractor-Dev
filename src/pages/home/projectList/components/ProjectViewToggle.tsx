@@ -1,5 +1,9 @@
-import { AppstoreOutlined, DownOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Dropdown, Menu, Button, Space } from "antd";
+import {
+  AppstoreOutlined,
+  DownOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
+import { Dropdown, Button, Space, MenuProps } from "antd";
 
 interface ProjectViewToggleProps {
   activeView: "List" | "Grid";
@@ -31,10 +35,8 @@ const ProjectViewToggle: React.FC<ProjectViewToggleProps> = ({
         />
       </div>
       <Dropdown
-        overlay={
-          <Menu>
-            <Menu.Item key="1">Most Recent</Menu.Item>
-          </Menu>
+        menu={
+          [{ key: "1", label: "Most Recent", onClick: () => {} }] as MenuProps
         }
         trigger={["click"]}
         className="font-inter py-2 rounded-[2px] text-dark-gray text-[14px] border-[#D9D9D9]"

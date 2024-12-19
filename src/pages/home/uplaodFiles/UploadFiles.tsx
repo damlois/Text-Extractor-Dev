@@ -63,8 +63,6 @@ const UploadFiles = () => {
     files.forEach((file) => {
       const newTotalSize = totalSize + file.size;
 
-      console.log(newTotalSize);
-
       if (Math.floor(file.size / 1024 / 1024) > MAX_FILE_SIZE_MB) {
         message.error(`${file.name} exceeds the 200MB size limit.`);
       } else if (Math.floor(newTotalSize / 1024 / 1024) > MAX_TOTAL_SIZE_MB) {

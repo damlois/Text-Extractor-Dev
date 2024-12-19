@@ -100,12 +100,14 @@ const DisplayImages: React.FC = () => {
                     <Card
                       key={index}
                       className="min-w-[200px] border-1 border-[#F0F0F0] rounded-none cursor-pointer flex-col"
-                      bodyStyle={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        padding: 0,
-                        height: "100%",
+                      styles={{
+                        body: {
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          padding: 0,
+                          height: "100%",
+                        },
                       }}
                     >
                       <div

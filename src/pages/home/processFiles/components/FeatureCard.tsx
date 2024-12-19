@@ -26,7 +26,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
           <Image className="mt-1" src={iconSrc} alt={`${title} icon`} />
         </div>
       }
-      bodyStyle={{ flexGrow: 1 }}
+      styles={{ body: { flexGrow: 1 } }}
       onClick={onClick}
     >
       <ul className="space-y-3 text-gray font-[14px] font-inter">

@@ -60,11 +60,13 @@ const TextExtraction = ({
         <div className="flex justify-center items-center pt-6 ">
           <Card
             className="min-w-[240px] border-1 border-[#F0F0F0] rounded-none"
-            bodyStyle={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: 0,
+            styles={{
+              body: {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: 0,
+              },
             }}
           >
             <div className="w-full h-[121px] flex justify-center items-center bg-[#F0F0F0]">

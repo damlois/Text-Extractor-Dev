@@ -18,7 +18,7 @@ const AnalyzeImage: React.FC = () => {
       ) : currentPage === "InitialQuery" ? (
         <InitialQuery />
       ) : (
-        <ImagesChat />
+          <ImagesChat />
       )}
     </>
   );
