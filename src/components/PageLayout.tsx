@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Menu, Avatar, Button, Image } from "antd";
+import { Layout, Menu, Avatar, Button, MenuProps } from "antd";
 import {
   HomeOutlined,
   UploadOutlined,
@@ -7,7 +7,8 @@ import {
   UserOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import keycloakService from "../service/keycloakService";
 
 const { Header, Sider, Content } = Layout;
 
@@ -16,16 +17,23 @@ interface PageLayoutProps {
   children: React.ReactNode;
 }
 
-const navLinks = [
-  { name: "Home", path: "/home", icon: <HomeOutlined /> },
-  { name: "Upload", path: "/upload", icon: <UploadOutlined /> },
-  { name: "Archives", path: "/archives", icon: <FolderOpenOutlined /> },
-  { name: "Account", path: "/account", icon: <UserOutlined /> },
-];
+type MenuItem = Required<MenuProps>["items"][number];
 
 const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
+  const navigate = useNavigate();
+
+  const items: MenuItem[] = [
+    {
+      key: "1",
+      icon: <HomeOutlined />,
+      label: "Home",
+      onClick: () => navigate("/home"),
+    },
+    { key: "2", icon: <UploadOutlined />, label: "Upload" },
+    { key: "3", icon: <FolderOpenOutlined />, label: "Archives" },
+    { key: "4", icon: <UserOutlined />, label: "Account" },
+  ];
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -49,31 +57,10 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
             <Menu
+              defaultSelectedKeys={["1"]}
               mode="inline"
-              selectedKeys={[`/${location.pathname.split("/")[1]}`]}
-              className="menu-items font-inter"
-            >
-              {navLinks.map((link) => {
-                const isActive =
-                  location.pathname.split("/")[1] === link.path.split("/")[1];
-                return (
-                  <Menu.Item
-                    key={link.path}
-                    icon={link.icon}
-                    className="text-dark-gray hover:bg-light-blue m-0 w-full"
-                    style={{
-                      width: "100%",
-                      borderRight: isActive ? "5px solid #006A94" : "none",
-                      backgroundColor: isActive ? "#CCE1EA" : "transparent",
-                    }}
-                  >
-                    <Link to={link.path} className="text-inherit">
-                      {link.name}
-                    </Link>
-                  </Menu.Item>
-                );
-              })}
-            </Menu>
+              items={items}
+            />
           </Sider>
 
           <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
@@ -86,7 +73,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
                   className="menu-toggle hidden md:inline"
                 />
                 <Avatar icon={<UserOutlined />} className="ml-auto" />
-                <span className="ml-2">Steve Grace</span>
+                <span className="ml-2">{keycloakService.getFullName()}</span>
               </div>
             </Header>
 

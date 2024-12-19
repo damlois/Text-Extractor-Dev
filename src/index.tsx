@@ -13,14 +13,13 @@ const theme = {
   },
 };
 
-
 const renderApp = () =>
-  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <ConfigProvider theme={theme}>
-        <App />
+          <App />
       </ConfigProvider>
-  </React.StrictMode>
+    </React.StrictMode>
   );
 
 keycloakService.initKeycloak(renderApp);

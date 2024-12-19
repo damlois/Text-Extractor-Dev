@@ -157,14 +157,16 @@ const ExtractionResults = () => {
                       Below is a compilation of the list of labels selected.
                     </p>
                     <div className="flex flex-wrap gap-4 items-start mt-6">
-                      {columns.map((label) => (
-                        <LabelTag
-                          key={label.key}
-                          id={Number(label.key)}
-                          name={label.title}
-                          style={{ padding: "6px 8px" }}
-                        />
-                      ))}
+                      {columns
+                        .filter((item) => item.title !== "Document Name")
+                        .map((label) => (
+                          <LabelTag
+                            key={label.key}
+                            id={Number(label.key)}
+                            name={label.title}
+                            style={{ padding: "6px 8px" }}
+                          />
+                        ))}
                     </div>
                   </div>
                 )}

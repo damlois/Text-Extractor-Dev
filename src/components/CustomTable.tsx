@@ -43,6 +43,13 @@ const CustomTable: React.FC<CustomTableProps> = ({
     setCurrentPage(page);
   };
 
+  const handleObjectData = (value: any) => {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return Object.values(value).join(", ") || "";
+    }
+    return value || "";
+  };
+
   return (
     <div className={`overflow-x-auto ${className}`}>
       <table
@@ -81,7 +88,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 >
                   {col.render
                     ? col.render(record[col.dataIndex], record, rowIndex)
-                    : record[col.dataIndex]}
+                    : handleObjectData(record[col.dataIndex])}
                 </td>
               ))}
             </tr>

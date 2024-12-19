@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
+  ArrowLeftOutlined,
   CopyOutlined,
   ReloadOutlined,
   SendOutlined,
@@ -22,7 +23,8 @@ const ImagesChat: React.FC = () => {
   const messageListRef = useRef<HTMLDivElement>(null);
   const [tooltipText, setTooltipText] = useState<string>("Copy to clipboard");
 
-  const { selectedImage, currentSessionId } = useImageProcessor();
+  const { selectedImage, currentSessionId, setCurrentPage } =
+    useImageProcessor();
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -192,8 +194,14 @@ const ImagesChat: React.FC = () => {
                 maxCount={1}
                 fileType="image/*"
               />
-              <div className="flex justify-center items-center text-gray text-sm pt-[10px]">
-                InterprAIs can make mistakes. Check important Info
+              <div className="flex justify-center items-center text-gray text-sm pt-[10px] gap-x-16 gap-y-4 flex-wrap-reverse">
+                <div
+                  className="text-deep-blue cursor-pointer sm:none w-max top-4"
+                  onClick={() => setCurrentPage("ImagesDisplay")}
+                >
+                  <ArrowLeftOutlined className="mr-1" /> Return to Images
+                </div>
+                <p>InterprAIs can make mistakes. Check important Info</p>
               </div>
             </div>
           </div>
