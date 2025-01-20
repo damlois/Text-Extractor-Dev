@@ -13,13 +13,13 @@ import keycloakService from "../service/keycloakService";
 const { Header, Sider, Content } = Layout;
 
 interface PageLayoutProps {
-  showLayout?: boolean;
+  hideLayout?: boolean;
   children: React.ReactNode;
 }
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
+const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
@@ -30,9 +30,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
       label: "Home",
       onClick: () => navigate("/home"),
     },
-    { key: "2", icon: <UploadOutlined />, label: "Upload" },
-    { key: "3", icon: <FolderOpenOutlined />, label: "Archives" },
-    { key: "4", icon: <UserOutlined />, label: "Account" },
+    { key: "2", icon: <UserOutlined />, label: "Account" },
   ];
 
   const toggleCollapsed = () => {
@@ -41,7 +39,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
 
   return (
     <Layout className="w-full h-screen">
-      {showLayout ? (
+      {!hideLayout ? (
         <>
           <Sider
             collapsible
@@ -56,11 +54,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ showLayout, children }) => {
             <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
-            <Menu
-              defaultSelectedKeys={["1"]}
-              mode="inline"
-              items={items}
-            />
+            <Menu defaultSelectedKeys={["1"]} mode="inline" items={items} />
           </Sider>
 
           <Layout style={{ flex: 1, width: "85%" }} className="h-screen">

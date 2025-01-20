@@ -156,6 +156,10 @@ input {
   min-height: 40px;
 }
 
+.app-card .ant-card-body {
+  padding: 0;
+}
+
 .markdown-body {
   /* Basic markdown styles */
   h1,

@@ -1,24 +1,14 @@
 import { FileProcessorProvider } from "./context/FileProcessorContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
-import CreateProject from "./pages/home/createProject/CreateProject";
-import UploadFiles from "./pages/home/uplaodFiles/UploadFiles";
-import ProcessFiles from "./pages/home/processFiles/ProcessFiles";
-import LandingPage from "./pages/landingPage";
-import ProjectList from "./pages/home/projectList/ProjectList";
 import { ImageProcessorProvider } from "./context/ImageProcessorContext";
-
-const routes = [
-  { path: "/", element: <LandingPage />, showLayout: false },
-  { path: "/home", element: <ProjectList />, showLayout: true },
-  {
-    path: "/home/create-project",
-    element: <CreateProject />,
-    showLayout: true,
-  },
-  { path: "/home/upload-files", element: <UploadFiles />, showLayout: true },
-  { path: "/home/process-files", element: <ProcessFiles />, showLayout: true },
-];
+import ApplicationList from "./pages/home/applicationList/ApplicationList";
+import InvoiceAppTabSelector from "./apps/invoiceProcessing/InvoiceAppTabSelector";
+import ConfigureDataSource from "./apps/invoiceProcessing/configureDataSource";
+import ExtractionHistory from "./apps/invoiceProcessing/extractionHistory";
+import SavedInsights from "./apps/invoiceProcessing/savedInsights";
+import CreateDataSource from "./apps/invoiceProcessing/configureDataSource/CreateDataSource";
+import LandingPage from "./pages/landingPage";
 
 const App = () => {
   return (
@@ -26,17 +16,27 @@ const App = () => {
       <ImageProcessorProvider>
         <div className="flex flex-col items-center justify-center w-full min-h-screen m-0 p-0">
           <Router>
-            <Routes>
-              {routes.map(({ path, element, showLayout }) => (
+            <PageLayout>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/home" element={<ApplicationList />} />
                 <Route
-                  key={path}
-                  path={path}
-                  element={
-                    <PageLayout showLayout={showLayout}>{element}</PageLayout>
-                  }
-                />
-              ))}
-            </Routes>
+                  path="/invoice-processing"
+                  element={<InvoiceAppTabSelector />}
+                >
+                  <Route path="data-source" element={<ConfigureDataSource />} />
+                  <Route
+                    path="data-source/create"
+                    element={<CreateDataSource />}
+                  />
+                  <Route
+                    path="extraction-history"
+                    element={<ExtractionHistory />}
+                  />
+                  <Route path="saved-insights" element={<SavedInsights />} />
+                </Route>
+              </Routes>
+            </PageLayout>
           </Router>
         </div>
       </ImageProcessorProvider>
