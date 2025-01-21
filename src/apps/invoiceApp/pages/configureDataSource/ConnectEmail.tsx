@@ -17,8 +17,9 @@ const ConnectEmail = () => {
       name: "username",
       type: "text",
       label: "Mail Username",
-      placeholder: "Mail Username",
-      tooltip: "Provide your email username",
+      placeholder: "invoices@company.com",
+      tooltip:
+        "Enter the email address you use to access your mailbox. This will be used to configure the data source for invoice extraction",
       rules: [requiredRule("Mail Username")],
     },
     {
@@ -26,23 +27,24 @@ const ConnectEmail = () => {
       type: "password",
       label: "Mail Password",
       placeholder: "Mail Password",
-      tooltip: "Provide your email password",
+      tooltip:
+        "Enter the email password you use to access your mailbox. This will be used to configure the data source for invoice extraction",
       rules: [requiredRule("Mail Password")],
     },
     {
       name: "server",
       type: "text",
       label: "Mail Server",
-      placeholder: "Mail Server",
-      tooltip: "Provide the mail server address",
+      placeholder: "smtp.gmail.com",
+      tooltip: "Enter the mail server used to configure your mailbox.",
       rules: [requiredRule("Mail Server")],
     },
     {
       name: "portNumber",
       type: "text",
       label: "Mail Port Number",
-      placeholder: "Mail Port Number",
-      tooltip: "Provide the mail port number",
+      placeholder: "587",
+      tooltip: "Enter the port number used to configure your mailbox.",
       rules: [
         requiredRule("Mail Port Number"),
         {
