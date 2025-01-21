@@ -28,7 +28,7 @@ const InvoiceAppTabSelector = () => {
             ? "+ New Data Source"
             : undefined
         }
-        onActionClick={() => navigate("/data-source/create")}
+        onActionClick={() => navigate("/invoice-processing/data-source/create")}
         noBorder
       />
 
