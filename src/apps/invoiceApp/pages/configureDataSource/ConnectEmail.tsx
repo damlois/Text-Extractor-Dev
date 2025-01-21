@@ -1,7 +1,7 @@
 import { Form } from "antd";
-import AppInput from "../../../components/AppInput";
-import AppButton from "../../../components/AppButton";
-import { requiredRule } from "../../../utils";
+import AppInput from "../../../../components/AppInput";
+import AppButton from "../../../../components/AppButton";
+import { requiredRule } from "../../../../utils";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 

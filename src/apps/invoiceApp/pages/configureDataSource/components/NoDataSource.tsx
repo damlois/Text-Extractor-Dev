@@ -1,6 +1,6 @@
 import { Image } from "antd";
 import { useNavigate } from "react-router-dom";
-import AppButton from "../../../../components/AppButton";
+import AppButton from "../../../../../components/AppButton";
 
 const NoDataSource = () => {
   const navigate = useNavigate();
