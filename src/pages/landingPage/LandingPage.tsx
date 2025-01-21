@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import KeycloakService from '../../service/keycloakService';
+import { useNavigate } from 'react-router-dom';
+import keycloakService from '../../service/keycloakService';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -8,15 +8,15 @@ const LandingPage = () => {
   const redirectUrl = process.env.REACT_APP_REDIRECT_URL  
   
   useEffect(() => {
-    if (KeycloakService) {
-      if (KeycloakService.isLoggedIn()) {
-        if (KeycloakService.hasRole(['ADMIN'])) {
+    if (keycloakService) {
+      if (keycloakService.isLoggedIn()) {
+        if (keycloakService.hasRole(['ADMIN'])) {
           navigate('/home');
         } else {
           setShowDisplayMsg(true);
         }
       } else {
-        KeycloakService.doLogin({ redirectUri: redirectUrl });
+        keycloakService.doLogin({ redirectUri: redirectUrl });
       }
 
     }

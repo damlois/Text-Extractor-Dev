@@ -8,6 +8,7 @@ interface PageHeaderProps {
   action?: string;
   onActionClick?: () => void;
   noBreadCrumb?: boolean;
+  pageTitle?: string;
 }
 
 const PageHeader = ({
@@ -17,6 +18,7 @@ const PageHeader = ({
   action,
   onActionClick,
   noBreadCrumb,
+  pageTitle,
 }: PageHeaderProps) => {
   const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ const PageHeader = ({
     <div
       className={`px-[24px] py-[16px] w-full ${
         noBorder ? "" : "border-b border-[#F0F0F0]"
-      } text-[14px] flex gap-4 flex-wrap justify-between`}
+      } text-[14px] flex gap-4 flex-wrap justify-between items-center`}
     >
       <div className="flex gap-2 flex-col">
         {!noBreadCrumb && (
@@ -45,14 +47,16 @@ const PageHeader = ({
         )}
 
         <div className="flex flex-col items-start w-full">
-          <h1 className="text-black font-medium text-xl">{currentPage}</h1>
+          <h1 className="text-black font-medium text-xl">
+            {pageTitle || currentPage}
+          </h1>
         </div>
       </div>
 
       {action && (
         <AppButton
           onClick={onActionClick || (() => {})}
-          width="133px"
+          width="fit-content"
           className="mr-0"
         >
           {action}

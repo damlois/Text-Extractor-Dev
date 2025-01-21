@@ -1,5 +1,11 @@
 import { Card, Spin } from "antd";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  SetStateAction,
+} from "react";
 import AppInput from "../../../../../../components/AppInput";
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import ImageModal from "./ImageModal";
@@ -11,7 +17,7 @@ import {
   base64ToBlob,
   downloadImageFromBlobUrl,
 } from "../../../../../../utils";
-import PaginationControls from "../../../../projectList/components/PaginationControls";
+import PaginationControls from "../../../../applicationList/components/PaginationControls";
 
 const DisplayImages: React.FC = () => {
   const [images, setImages] = useState<ImageData[]>([]);
