@@ -1,6 +1,7 @@
 import { Button, Spin } from "antd";
 
 interface AppButtonProps {
+  htmlType?: "button" | "submit" | "reset" | undefined;
   variant?: "primary" | "secondary";
   bgColor?: string;
   hoverbgColor?: string;
@@ -10,12 +11,13 @@ interface AppButtonProps {
   width?: string;
   disabled?: boolean;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
   loading?: boolean;
   dottedBorder?: boolean;
 }
 
 const AppButton = ({
+  htmlType,
   variant = "primary",
   bgColor,
   hoverbgColor,
@@ -32,7 +34,7 @@ const AppButton = ({
   const isPrimary = variant === "primary";
 
   const defaultStyles = `
-    font-inter px-[15px] py-[10px] text-[14px] font-normal rounded-[3px] transition-all flex items-center mx-auto border-${
+    font-inter px-[15px] py-[12px] min-h-[36px] text-[14px] font-normal rounded-[3px] transition-all flex items-center mx-auto border-${
       dottedBorder ? "dotted" : "solid"
     }
   `;
@@ -60,6 +62,7 @@ const AppButton = ({
 
   return (
     <Button
+      htmlType={htmlType}
       className={`${defaultStyles} ${defaultBg} ${defaultText} ${borderStyles} ${
         !disabled ? hoverStyles : disabledStyles
       } ${className} border-1`}

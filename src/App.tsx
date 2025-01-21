@@ -9,6 +9,7 @@ import ExtractionHistory from "./apps/invoiceProcessing/extractionHistory";
 import SavedInsights from "./apps/invoiceProcessing/savedInsights";
 import CreateDataSource from "./apps/invoiceProcessing/configureDataSource/CreateDataSource";
 import LandingPage from "./pages/landingPage";
+import ConnectEmail from "./apps/invoiceProcessing/configureDataSource/ConnectEmail";
 
 const App = () => {
   return (
@@ -28,6 +29,10 @@ const App = () => {
                   <Route
                     path="data-source/create"
                     element={<CreateDataSource />}
+                  />
+                  <Route
+                    path="data-source/connect-email"
+                    element={<ConnectEmail />}
                   />
                   <Route
                     path="extraction-history"

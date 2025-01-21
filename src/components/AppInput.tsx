@@ -4,10 +4,12 @@ import { InfoCircleOutlined, PaperClipOutlined } from "@ant-design/icons";
 
 interface AppInputProps {
   label?: string;
+  type: string;
   tooltip?: string;
   placeholder?: string;
+  name?: string;
   value?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   required?: boolean;
   rightIcon?: React.ReactNode;
@@ -26,7 +28,9 @@ interface AppInputProps {
 
 const AppInput: React.FC<AppInputProps> = ({
   label,
+  type,
   tooltip,
+  name,
   placeholder,
   value,
   onChange,
@@ -93,47 +97,61 @@ const AppInput: React.FC<AppInputProps> = ({
       </div>
 
       <div className="relative">
-        <Input
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
-          style={style}
-          disabled={loading}
-          prefix={
-            fileUpload && (
-              <>
-                <PaperClipOutlined
-                  className="cursor-pointer"
-                  style={{ fontSize: 16 }}
-                />
-                <input
-                  type="file"
-                  className="absolute top-0 right-0 opacity-0 cursor-pointer w-full"
-                  onChange={handleFileChange}
-                  max={maxCount}
-                  accept={fileType}
-                />
-              </>
-            )
-          }
-          addonAfter={
-            rightIcon &&
-            (!loading ? (
-              <span
-                onClick={(e) => handleSend(e)}
-                style={{ cursor: "pointer" }}
-              >
-                {rightIcon}
-              </span>
-            ) : (
-              <span style={{ cursor: "not-allowed", opacity: 0.5 }}>
-                <Spin />
-              </span>
-            ))
-          }
-          onPressEnter={(e) => !loading && handleSend(e)}
-        />
+        {type === "password" ? (
+          <Input.Password
+            placeholder={placeholder}
+            value={value}
+            name={name}
+            onChange={onChange}
+            className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
+            style={style}
+            disabled={loading}
+          />
+        ) : (
+          <Input
+            placeholder={placeholder}
+            value={value}
+            name={name}
+            type={type}
+            onChange={onChange}
+            className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
+            style={style}
+            disabled={loading}
+            prefix={
+              fileUpload && (
+                <>
+                  <PaperClipOutlined
+                    className="cursor-pointer"
+                    style={{ fontSize: 16 }}
+                  />
+                  <input
+                    type="file"
+                    className="absolute top-0 right-0 opacity-0 cursor-pointer w-full"
+                    onChange={handleFileChange}
+                    max={maxCount}
+                    accept={fileType}
+                  />
+                </>
+              )
+            }
+            addonAfter={
+              rightIcon &&
+              (!loading ? (
+                <span
+                  onClick={(e) => handleSend(e)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {rightIcon}
+                </span>
+              ) : (
+                <span style={{ cursor: "not-allowed", opacity: 0.5 }}>
+                  <Spin />
+                </span>
+              ))
+            }
+            onPressEnter={(e) => !loading && handleSend(e)}
+          />
+        )}
 
         {file && (
           <div className="mt-2 flex items-center gap-2">

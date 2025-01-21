@@ -62,6 +62,7 @@ const InitialQuery = () => {
 
         <div>
           <AppInput
+            type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Generate insight from the image"

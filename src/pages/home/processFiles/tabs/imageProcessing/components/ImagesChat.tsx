@@ -184,6 +184,7 @@ const ImagesChat: React.FC = () => {
               style={{ width: "-webkit-fill-available" }}
             >
               <AppInput
+                type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Generate insight from image"

@@ -88,6 +88,7 @@ const DisplayImages: React.FC = () => {
                 </h5>
                 <p className="text-[14px]">Select an image to analyze.</p>
                 <AppInput
+                  type="text"
                   placeholder="Search by document name"
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}

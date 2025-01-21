@@ -6,14 +6,12 @@ import AppInput from "../../../components/AppInput";
 import { useCreateProject } from "../../../hooks/useFileProcessor";
 import { showNotification } from "../../../utils/notification";
 
-
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { createProject } = useCreateProject();
   const description = "";
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -50,6 +48,7 @@ const CreateProject = () => {
 
         <div className="flex flex-col sm:w-[80%] md:w-[50%] mb-6">
           <AppInput
+            type="text"
             label="Project Name"
             tooltip="Choose a unique name for your project to easily identify and reuse it later"
             placeholder="e.g Comparison Report"
