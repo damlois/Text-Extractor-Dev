@@ -10,6 +10,7 @@ const ConnectEmail = () => {
 
   const onFinish = (formData: Record<string, any>) => {
     console.log("Form values:", formData);
+    navigate("../data-source/field-extraction-setup");
   };
 
   const fields = [
