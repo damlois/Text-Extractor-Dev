@@ -10,7 +10,7 @@ import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
 import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
 import LandingPage from "./pages/landingPage";
 import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
-import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
+import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetupLabel";
 
 const App = () => {
   return (
