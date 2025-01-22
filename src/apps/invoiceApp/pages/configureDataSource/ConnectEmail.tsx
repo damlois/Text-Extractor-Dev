@@ -22,7 +22,7 @@ const ConnectEmail = () => {
   }: Record<string, any>) => {
     try {
       setLoading(true);
-      const response = await configureDataSource({
+      await configureDataSource({
         source_type: "email",
         username,
         password,
@@ -118,7 +118,9 @@ const ConnectEmail = () => {
             </Form.Item>
           ))}
 
-          <AppButton htmlType="submit" loading={loading}>Connect</AppButton>
+          <AppButton htmlType="submit" loading={loading}>
+            Connect
+          </AppButton>
         </Form>
       </div>
     </div>
