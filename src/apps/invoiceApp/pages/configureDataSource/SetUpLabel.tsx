@@ -1,8 +1,10 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import type { TableProps } from "antd";
-import { Form, Input, Popconfirm, Table, Typography, Button } from "antd";
+import { Form, Input, Popconfirm, Table, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
+import AppButton from "../../../../components/AppButton";
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 interface DataType {
   key: string;
@@ -10,28 +12,25 @@ interface DataType {
   description: string;
 }
 
-const originData = Array.from({ length: 5 }).map<DataType>((_, i) => ({
+const originData: DataType[] = Array.from({ length: 5 }).map((_, i) => ({
   key: i.toString(),
-  name: `Edward ${i}`,
-  description: "The choice of the invoice to be made",
+  name: `Date`,
+  description: "The date on the invoice",
 }));
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
-  dataIndex: string;
-  title: any;
-  inputType: string;
+  dataIndex: keyof DataType;
+  title: string;
+  inputType: "text";
   record: DataType;
-  index: number;
 }
 
-const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
+const EditableCell: React.FC<EditableCellProps> = ({
   editing,
   dataIndex,
   title,
-  inputType,
   record,
-  index,
   children,
   ...restProps
 }) => {
@@ -48,7 +47,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
             },
           ]}
         >
-          <Input />
+          <Input placeholder={`Enter ${title.toLowerCase()} here...`} />
         </Form.Item>
       ) : (
         children
@@ -60,11 +59,11 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 const SetupLabel: React.FC = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>(originData);
-  const [editingKey, setEditingKey] = useState("");
+  const [editingKey, setEditingKey] = useState<string>("");
 
   const navigate = useNavigate();
 
-  const isEditing = (record: DataType) => record.key === editingKey;
+  const isEditing = (record: DataType): boolean => record.key === editingKey;
 
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({ name: "", description: "", ...record });
@@ -75,7 +74,7 @@ const SetupLabel: React.FC = () => {
     setEditingKey("");
   };
 
-  const save = async (key: React.Key) => {
+  const save = async (key: string) => {
     try {
       const row = (await form.validateFields()) as DataType;
 
@@ -83,14 +82,7 @@ const SetupLabel: React.FC = () => {
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
         const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey("");
-      } else {
-        newData.push(row);
+        newData.splice(index, 1, { ...item, ...row });
         setData(newData);
         setEditingKey("");
       }
@@ -99,10 +91,8 @@ const SetupLabel: React.FC = () => {
     }
   };
 
-  const deleteRow = async (key: React.Key) => {
-    const newData = [...data];
-    const index = newData.findIndex((item) => key === item.key);
-    newData.splice(index, 1);
+  const deleteRow = (key: string) => {
+    const newData = data.filter((item) => item.key !== key);
     setData(newData);
     setEditingKey("");
   };
@@ -122,29 +112,31 @@ const SetupLabel: React.FC = () => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Field Name",
       dataIndex: "name",
       width: "30%",
       editable: true,
     },
     {
-      title: "Description",
+      title: "Field Description",
       dataIndex: "description",
       width: "60%",
       editable: true,
     },
     {
-      title: "Operation",
+      title: "...",
       dataIndex: "operation",
+      align: "center" as const,
       render: (_: any, record: DataType) => {
         const editable = isEditing(record);
         return (
-          <>
+          <div className="flex gap-3 items-center justify-center">
             {editable ? (
               <span>
                 <Typography.Link
                   onClick={() => save(record.key)}
                   style={{ marginInlineEnd: 8 }}
+                  className="text-deep-blue"
                 >
                   Save
                 </Typography.Link>
@@ -154,20 +146,24 @@ const SetupLabel: React.FC = () => {
               </span>
             ) : (
               <Typography.Link
-                disabled={editingKey !== ""}
+                disabled={!!editingKey}
                 onClick={() => edit(record)}
               >
-                Edit
+                <FaRegEdit className="text-[18px] text-deep-blue" />
               </Typography.Link>
             )}
-            {!editable && <p onClick={() => deleteRow(record.key)}>Delete</p>}
-          </>
+            {!editable && (
+              <Typography.Link onClick={() => deleteRow(record.key)}>
+                <RiDeleteBinLine className="text-[18px] text-[#EA4335]" />
+              </Typography.Link>
+            )}
+          </div>
         );
       },
     },
   ];
 
-  const mergedColumns: TableProps<DataType>["columns"] = columns.map((col) => {
+  const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
@@ -184,32 +180,39 @@ const SetupLabel: React.FC = () => {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <div
-        className="mt-[10px] text-deep-blue sm:px-[10%] md:px-[5%] cursor-pointer absolute"
+        className="mt-[10px] text-deep-blue px-[0] cursor-pointer absolute"
         onClick={() => navigate("../data-source/connect-email")}
       >
-        <ArrowLeftOutlined className="mr-1" /> Back
+        <ArrowLeftOutlined className="mr-6" /> Back
       </div>
-      <div className="lg:w-5/12 md:w-7/12 sm:w-10/12 mx-auto relative">
+      <div className="lg:w-4/12 md:w-7/12 sm:w-10/12 mx-auto relative">
         <div className="mb-6">
           <h2 className="text-dark-gray text-[24px] text-center">
             Field Extraction Setup
           </h2>
-          <p className="text-gray ">
-            Review the field to extract in your invoice or add for a better
+          <p className="text-gray text-center ">
+            Review the field to extract in your invoice or add for better
             customization
           </p>
         </div>
       </div>
-      <Button
-        type="primary"
-        className="mb-4"
-        onClick={addNewRow}
-        disabled={!!editingKey}
-      >
-        Add New
-      </Button>
+      <div className="flex gap-2 items-center font-medium text-base text-dark-gray">
+        <p>Check out some recommendations</p>
+        <img src="/assets/icons/insight.svg" />
+      </div>
+      <div className="flex justify-between w-full gap-4 flex-wrap items-center mb-6">
+        <p>Click the + icon to add a new field</p>
+        <AppButton
+          variant="secondary"
+          children="+ Add New field"
+          width="fit-content"
+          className="mr-0"
+          onClick={addNewRow}
+          disabled={!!editingKey}
+        />
+      </div>
       <Form form={form} component={false}>
         <Table<DataType>
           components={{
@@ -220,6 +223,7 @@ const SetupLabel: React.FC = () => {
           columns={mergedColumns}
           rowClassName="editable-row"
           pagination={{ onChange: cancel }}
+          className="label-setup-form"
         />
       </Form>
     </div>

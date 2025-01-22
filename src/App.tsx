@@ -10,7 +10,7 @@ import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
 import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
 import LandingPage from "./pages/landingPage";
 import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
-import SetUpLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
+import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
 
 const App = () => {
   return (
@@ -37,7 +37,7 @@ const App = () => {
                   />
                   <Route
                     path="data-source/field-extraction-setup"
-                    element={<SetUpLabel />}
+                    element={<SetupLabel />}
                   />
                   <Route
                     path="extraction-history"

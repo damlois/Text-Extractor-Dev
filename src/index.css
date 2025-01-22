@@ -95,24 +95,24 @@ li.ant-menu-item.ant-menu-item-selected {
   font-family: "Inter", "sans-serif";
 }
 
-/* Table styles */
+/*Table styles */
 table {
   font-family: "DM Mono", "monospace";
 }
 
 table {
   border-collapse: collapse;
-  border-radius: 8px;
-  box-shadow: 0 0 0 1px black;
+  border-radius: none;
+  box-shadow: 0 0 0 1px #D9D9D9;
 }
 
-td {
-  border: 1px solid black;
+td, th {
+  border: 1px solid #D9D9D9;
 }
 
 thead > tr {
   background: rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 thead th {
@@ -276,4 +276,43 @@ input {
 
 .image-modal .ant-modal-content {
   padding: 0;
+}
+
+.ant-form-item-explain-error{
+  margin-bottom: 8px;
+}
+
+.ant-typography {
+  color: #006A94 !important;
+}
+
+.label-setup-form table {
+  font-family: "Inter", "sans-serif" !important;
+}
+
+.label-setup-form td.ant-table-cell {
+  color: rgba(0, 0, 0, 0.85) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.label-setup-form .ant-table-tbody>tr>td {
+  padding: 10px 12px !important;
+}
+
+.label-setup-form .ant-table-content >table >thead>tr>th {
+  color:  rgba(0, 0, 0, 0.85) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 10px 8px !important;
+  background: #F5F5F5 !important;
+}
+
+.label-setup-form .ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child, .ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:last-child {
+  border-start-start-radius: 0 !important;
+  border-start-end-radius: 0 !important;
+}
+
+.label-setup-form .ant-table-wrapper table {
+  border-radius: 0 !important
 }
