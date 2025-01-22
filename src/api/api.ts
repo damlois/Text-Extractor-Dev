@@ -13,9 +13,6 @@ import apiClient from "../service/apiClient";
 export const fileProcessorApi = {
   getCurrentUser: () => apiClient.get<User>("/users/me"),
 
-  connectEmail: (data: DataSourceInfo) =>
-    apiClient.post("/invoices/data-sources", { data }),
-
   createProject: (data: { name: string; description?: string }) =>
     apiClient.post<{ data: Project }>("/projects", data),
 
