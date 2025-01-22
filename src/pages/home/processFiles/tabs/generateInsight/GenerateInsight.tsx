@@ -101,6 +101,7 @@ const GenerateInsight: React.FC = () => {
                 Analyze and generate insight with interprAIs
               </h2>
               <AppInput
+                type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Generate insight from document(s)"
@@ -183,6 +184,7 @@ const GenerateInsight: React.FC = () => {
                 style={{ width: "-webkit-fill-available" }}
               >
                 <AppInput
+                  type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Generate insight from document(s)"

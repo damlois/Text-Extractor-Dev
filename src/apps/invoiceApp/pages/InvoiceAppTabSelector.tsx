@@ -1,6 +1,6 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { Tabs } from "antd";
-import PageHeader from "../../components/PageHeader";
+import PageHeader from "../../../components/PageHeader";
 
 const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const InvoiceAppTabSelector = () => {
             ? "+ New Data Source"
             : undefined
         }
-        onActionClick={() => navigate("/data-source/create")}
+        onActionClick={() => navigate("/invoice-processing/data-source/create")}
         noBorder
       />
 

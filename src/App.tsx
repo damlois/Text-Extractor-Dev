@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
 import { ImageProcessorProvider } from "./context/ImageProcessorContext";
 import ApplicationList from "./pages/home/applicationList/ApplicationList";
-import InvoiceAppTabSelector from "./apps/invoiceProcessing/InvoiceAppTabSelector";
-import ConfigureDataSource from "./apps/invoiceProcessing/configureDataSource";
-import ExtractionHistory from "./apps/invoiceProcessing/extractionHistory";
-import SavedInsights from "./apps/invoiceProcessing/savedInsights";
-import CreateDataSource from "./apps/invoiceProcessing/configureDataSource/CreateDataSource";
+import InvoiceAppTabSelector from "./apps/invoiceApp/pages/InvoiceAppTabSelector";
+import ConfigureDataSource from "./apps/invoiceApp/pages/configureDataSource";
+import ExtractionHistory from "./apps/invoiceApp/pages/extractionHistory";
+import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
+import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
 import LandingPage from "./pages/landingPage";
+import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
 
 const App = () => {
   return (
@@ -28,6 +29,10 @@ const App = () => {
                   <Route
                     path="data-source/create"
                     element={<CreateDataSource />}
+                  />
+                  <Route
+                    path="data-source/connect-email"
+                    element={<ConnectEmail />}
                   />
                   <Route
                     path="extraction-history"

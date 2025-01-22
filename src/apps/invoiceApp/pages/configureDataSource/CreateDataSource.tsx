@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 const CreateDataSource = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <>
@@ -28,7 +32,10 @@ const CreateDataSource = () => {
               <span className="text-[#667085]"></span>from cloud storage
             </p>
           </div>
-          <div className="border border-[#D9D9D9] rounded-lg px-2 py-8 text-center cursor-pointer">
+          <div
+            className="border border-[#D9D9D9] rounded-lg px-2 py-8 text-center cursor-pointer"
+            onClick={() => navigate("../data-source/connect-email")}
+          >
             <img
               src="/assets/icons/mail.svg"
               className="mb-4 mx-auto"

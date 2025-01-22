@@ -85,3 +85,9 @@ export const generateGUID = () => {
     }
   );
 };
+
+// Common validation rules
+export const requiredRule = (field: string) => ({
+  required: true,
+  message: `${field} is required`,
+});
