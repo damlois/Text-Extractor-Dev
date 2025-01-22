@@ -308,11 +308,11 @@ input {
   background: #F5F5F5 !important;
 }
 
-.label-setup-form .ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child, .ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:last-child {
+.ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:first-child, .ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:last-child {
   border-start-start-radius: 0 !important;
   border-start-end-radius: 0 !important;
 }
 
-.label-setup-form .ant-table-wrapper table {
+.ant-table-wrapper table {
   border-radius: 0 !important
 }
