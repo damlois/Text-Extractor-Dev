@@ -6,12 +6,15 @@ import {
   chatHistoryRecord,
   FileResponse,
   ImageData,
+  DataSourceInfo,
 } from "../types";
 import apiClient from "../service/apiClient";
 
-
 export const fileProcessorApi = {
   getCurrentUser: () => apiClient.get<User>("/users/me"),
+
+  connectEmail: (data: DataSourceInfo) =>
+    apiClient.post("/invoices/data-sources", { data }),
 
   createProject: (data: { name: string; description?: string }) =>
     apiClient.post<{ data: Project }>("/projects", data),
@@ -36,7 +39,7 @@ export const fileProcessorApi = {
     apiClient.get(`/projects/${projectId}/analyses`),
 
   getFiles: (projectId: string) =>
-    apiClient.get<{data: FileResponse[]}>(`/projects/${projectId}/files`),
+    apiClient.get<{ data: FileResponse[] }>(`/projects/${projectId}/files`),
 
   sendMessage: (
     projectId: string,

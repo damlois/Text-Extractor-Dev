@@ -57,7 +57,6 @@ export interface FileResponse {
   created_at: string;
 }
 
-
 export interface Instruction {
   title: string;
   description: string;
@@ -65,3 +64,12 @@ export interface Instruction {
 }
 
 export type SessionType = "New" | "Existing";
+
+//Invoices
+export interface DataSourceInfo {
+  source_type: string;
+  username: string;
+  password: string;
+  server: string;
+  port: string;
+}

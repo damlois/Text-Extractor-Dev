@@ -4,12 +4,40 @@ import AppButton from "../../../../components/AppButton";
 import { requiredRule } from "../../../../utils";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useConfigureDataSource } from "../../../../hooks/useInvoiceProcessor";
+import { useState } from "react";
+import { showNotification } from "../../../../utils/notification";
 
 const ConnectEmail = () => {
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (formData: Record<string, any>) => {
-    console.log("Form values:", formData);
+  const navigate = useNavigate();
+  const { configureDataSource } = useConfigureDataSource();
+
+  const onFinish = async ({
+    username,
+    password,
+    server,
+    port,
+  }: Record<string, any>) => {
+    try {
+      setLoading(true);
+      const response = await configureDataSource({
+        source_type: "email",
+        username,
+        password,
+        server,
+        port,
+      });
+      setLoading(false);
+      showNotification("success", "Email connected Successfully");
+    } catch (error) {
+      setLoading(false);
+      showNotification(
+        "error",
+        "There was an issue connecting your email. Please try again."
+      );
+    }
   };
 
   const fields = [
@@ -40,7 +68,7 @@ const ConnectEmail = () => {
       rules: [requiredRule("Mail Server")],
     },
     {
-      name: "portNumber",
+      name: "port",
       type: "text",
       label: "Mail Port Number",
       placeholder: "587",
@@ -90,7 +118,7 @@ const ConnectEmail = () => {
             </Form.Item>
           ))}
 
-          <AppButton htmlType="submit">Connect</AppButton>
+          <AppButton htmlType="submit" loading={loading}>Connect</AppButton>
         </Form>
       </div>
     </div>
