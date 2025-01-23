@@ -15,9 +15,9 @@ const CreateDataSource = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 mt-6 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-6 gap-6">
           <div className="border border-[#D9D9D9] rounded-lg px-2 py-8 text-center cursor-pointer">
-            <div className="flex gap-4 mx-auto justify-center mb-4">
+            <div className="flex gap-4 mx-auto justify-center mb-4 flex-wrap">
               <img
                 src="/assets/icons/google-drive.svg"
                 alt="google drive icon"
