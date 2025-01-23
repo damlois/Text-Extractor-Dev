@@ -1,7 +1,5 @@
-import { FileProcessorProvider } from "./context/FileProcessorContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
-import { ImageProcessorProvider } from "./context/ImageProcessorContext";
 import ApplicationList from "./pages/home/applicationList/ApplicationList";
 import InvoiceAppTabSelector from "./apps/invoiceApp/pages/InvoiceAppTabSelector";
 import ConfigureDataSource from "./apps/invoiceApp/pages/configureDataSource";
@@ -10,8 +8,8 @@ import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
 import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
 import LandingPage from "./pages/landingPage";
 import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
-import { InvoiceProcessorProvider } from "./context/InvoiceProcessorContext";
 import { CombinedProviders } from "./context/CombinedProviders";
+import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
 
 const App = () => {
   return (
@@ -35,6 +33,10 @@ const App = () => {
                   path="data-source/connect-email"
                   element={<ConnectEmail />}
                 />
+                <Route
+                    path="data-source/field-extraction-setup"
+                    element={<SetupLabel />}
+                  />
                 <Route
                   path="extraction-history"
                   element={<ExtractionHistory />}

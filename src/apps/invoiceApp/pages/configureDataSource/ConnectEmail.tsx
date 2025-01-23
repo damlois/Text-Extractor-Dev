@@ -11,6 +11,7 @@ import { showNotification } from "../../../../utils/notification";
 const ConnectEmail = () => {
   const [loading, setLoading] = useState(false);
 
+<<<<<<< HEAD
   const navigate = useNavigate();
   const { configureDataSource } = useConfigureDataSource();
 
@@ -38,6 +39,11 @@ const ConnectEmail = () => {
         "There was an issue connecting your email. Please try again."
       );
     }
+=======
+  const onFinish = (formData: Record<string, any>) => {
+    console.log("Form values:", formData);
+    navigate("../data-source/field-extraction-setup");
+>>>>>>> 3bf6347290bdf55ec0b877dd759a8ede0e6162db
   };
 
   const fields = [
@@ -48,13 +54,19 @@ const ConnectEmail = () => {
       placeholder: "invoices@company.com",
       tooltip:
         "Enter the email address you use to access your mailbox. This will be used to configure the data source for invoice extraction",
-      rules: [requiredRule("Mail Username")],
+      rules: [
+        requiredRule("Mail Username"),
+        {
+          pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          message: "Please enter a valid username",
+        },
+      ],
     },
     {
       name: "password",
       type: "password",
       label: "Mail Password",
-      placeholder: "Mail Password",
+      placeholder: "password",
       tooltip:
         "Enter the email password you use to access your mailbox. This will be used to configure the data source for invoice extraction",
       rules: [requiredRule("Mail Password")],
@@ -84,12 +96,12 @@ const ConnectEmail = () => {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <div
-        className="mt-[10px] text-deep-blue sm:px-[10%] md:px-[5%] cursor-pointer absolute"
+        className="mt-[10px] text-deep-blue px-[0] cursor-pointer absolute"
         onClick={() => navigate("../data-source/create")}
       >
-        <ArrowLeftOutlined className="mr-1" /> Back
+        <ArrowLeftOutlined className="mr-6" /> Back
       </div>
       <div className="lg:w-5/12 md:w-7/12 sm:w-10/12 mx-auto relative">
         <h2 className="text-dark-gray text-[24px] mb-6 text-center">
