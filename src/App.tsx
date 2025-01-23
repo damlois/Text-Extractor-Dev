@@ -34,9 +34,9 @@ const App = () => {
                   element={<ConnectEmail />}
                 />
                 <Route
-                    path="data-source/field-extraction-setup"
-                    element={<SetupLabel />}
-                  />
+                  path="data-source/field-extraction-setup"
+                  element={<SetupLabel />}
+                />
                 <Route
                   path="extraction-history"
                   element={<ExtractionHistory />}

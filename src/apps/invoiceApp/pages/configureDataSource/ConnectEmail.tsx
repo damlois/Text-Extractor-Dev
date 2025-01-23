@@ -11,7 +11,6 @@ import { showNotification } from "../../../../utils/notification";
 const ConnectEmail = () => {
   const [loading, setLoading] = useState(false);
 
-<<<<<<< HEAD
   const navigate = useNavigate();
   const { configureDataSource } = useConfigureDataSource();
 
@@ -32,18 +31,16 @@ const ConnectEmail = () => {
       });
       setLoading(false);
       showNotification("success", "Email connected Successfully");
-    } catch (error) {
+      navigate("../data-source/field-extraction-setup");
+    } catch (error: any) {
       setLoading(false);
       showNotification(
         "error",
-        "There was an issue connecting your email. Please try again."
+        error.response.data.detail.startsWith("400:")
+          ? "Incorrect details"
+          : "There was an issue connecting your email. Please try again."
       );
     }
-=======
-  const onFinish = (formData: Record<string, any>) => {
-    console.log("Form values:", formData);
-    navigate("../data-source/field-extraction-setup");
->>>>>>> 3bf6347290bdf55ec0b877dd759a8ede0e6162db
   };
 
   const fields = [
