@@ -19,7 +19,7 @@ const ImageModal = ({ isModalOpen, imageData, onCancel }: ImageModalProps) => {
       onCancel={onCancel}
       footer={null}
       centered
-      className="image-modal"
+      className="app-modal"
       style={{ minWidth: "60%" }}
     >
       <div className="p-6 pt-10 border-b border-[#f0f0f0] font-inter flex flex-wrap justify-between items-center">

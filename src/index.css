@@ -274,7 +274,7 @@ input {
   height: 100%;
 }
 
-.image-modal .ant-modal-content {
+.app-modal .ant-modal-content {
   padding: 0;
 }
 
@@ -315,4 +315,8 @@ input {
 
 .ant-table-wrapper table {
   border-radius: 0 !important
+}
+
+.edit-config-btn:hover{
+  background: #F5F5F5;
 }
