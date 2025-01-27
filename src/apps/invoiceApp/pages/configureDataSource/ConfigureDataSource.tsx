@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Spin } from "antd";
-import NoDataSource from "./components/features/NoDataSource";
-import DataSourceDetails from "./DataSourceDetails";
+import NoDataSource from "./components/NoDataSource";
+import ViewDataSourceDetails from "./ViewDataSourceDetails";
 
 const ConfigureDataSource = () => {
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ const ConfigureDataSource = () => {
       {loading ? (
         <Spin className="mt-20" size="large" />
       ) : (
-        <>{dataSource ? <DataSourceDetails /> : <NoDataSource />}</>
+        <>{dataSource ? <ViewDataSourceDetails /> : <NoDataSource />}</>
       )}
     </div>
   );

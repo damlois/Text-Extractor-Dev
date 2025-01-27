@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import LabelSetupTemplate from "./components/features/LabelSetupTemplate";
+import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
 
 const SetupLabel: React.FC = () => {
