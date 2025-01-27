@@ -3,11 +3,16 @@ import AppButton from "../../../../../../components/AppButton";
 import { useState } from "react";
 
 const DeactivateRow = () => {
-  const [showConfirmationModal, setShowConfirmationModal] = useState(true);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const toggleModal = () => {
     setShowConfirmationModal(!showConfirmationModal);
   };
+
+  const handleDeactivate = () => {
+    toggleModal();
+  };
+
   return (
     <div className="flex flex-col gap-6 pt-4 pb-6 w-full">
       <div className="lg:w-[35%] md-w-full">
@@ -20,7 +25,7 @@ const DeactivateRow = () => {
         </p>
       </div>
       <AppButton
-        onClick={() => {}}
+        onClick={toggleModal}
         children="Deactivate Data Source"
         width="fit-content"
         className="ml-0"
@@ -37,13 +42,17 @@ const DeactivateRow = () => {
           <p className="text-[16px] font-medium mb-2">Deactivate Data Source</p>
           <p className="text-[14px] font-normal mb-4">
             Are you sure you want to deactivate this data source? Remember, this
-            action cannot be undo.
+            action cannot be undone.
           </p>
           <div className="flex gap-2 flex-end">
-            <AppButton width="fit-content" className="mr-0" variant="secondary">
+            <AppButton width="fit-content" className="mr-0" variant="secondary" onClick={handleDeactivate}>
               Cancel
             </AppButton>
-            <AppButton width="fit-content" className="ml-0 mr-0">
+            <AppButton
+              width="fit-content"
+              className="ml-0 mr-0"
+              onClick={handleDeactivate}
+            >
               Yes, I am sure
             </AppButton>
           </div>

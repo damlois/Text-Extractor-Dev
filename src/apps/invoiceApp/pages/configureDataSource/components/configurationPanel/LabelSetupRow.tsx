@@ -6,6 +6,21 @@ import UpdateLabelSetup from "../configurationModals/UpdateLabelSetup";
 const LabelSetupRow = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
+  const labels = [
+    "Invoice Number",
+    "Invoice Name",
+    "Vendor Name",
+    "Vendor Address",
+    "Customer Name",
+    "SubTotal",
+    "Invoice Number",
+    "Invoice Name",
+    "Vendor Name",
+    "Vendor Address",
+    "Customer Name",
+    "SubTotal",
+  ];
+
   const toggleModal = () => {
     setShowUpdateModal(!showUpdateModal);
   };
@@ -32,20 +47,7 @@ const LabelSetupRow = () => {
       <div className="grid gap-y-2 text-dark-gray text-[16px] lg:pr-8 sm:grid-cols-1 lg:grid-cols-[160px_1fr]">
         <p className="font-medium">Field List</p>
         <div className="flex flex-wrap gap-4 items-start">
-          {[
-            "Invoice Number",
-            "Invoice Name",
-            "Vendor Name",
-            "Vendor Address",
-            "Customer Name",
-            "SubTotal",
-            "Invoice Number",
-            "Invoice Name",
-            "Vendor Name",
-            "Vendor Address",
-            "Customer Name",
-            "SubTotal",
-          ].map((label, index) => (
+          {labels.map((label, index) => (
             <LabelTag
               key={index}
               id={index}
