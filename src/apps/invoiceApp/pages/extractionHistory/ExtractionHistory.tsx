@@ -1,9 +1,13 @@
-import React from 'react'
+import ExtractionHistoryTable from "./components/ExtractionHistoryTable";
+import SummaryDashboard from "./components/SummaryDashboard";
 
 const ExtractionHistory = () => {
   return (
-    <div>ExtractionHistory</div>
-  )
-}
+    <div className="flex flex-col gap-6">
+      <SummaryDashboard />
+      <ExtractionHistoryTable />
+    </div>
+  );
+};
 
-export default ExtractionHistory
+export default ExtractionHistory;

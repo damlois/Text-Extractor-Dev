@@ -286,21 +286,21 @@ input {
   color: #006A94 !important;
 }
 
-.label-setup-form table {
+.invoice-app-table table {
   font-family: "Inter", "sans-serif" !important;
 }
 
-.label-setup-form td.ant-table-cell {
+.invoice-app-table td.ant-table-cell {
   color: rgba(0, 0, 0, 0.85) !important;
   font-size: 14px !important;
   font-weight: 400 !important;
 }
 
-.label-setup-form .ant-table-tbody>tr>td {
+.invoice-app-table .ant-table-tbody>tr>td {
   padding: 10px 12px !important;
 }
 
-.label-setup-form .ant-table-content >table >thead>tr>th {
+.invoice-app-table .ant-table-content >table >thead>tr>th {
   color:  rgba(0, 0, 0, 0.85) !important;
   font-weight: 700 !important;
   font-size: 14px !important;
@@ -319,4 +319,22 @@ input {
 
 .edit-config-btn:hover{
   background: #F5F5F5;
+}
+
+.no-vertical-lines .ant-table td,
+.no-vertical-lines .ant-table th {
+  border-right: none !important;
+  border-left: none !important;
+}
+
+.extraction-history-table .ant-table-tbody>tr>td {
+  padding: 16px 12px !important;
+}
+
+.extraction-history-table .ant-table-tbody>tr>th {
+  border-top: none !important;
+}
+
+.extraction-history-table {
+  box-shadow: 0px 4px 4px -2px rgba(0, 0, 0, 0.04);
 }
