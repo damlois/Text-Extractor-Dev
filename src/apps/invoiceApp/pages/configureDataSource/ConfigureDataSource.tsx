@@ -6,7 +6,7 @@ import ViewDataSourceDetails from "./ViewDataSourceDetails";
 const ConfigureDataSource = () => {
   const [loading, setLoading] = useState(false);
 
-  const dataSource = true;
+  const dataSource = false;
 
   useEffect(() => {
     const fetchData = async () => {
