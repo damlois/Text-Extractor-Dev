@@ -6,12 +6,7 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import {
-  User,
-  Project,
-  chatHistoryRecord,
-  SessionType,
-} from "../types";
+import { User, Project, chatHistoryRecord, SessionType } from "../types";
 
 interface FileProcessorContextProps {
   currentUser: User | null;

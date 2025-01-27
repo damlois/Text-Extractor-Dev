@@ -1,17 +1,17 @@
+import { ReactNode } from "react";
+import { InvoiceProcessorProvider } from "./InvoiceProcessorContext";
 import { FileProcessorProvider } from "./FileProcessorContext";
 import { ImageProcessorProvider } from "./ImageProcessorContext";
-import { InvoiceProcessorProvider } from "./InvoiceProcessorContext";
+import { TemplateProvider } from "./TemplateContext";
 
-export const CombinedProviders = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const CombinedProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <FileProcessorProvider>
-      <InvoiceProcessorProvider>
-        <ImageProcessorProvider>{children}</ImageProcessorProvider>
-      </InvoiceProcessorProvider>
-    </FileProcessorProvider>
+    <InvoiceProcessorProvider>
+      <FileProcessorProvider>
+        <ImageProcessorProvider>
+          <TemplateProvider>{children}</TemplateProvider>
+        </ImageProcessorProvider>
+      </FileProcessorProvider>
+    </InvoiceProcessorProvider>
   );
 };

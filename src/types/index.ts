@@ -57,6 +57,7 @@ export interface FileResponse {
   created_at: string;
 }
 
+
 export interface Instruction {
   title: string;
   description: string;
@@ -65,11 +66,50 @@ export interface Instruction {
 
 export type SessionType = "New" | "Existing";
 
-//Invoices
+
 export interface DataSourceInfo {
-  source_type: string;
-  username: string;
-  password: string;
-  server: string;
-  port: string;
+    id?: string;
+    name: string;
+    type: string;
+    // Add other relevant fields based on your data source requirements
+}
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+}
+
+export interface TemplateItem {
+  label: string;
+  description: string;
+}
+
+export interface TemplateResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    items: TemplateItem[];
+  };
+}
+
+export interface LabelSetupTemplateProps {
+  buttonComponent: React.ReactNode;
+  onSuccessCallback?: () => void;
+  className?: string;
+}
+
+export interface DataType {
+  key: string;
+  label: string;
+  description: string;
+}
+
+export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+  editing: boolean;
+  dataIndex: keyof DataType;
+  title: string;
+  inputType: "text";
+  record: DataType;
 }
