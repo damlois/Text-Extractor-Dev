@@ -202,19 +202,21 @@ const LabelSetupTemplate = ({
             disabled={!!editingKey}
           />
         </div>
-        <Form form={form} component={false}>
-          <Table<DataType>
-            components={{
-              body: { cell: EditableCell },
-            }}
-            bordered
-            dataSource={data}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            pagination={{ onChange: cancel }}
-            className="label-setup-form"
-          />
-        </Form>
+        <div className="overflow-x-auto">
+          <Form form={form} component={false}>
+            <Table<DataType>
+              components={{
+                body: { cell: EditableCell },
+              }}
+              bordered
+              dataSource={data}
+              columns={mergedColumns}
+              rowClassName="editable-row"
+              pagination={{ onChange: cancel }}
+              className="invoice-app-table"
+            />
+          </Form>
+        </div>
       </div>
       <div onClick={onSuccessCallback}>
         {React.cloneElement(buttonComponent as React.ReactElement, {
