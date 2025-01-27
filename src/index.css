@@ -341,3 +341,13 @@ input {
   border-right: 1px solid #E4E7EC;
   border-bottom: 1px solid #E4E7EC;
 }
+
+td .successful {
+  color: #006A94;
+  background: #CCE1EA;
+}
+
+td .failed {
+  color: #CF1322;
+  background: #FFA39E;
+}
