@@ -5,7 +5,7 @@ import AppButton from "../../../../../components/AppButton";
 const NoDataSource = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center mt-6">
+    <div className="flex flex-col items-center mt-12 w-full">
       <Image
         src="/assets/icons/upload.png"
         preview={false}

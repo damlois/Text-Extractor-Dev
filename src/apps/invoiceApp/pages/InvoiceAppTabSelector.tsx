@@ -5,6 +5,8 @@ import PageHeader from "../../../components/PageHeader";
 const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
 
+  const dataSourceExists = false;
+
   const tabItems = [
     { key: "data-source", label: "Data Source Configuration" },
     { key: "extraction-history", label: "Extraction History" },
@@ -24,7 +26,9 @@ const InvoiceAppTabSelector = () => {
         previousPage="Home"
         pageTitle="Invoice Processing"
         action={
-          splittedPathName[2] === "data-source" && !splittedPathName[3]
+          splittedPathName[2] === "data-source" &&
+          !splittedPathName[3] &&
+          !dataSourceExists
             ? "+ New Data Source"
             : undefined
         }
