@@ -111,3 +111,39 @@ export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   inputType: "text";
   record: LabelInfo;
 }
+
+export type DynamicValue = string | number | null | boolean | DynamicObject | DynamicValue[];
+export interface DynamicObject {
+  [key: string]: DynamicValue;
+}
+
+export interface ProcessedInvoice {
+  id: string;
+  file_name: string;
+  content: DynamicObject;
+  processing_status: string;
+  created_at: string;
+  invoice_data: DynamicObject & {
+    sender: string;
+  };
+  image_data: string;
+  sender: string;
+  images: null | string[];
+}
+
+export interface ProcessedInvoicesResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    invoices: ProcessedInvoice[];
+    total: number;
+    page: number;
+    size: number;
+  };
+}
+
+export interface ProcessedInvoicesParams {
+  page: number;
+  size: number;
+}
