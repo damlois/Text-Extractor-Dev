@@ -3,32 +3,13 @@ import { Form, Input, Popconfirm, Table, Typography } from "antd";
 import AppButton from "../../../../../components/AppButton";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
-
-interface LabelSetupTemplateProps {
-  buttonComponent: React.ReactNode;
-  onSuccessCallback?: (values: Record<string, any>) => void;
-  className?: string;
-}
-
-interface DataType {
-  key: string;
-  name: string;
-  description: string;
-}
-
-const originData: DataType[] = Array.from({ length: 5 }).map((_, i) => ({
-  key: i.toString(),
-  name: `Date`,
-  description: "The date on the invoice",
-}));
-
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-  editing: boolean;
-  dataIndex: keyof DataType;
-  title: string;
-  inputType: "text";
-  record: DataType;
-}
+import { useTemplate } from "../../../../../context/TemplateContext";
+import {
+  LabelInfo,
+  EditableCellProps,
+  LabelSetupTemplateProps,
+} from "../../../../../types";
+import { showNotification } from "../../../../../utils/notification";
 
 const EditableCell: React.FC<EditableCellProps> = ({
   editing,
@@ -59,20 +40,32 @@ const EditableCell: React.FC<EditableCellProps> = ({
     </td>
   );
 };
+
 const LabelSetupTemplate = ({
   buttonComponent,
   onSuccessCallback,
   className,
 }: LabelSetupTemplateProps) => {
   const [form] = Form.useForm();
-  const [data, setData] = useState<DataType[]>(originData);
+  const {
+    templateItems,
+    setTemplateItems,
+    loading: templateLoading,
+  } = useTemplate();
   const [editingKey, setEditingKey] = useState<string>("");
-  const [loading, setLoading] = useState(false);
 
-  const isEditing = (record: DataType): boolean => record.key === editingKey;
+  const getTableData = (): LabelInfo[] => {
+    return templateItems.map((item, index) => ({
+      key: index.toString(),
+      label: item.label,
+      description: item.description,
+    }));
+  };
 
-  const edit = (record: Partial<DataType> & { key: React.Key }) => {
-    form.setFieldsValue({ name: "", description: "", ...record });
+  const isEditing = (record: LabelInfo): boolean => record.key === editingKey;
+
+  const edit = (record: Partial<LabelInfo> & { key: React.Key }) => {
+    form.setFieldsValue({ label: "", description: "", ...record });
     setEditingKey(record.key);
   };
 
@@ -82,44 +75,47 @@ const LabelSetupTemplate = ({
 
   const save = async (key: string) => {
     try {
-      const row = (await form.validateFields()) as DataType;
-
-      const newData = [...data];
+      const row = (await form.validateFields()) as LabelInfo;
+      const newData = getTableData();
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
+        newData.splice(index, 1, { ...newData[index], ...row });
+        setTemplateItems(
+          newData.map(({ label, description }) => ({ label, description }))
+        );
         setEditingKey("");
       }
-    } catch (errInfo) {
-      console.log("Validate Failed:", errInfo);
+    } catch {
+      showNotification("error", "Validation failed");
     }
   };
 
   const deleteRow = (key: string) => {
-    const newData = data.filter((item) => item.key !== key);
-    setData(newData);
+    const newData = getTableData().filter((item) => item.key !== key);
+    setTemplateItems(
+      newData.map(({ label, description }) => ({ label, description }))
+    );
     setEditingKey("");
   };
 
   const addNewRow = () => {
     if (editingKey) return;
 
-    const newKey = (data.length + 1).toString();
-    const newRow: DataType = {
+    const newData = getTableData();
+    const newKey = newData.length.toString();
+    const newRow: LabelInfo = {
       key: newKey,
-      name: "",
+      label: "",
       description: "",
     };
-    setData([...data, newRow]);
+    setTemplateItems([...templateItems, { label: "", description: "" }]);
     edit(newRow);
   };
 
   const columns = [
     {
       title: "Field Name",
-      dataIndex: "name",
+      dataIndex: "label",
       width: "30%",
       editable: true,
     },
@@ -133,7 +129,7 @@ const LabelSetupTemplate = ({
       title: "...",
       dataIndex: "operation",
       align: "center" as const,
-      render: (_: any, record: DataType) => {
+      render: (_: any, record: LabelInfo) => {
         const editable = isEditing(record);
         return (
           <div className="flex gap-3 items-center justify-center">
@@ -147,7 +143,9 @@ const LabelSetupTemplate = ({
                   Save
                 </Typography.Link>
                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                  <a>Cancel</a>
+                  <button className="text-blue-500 hover:underline">
+                    Cancel
+                  </button>
                 </Popconfirm>
               </span>
             ) : (
@@ -175,7 +173,7 @@ const LabelSetupTemplate = ({
     }
     return {
       ...col,
-      onCell: (record: DataType) => ({
+      onCell: (record: LabelInfo) => ({
         record,
         inputType: "text",
         dataIndex: col.dataIndex,
@@ -184,12 +182,13 @@ const LabelSetupTemplate = ({
       }),
     };
   });
+
   return (
     <>
       <div className={className}>
         <div className="flex gap-2 items-center font-medium text-base text-dark-gray">
           <p>Check out some recommendations</p>
-          <img src="/assets/icons/insight.svg" />
+          <img src="/assets/icons/insight.svg" alt="Insight icon" />
         </div>
         <div className="flex justify-between w-full gap-4 flex-wrap items-center mb-6">
           <p>Click the + icon to add a new field</p>
@@ -204,23 +203,24 @@ const LabelSetupTemplate = ({
         </div>
         <div className="overflow-x-auto">
           <Form form={form} component={false}>
-            <Table<DataType>
+            <Table<LabelInfo>
               components={{
                 body: { cell: EditableCell },
               }}
               bordered
-              dataSource={data}
+              dataSource={getTableData()}
               columns={mergedColumns}
               rowClassName="editable-row"
               pagination={{ onChange: cancel }}
               className="invoice-app-table"
+              loading={templateLoading}
             />
           </Form>
         </div>
       </div>
       <div onClick={onSuccessCallback}>
         {React.cloneElement(buttonComponent as React.ReactElement, {
-          loading,
+          loading: templateLoading,
         })}
       </div>
     </>
