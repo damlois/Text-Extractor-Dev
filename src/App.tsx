@@ -43,7 +43,7 @@ const App = () => {
                   element={<ExtractionHistory />}
                 />
                 <Route
-                  path="extraction-history/generate-insight"
+                  path="extraction-history/generate-insights"
                   element={<GenerateInsights />}
                 />
                 <Route path="saved-insights" element={<SavedInsights />} />
