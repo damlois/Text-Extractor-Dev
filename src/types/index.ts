@@ -72,6 +72,30 @@ export interface DataSourceInfo {
   // Add other relevant fields based on your data source requirements
 }
 
+export interface DataSourceDetails {
+  data_source_id: string;
+  source_type: string;
+  username: string;
+  password: string;
+  server: string;
+  port: number;
+  status: "active" | "inactive";
+}
+
+export interface DataSourceResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: DataSourceDetails;
+}
+
+export interface ToggleStatusResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: Record<string, never>;
+}
+
 export interface User {
   id: string;
   name: string;

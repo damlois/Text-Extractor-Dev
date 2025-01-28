@@ -1,9 +1,13 @@
 import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import UpdateEmailConfig from "../updateConfigurationModals/UpdateEmailConfig";
-import SuccessModal from "../../../../../../components/SuccessModal";
+import { DataSourceDetails } from "../../../../../../types";
 
-const EmailConfigRow = () => {
+interface EmailConfigRowProps {
+  dataSourceDetails: DataSourceDetails | null;
+}
+
+const EmailConfigRow = ({ dataSourceDetails }: EmailConfigRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const toggleModal = () => {
@@ -32,11 +36,14 @@ const EmailConfigRow = () => {
       </div>
       <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr] text-dark-gray text-[16px]">
         <p className="w-[160px] font-medium">Email Address</p>
-        <p className="font-normal">invoice@company.com</p>
+        <p className="font-normal">
+          {dataSourceDetails?.username || "Not configured"}
+        </p>
       </div>
       <UpdateEmailConfig
         onCancel={() => toggleModal()}
         open={showUpdateModal}
+        dataSourceDetails={dataSourceDetails}
       />
     </div>
   );

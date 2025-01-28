@@ -126,7 +126,9 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
           </div>
         </div>
 
-        {renderSection(invoiceDetails.invoice_data, "Invoice Data")}
+        {/* TODO: add this later */}
+
+        {/* {renderSection(invoiceDetails.invoice_data, "Invoice Data")} */}
 
         {invoiceDetails.image_data && (
           <div className="border rounded p-4">
