@@ -6,7 +6,7 @@ import ViewDataSourceDetails from "./ViewDataSourceDetails";
 const ConfigureDataSource = () => {
   const [loading, setLoading] = useState(false);
 
-  const dataSource = false;
+  const dataSourceExists = localStorage.getItem("data_source_id");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +22,7 @@ const ConfigureDataSource = () => {
       {loading ? (
         <Spin className="mt-20" size="large" />
       ) : (
-        <>{dataSource ? <ViewDataSourceDetails /> : <NoDataSource />}</>
+        <>{dataSourceExists ? <ViewDataSourceDetails /> : <NoDataSource />}</>
       )}
     </div>
   );

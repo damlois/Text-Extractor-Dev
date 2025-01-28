@@ -185,7 +185,7 @@ const LabelSetupTemplate = ({
 
   return (
     <>
-      <div className={className}>
+      <div className={`${className} mb-3`}>
         <div className="flex gap-2 items-center font-medium text-base text-dark-gray">
           <p>Check out some recommendations</p>
           <img src="/assets/icons/insight.svg" alt="Insight icon" />
@@ -219,9 +219,7 @@ const LabelSetupTemplate = ({
         </div>
       </div>
       <div onClick={onSuccessCallback}>
-        {React.cloneElement(buttonComponent as React.ReactElement, {
-          loading: templateLoading,
-        })}
+        {buttonComponent({loading: templateLoading})}
       </div>
     </>
   );

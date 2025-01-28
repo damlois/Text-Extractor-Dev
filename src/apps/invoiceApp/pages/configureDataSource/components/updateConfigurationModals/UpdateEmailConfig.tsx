@@ -37,7 +37,7 @@ const UpdateEmailConfig = ({ open, onCancel }: UpdateEmailConfigProps) => {
           <EmailConfigTemplate
             className="px-6 pt-6"
             onSuccessCallback={onSuccessCallBack}
-            buttonComponent={
+            buttonComponent={({loading}) => (
               <div className="border-t border-[#f0f0f0]">
                 <div className="flex flex-end gap-2 p-6">
                   <AppButton
@@ -52,11 +52,13 @@ const UpdateEmailConfig = ({ open, onCancel }: UpdateEmailConfigProps) => {
                     htmlType="submit"
                     width="fit-content"
                     className="ml-0 mr-0"
+                    loading={loading}
                   >
                     Update
                   </AppButton>
                 </div>
               </div>
+            )
             }
           />
         </div>

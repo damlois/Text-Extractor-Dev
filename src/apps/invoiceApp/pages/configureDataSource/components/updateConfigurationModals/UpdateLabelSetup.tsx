@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import SuccessModal from "../../../../../../components/SuccessModal";
 import { Modal } from "antd";
 import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../../components/AppButton";
+import { useTemplate } from "../../../../../../context/TemplateContext";
+import { showNotification } from "../../../../../../utils/notification";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface UpdateLabelSetupProps {
   open: boolean;
@@ -12,6 +15,9 @@ interface UpdateLabelSetupProps {
 const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  const { saveTemplate } = useTemplate();
+  const navigate = useNavigate();
+
   const toggleSuccessModal = () => {
     setShowSuccessModal(!showSuccessModal);
   };
@@ -19,6 +25,15 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
   const onSuccessCallBack = () => {
     onCancel();
     toggleSuccessModal();
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await saveTemplate();
+      navigate("../data-source");
+    } catch (error) {
+      showNotification("error", "Failed to save template");
+    }
   };
 
   return (
@@ -37,7 +52,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
           <LabelSetupTemplate
             className="px-6 pt-6"
             onSuccessCallback={onSuccessCallBack}
-            buttonComponent={
+            buttonComponent={({ loading }) => (
               <div className="border-t border-[#f0f0f0]">
                 <div className="flex flex-end gap-2 p-6">
                   <AppButton
@@ -52,12 +67,14 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
                     htmlType="submit"
                     width="fit-content"
                     className="ml-0 mr-0"
+                    loading={loading}
+                    onClick={handleUpdate}
                   >
                     Update
                   </AppButton>
                 </div>
               </div>
-            }
+            )}
           />
         </div>
       </Modal>

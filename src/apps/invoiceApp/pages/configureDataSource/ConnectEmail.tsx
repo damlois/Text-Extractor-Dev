@@ -24,9 +24,11 @@ const ConnectEmail = () => {
             showNotification("success", "Email connected Successfully");
             navigate("../data-source/field-extraction-setup");
           }}
-          buttonComponent={
-            <AppButton htmlType="submit">Connect Email</AppButton>
-          }
+          buttonComponent={({ loading }) => (
+            <AppButton htmlType="submit" loading={loading}>
+              Connect Email
+            </AppButton>
+          )}
         />
       </div>
     </div>

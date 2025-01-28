@@ -57,7 +57,6 @@ export interface FileResponse {
   created_at: string;
 }
 
-
 export interface Instruction {
   title: string;
   description: string;
@@ -66,18 +65,17 @@ export interface Instruction {
 
 export type SessionType = "New" | "Existing";
 
-
 export interface DataSourceInfo {
-    id?: string;
-    name: string;
-    type: string;
-    // Add other relevant fields based on your data source requirements
+  id?: string;
+  name: string;
+  type: string;
+  // Add other relevant fields based on your data source requirements
 }
 
 export interface User {
-    id: string;
-    name: string;
-    email: string;
+  id: string;
+  name: string;
+  email: string;
 }
 
 export interface TemplateItem {
@@ -95,7 +93,7 @@ export interface TemplateResponse {
 }
 
 export interface LabelSetupTemplateProps {
-  buttonComponent: React.ReactNode;
+  buttonComponent: (props: { loading: boolean }) => React.ReactNode;
   onSuccessCallback?: () => void;
   className?: string;
 }

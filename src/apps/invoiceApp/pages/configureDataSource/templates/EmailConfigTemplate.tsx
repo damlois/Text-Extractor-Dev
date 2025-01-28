@@ -7,7 +7,7 @@ import { showNotification } from "../../../../../utils/notification";
 import React from "react";
 
 interface EmailConfigTemplateProps {
-  buttonComponent: React.ReactNode;
+  buttonComponent: (props: { loading: boolean }) => React.ReactNode;
   onSuccessCallback?: (values: Record<string, any>) => void;
   className?: string;
 }
@@ -25,13 +25,18 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await configureDataSource({
+      const response = await configureDataSource({
         source_type: "email",
         ...values,
       });
+
+      localStorage.setItem("username", response.data.username);
+      localStorage.setItem("data_source_id", response.data.data_source_id);
+
       if (onSuccessCallback) {
         onSuccessCallback(values);
       }
+
       form.resetFields();
     } catch (error: any) {
       showNotification(
@@ -118,8 +123,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
           </Form.Item>
         ))}
       </div>
-
-      {React.cloneElement(buttonComponent as React.ReactElement, { loading })}
+      {buttonComponent({ loading })}
     </Form>
   );
 };

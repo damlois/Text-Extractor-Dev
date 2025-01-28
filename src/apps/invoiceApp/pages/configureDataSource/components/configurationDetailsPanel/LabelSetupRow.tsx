@@ -44,8 +44,8 @@ const LabelSetupRow = () => {
           Edit
         </div>
       </div>
-      <div className="grid gap-y-2 text-dark-gray text-[16px] lg:pr-8 sm:grid-cols-1 lg:grid-cols-[160px_1fr]">
-        <p className="font-medium">Field List</p>
+      <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr]">
+        <p className="font-medium text-dark-gray text-[16px]">Field List</p>
         <div className="flex flex-wrap gap-4 items-start">
           {labels.map((label, index) => (
             <LabelTag
