@@ -1,106 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table } from "antd";
 import type { TableColumnsType, TableProps } from "antd";
 import AppButton from "../../../../../components/AppButton";
-
-interface ExtractionHistoryTableInfo {
-  key: React.Key;
-  fileName: string;
-  id: string;
-  sourceType: string;
-  sender: string;
-  date: string;
-  status: string;
-}
+import InvoicePreviewModal from "./InvoicePreviewModal";
+import { extractionHistoryData } from "../constants";
+import { ExtractionHistoryTableInfo } from "../types";
 
 const ExtractionHistoryTable = () => {
-  const columns: TableColumnsType<ExtractionHistoryTableInfo> = [
-    {
-      title: "File Name",
-      dataIndex: "fileName",
-      render: (text: string) => (
-        <a className="text-dark-gray text-[14px] font-medium underline">
-          {text}
-        </a>
-      ),
-    },
-    {
-      title: "ID",
-      dataIndex: "id",
-      render: (text: string) => (
-        <span className="text-[#28373] text-[14px]">{text}</span>
-      ),
-    },
-    {
-      title: "Type of Source",
-      dataIndex: "sourceType",
-      render: (text: string) => (
-        <span className="text-dark-gray text-[14px] font-medium">{text}</span>
-      ),
-    },
-    {
-      title: "Sender",
-      dataIndex: "sender",
-      render: (text: string) => (
-        <span className="text-dark-gray text-[14px] font-medium">{text}</span>
-      ),
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      render: (text: string) => (
-        <span className="text-[#28373] text-[14px]">{text}</span>
-      ),
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      render: (text: string) => (
-        <span className="text-[#006A94] text-[12px] px-2 py-[2px] rounded-[100px] bg-[#CCE1EA] ">
-          {text}
-        </span>
-      ),
-    },
-  ];
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [selectedInvoiceDetails, setSelectedInvoiceDetails] =
+    useState<ExtractionHistoryTableInfo | null>(null);
 
-  const data: ExtractionHistoryTableInfo[] = [
-    {
-      key: "1",
-      fileName: "Invoice 1.pdf",
-      id: "#4524524",
-      sourceType: "invoices@company.com",
-      sender: "anita@gmail.com",
-      date: "6/1/2025",
-      status: "Successful",
-    },
-    {
-      key: "2",
-      fileName: "Invoice 1.pdf",
-      id: "#4524524",
-      sourceType: "invoices@company.com",
-      sender: "anita@gmail.com",
-      date: "6/1/2025",
-      status: "Successful",
-    },
-    {
-      key: "3",
-      fileName: "Invoice 1.pdf",
-      id: "#4524524",
-      sourceType: "invoices@company.com",
-      sender: "anita@gmail.com",
-      date: "6/1/2025",
-      status: "Successful",
-    },
-    {
-      key: "4",
-      fileName: "Invoice 1.pdf",
-      id: "#4524524",
-      sourceType: "invoices@company.com",
-      sender: "anita@gmail.com",
-      date: "6/1/2025",
-      status: "Successful",
-    },
-  ];
+  const togglePreviewModal = (rowDetails?: ExtractionHistoryTableInfo) => {
+    setSelectedInvoiceDetails(rowDetails || null);
+    setShowPreviewModal(!showPreviewModal);
+  };
+
+  const extractionHistoryColumns: TableColumnsType<ExtractionHistoryTableInfo> =
+    [
+      {
+        title: "File Name",
+        dataIndex: "fileName",
+        render: (text: string, record: ExtractionHistoryTableInfo) => (
+          <a
+            className="text-dark-gray text-[14px] font-medium underline"
+            onClick={() => togglePreviewModal(record)}
+          >
+            {text}
+          </a>
+        ),
+      },
+      {
+        title: "ID",
+        dataIndex: "id",
+        render: (text: string) => (
+          <span className="text-[#28373] text-[14px]">{text}</span>
+        ),
+      },
+      {
+        title: "Type of Source",
+        dataIndex: "sourceType",
+        render: (text: string) => (
+          <span className="text-dark-gray text-[14px] font-medium">{text}</span>
+        ),
+      },
+      {
+        title: "Sender",
+        dataIndex: "sender",
+        render: (text: string) => (
+          <span className="text-dark-gray text-[14px] font-medium">{text}</span>
+        ),
+      },
+      {
+        title: "Date",
+        dataIndex: "date",
+        render: (text: string) => (
+          <span className="text-[#28373] text-[14px]">{text}</span>
+        ),
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        render: (text: string) => (
+          <span
+            className={`${text.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
+          >
+            {text}
+          </span>
+        ),
+      },
+    ];
 
   const rowSelection: TableProps<ExtractionHistoryTableInfo>["rowSelection"] = {
     onChange: (
@@ -108,12 +77,14 @@ const ExtractionHistoryTable = () => {
       selectedRows: ExtractionHistoryTableInfo[]
     ) => {
       console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRowKeys: ",
+        selectedRowKeys,
         "selectedRows: ",
         selectedRows
       );
     },
   };
+
   return (
     <div>
       <div
@@ -130,11 +101,16 @@ const ExtractionHistoryTable = () => {
       <div className="overflow-x-auto">
         <Table<ExtractionHistoryTableInfo>
           rowSelection={{ type: "checkbox", ...rowSelection }}
-          columns={columns}
-          dataSource={data}
+          columns={extractionHistoryColumns}
+          dataSource={extractionHistoryData}
           className="invoice-app-table extraction-history-table no-vertical-lines"
         />
       </div>
+      <InvoicePreviewModal
+        open={showPreviewModal}
+        onCancel={() => togglePreviewModal(undefined)}
+        invoiceDetails={selectedInvoiceDetails}
+      />
     </div>
   );
 };
