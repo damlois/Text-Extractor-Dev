@@ -86,8 +86,16 @@ export const generateGUID = () => {
   );
 };
 
-// Common validation rules
 export const requiredRule = (field: string) => ({
   required: true,
   message: `${field} is required`,
 });
+
+export const constructTableColumns = (result: any) =>
+  result.length > 0
+    ? Object.keys(result[0]).map((key) => ({
+        title: key.charAt(0).toUpperCase() + key.slice(1),
+        dataIndex: key,
+        key,
+      }))
+    : [];

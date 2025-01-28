@@ -10,6 +10,7 @@ import LandingPage from "./pages/landingPage";
 import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
 import { CombinedProviders } from "./context/CombinedProviders";
 import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
+import GenerateInsights from "./apps/invoiceApp/pages/extractionHistory/GenerateInsights";
 
 const App = () => {
   return (
@@ -40,6 +41,10 @@ const App = () => {
                 <Route
                   path="extraction-history"
                   element={<ExtractionHistory />}
+                />
+                <Route
+                  path="extraction-history/generate-insight"
+                  element={<GenerateInsights />}
                 />
                 <Route path="saved-insights" element={<SavedInsights />} />
               </Route>

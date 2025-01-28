@@ -5,6 +5,7 @@ import AppButton from "../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
 import { extractionHistoryData } from "../constants";
 import { ExtractionHistoryTableInfo } from "../types";
+import { useNavigate } from "react-router-dom";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -15,6 +16,8 @@ const ExtractionHistoryTable = () => {
     setSelectedInvoiceDetails(rowDetails || null);
     setShowPreviewModal(!showPreviewModal);
   };
+
+  const navigate = useNavigate();
 
   const extractionHistoryColumns: TableColumnsType<ExtractionHistoryTableInfo> =
     [
@@ -96,6 +99,7 @@ const ExtractionHistoryTable = () => {
           children="View and Generate Insight"
           width="fit-content"
           className="mr-0 ml-0"
+          onClick={() => navigate("../extraction-history/generate-insight")}
         />
       </div>
       <div className="overflow-x-auto">
