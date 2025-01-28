@@ -99,7 +99,7 @@ const ExtractionHistoryTable = () => {
           children="View and Generate Insight"
           width="fit-content"
           className="mr-0 ml-0"
-          onClick={() => navigate("../extraction-history/generate-insight")}
+          onClick={() => navigate("../extraction-history/generate-insights")}
         />
       </div>
       <div className="overflow-x-auto">
