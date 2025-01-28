@@ -18,13 +18,16 @@ const InvoiceAppTabSelector = () => {
   };
 
   const splittedPathName = window.location.pathname.split("/");
+  const activeTabKey = splittedPathName[2];
+  const currentTabLabel =
+    tabItems.find((tab) => tab.key === activeTabKey)?.label || "";
 
   return (
     <div className="flex flex-col items-start font-inter">
       <PageHeader
-        currentPage="Data Source Configuration"
+        currentPage={currentTabLabel}
         previousPage="Home"
-        pageTitle="Invoice Processing"
+        pageTitle={currentTabLabel}
         action={
           splittedPathName[2] === "data-source" &&
           !splittedPathName[3] &&
@@ -39,7 +42,7 @@ const InvoiceAppTabSelector = () => {
       <div className="flex flex-col items-center w-full py-2">
         <div className="w-full border-b border-[#F0F0F0]">
           <Tabs
-            activeKey={splittedPathName[2]}
+            activeKey={activeTabKey}
             onChange={handleTabChange}
             items={tabItems}
             className="custom-tabs font-inter text-dark-gray px-6 bo"
