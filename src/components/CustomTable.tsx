@@ -66,6 +66,11 @@ const CustomTable: React.FC<CustomTableProps> = ({
               <th
                 key={col.key}
                 className="px-4 py-2 text-left text-gray-700 border-[1px] border-gray-300 border-opacity-30"
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
               >
                 {col.title}
               </th>
@@ -85,6 +90,11 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 <td
                   key={col.key}
                   className="px-4 py-2 text-gray-600 border-[1px] border-gray-300 border-opacity-30"
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
                 >
                   {col.render
                     ? col.render(record[col.dataIndex], record, rowIndex)

@@ -5,7 +5,7 @@ import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../../components/AppButton";
 import { useTemplate } from "../../../../../../context/TemplateContext";
 import { showNotification } from "../../../../../../utils/notification";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateLabelSetupProps {
   open: boolean;
@@ -22,15 +22,11 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
     setShowSuccessModal(!showSuccessModal);
   };
 
-  const onSuccessCallBack = () => {
-    onCancel();
-    toggleSuccessModal();
-  };
-
   const handleUpdate = async () => {
     try {
       await saveTemplate();
-      navigate("../data-source");
+      onCancel();
+      toggleSuccessModal();
     } catch (error) {
       showNotification("error", "Failed to save template");
     }
@@ -51,7 +47,6 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
           </div>
           <LabelSetupTemplate
             className="px-6 pt-6"
-            onSuccessCallback={onSuccessCallBack}
             buttonComponent={({ loading }) => (
               <div className="border-t border-[#f0f0f0]">
                 <div className="flex flex-end gap-2 p-6">
@@ -59,7 +54,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
                     variant="secondary"
                     width="fit-content"
                     className="mr-0"
-                    onClick={() => onCancel()}
+                    onClick={onCancel}
                   >
                     Cancel
                   </AppButton>
@@ -79,7 +74,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
         </div>
       </Modal>
       <SuccessModal
-        onCancel={() => toggleSuccessModal()}
+        onCancel={toggleSuccessModal}
         open={showSuccessModal}
         title="Fields Updated Successfully"
         subtitle="You will be automatically redirected to the main page."

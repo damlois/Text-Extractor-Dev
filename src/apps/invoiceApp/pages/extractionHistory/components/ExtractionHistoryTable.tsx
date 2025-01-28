@@ -5,6 +5,7 @@ import AppButton from "../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../types";
+import { useNavigate } from "react-router-dom";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -18,6 +19,8 @@ const ExtractionHistoryTable = () => {
     pageSize: 10,
     total: 0,
   });
+
+  const navigate = useNavigate();
 
   const fetchInvoices = async (page: number, size: number) => {
     setLoading(true);
@@ -95,7 +98,7 @@ const ExtractionHistoryTable = () => {
         <span
           className={`${text.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
         >
-          {text}
+          {text.toLowerCase()}
         </span>
       ),
     },
@@ -120,6 +123,7 @@ const ExtractionHistoryTable = () => {
           children="View and Generate Insight"
           width="fit-content"
           className="mr-0 ml-0"
+          onClick={() => navigate("../extraction-history/generate-insights")}
           disabled={selectedInvoiceIds.length === 0}
         />
       </div>

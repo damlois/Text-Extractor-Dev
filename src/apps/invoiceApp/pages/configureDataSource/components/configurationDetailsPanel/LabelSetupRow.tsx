@@ -67,7 +67,7 @@ const LabelSetupRow = () => {
           )}
         </div>
       </div>
-      <UpdateLabelSetup onCancel={() => toggleModal()} open={showUpdateModal} />
+      <UpdateLabelSetup onCancel={toggleModal} open={showUpdateModal} />
     </div>
   );
 };
