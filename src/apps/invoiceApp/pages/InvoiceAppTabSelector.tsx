@@ -5,7 +5,7 @@ import PageHeader from "../../../components/PageHeader";
 const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
 
-  const dataSourceExists = false;
+  const dataSourceExists = localStorage.getItem("data_source_id");
 
   const tabItems = [
     { key: "data-source", label: "Data Source Configuration" },

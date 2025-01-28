@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
@@ -9,6 +9,13 @@ import { showNotification } from "../../../../utils/notification";
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
   const { saveTemplate } = useTemplate();
+
+  useEffect(() => {
+    const dataSourceExists = localStorage.getItem("data_source_id");
+    if (!dataSourceExists) {
+      navigate("/invoice-processing/data-source");
+    }
+  }, []);
 
   const handleContinue = async () => {
     try {
@@ -40,11 +47,11 @@ const SetupLabel: React.FC = () => {
         </div>
       </div>
       <LabelSetupTemplate
-        buttonComponent={
-          <AppButton width="70%" onClick={handleContinue}>
+        buttonComponent={({loading}) => (
+          <AppButton width="70%" onClick={handleContinue} loading={loading}>
             Continue
           </AppButton>
-        }
+        )}
       />
     </div>
   );

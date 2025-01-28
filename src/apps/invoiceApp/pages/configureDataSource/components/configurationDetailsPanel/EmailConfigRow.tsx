@@ -30,7 +30,7 @@ const EmailConfigRow = () => {
           Edit
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-6 gap-y-2 text-dark-gray text-[16px]">
+      <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr] text-dark-gray text-[16px]">
         <p className="w-[160px] font-medium">Email Address</p>
         <p className="font-normal">invoice@company.com</p>
       </div>
