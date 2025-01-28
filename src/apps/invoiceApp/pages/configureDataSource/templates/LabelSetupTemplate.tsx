@@ -5,7 +5,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useTemplate } from "../../../../../context/TemplateContext";
 import {
-  DataType,
+  LabelInfo,
   EditableCellProps,
   LabelSetupTemplateProps,
 } from "../../../../../types";
@@ -54,7 +54,7 @@ const LabelSetupTemplate = ({
   } = useTemplate();
   const [editingKey, setEditingKey] = useState<string>("");
 
-  const getTableData = (): DataType[] => {
+  const getTableData = (): LabelInfo[] => {
     return templateItems.map((item, index) => ({
       key: index.toString(),
       label: item.label,
@@ -62,9 +62,9 @@ const LabelSetupTemplate = ({
     }));
   };
 
-  const isEditing = (record: DataType): boolean => record.key === editingKey;
+  const isEditing = (record: LabelInfo): boolean => record.key === editingKey;
 
-  const edit = (record: Partial<DataType> & { key: React.Key }) => {
+  const edit = (record: Partial<LabelInfo> & { key: React.Key }) => {
     form.setFieldsValue({ label: "", description: "", ...record });
     setEditingKey(record.key);
   };
@@ -75,7 +75,7 @@ const LabelSetupTemplate = ({
 
   const save = async (key: string) => {
     try {
-      const row = (await form.validateFields()) as DataType;
+      const row = (await form.validateFields()) as LabelInfo;
       const newData = getTableData();
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -103,7 +103,7 @@ const LabelSetupTemplate = ({
 
     const newData = getTableData();
     const newKey = newData.length.toString();
-    const newRow: DataType = {
+    const newRow: LabelInfo = {
       key: newKey,
       label: "",
       description: "",
@@ -129,7 +129,7 @@ const LabelSetupTemplate = ({
       title: "...",
       dataIndex: "operation",
       align: "center" as const,
-      render: (_: any, record: DataType) => {
+      render: (_: any, record: LabelInfo) => {
         const editable = isEditing(record);
         return (
           <div className="flex gap-3 items-center justify-center">
@@ -173,7 +173,7 @@ const LabelSetupTemplate = ({
     }
     return {
       ...col,
-      onCell: (record: DataType) => ({
+      onCell: (record: LabelInfo) => ({
         record,
         inputType: "text",
         dataIndex: col.dataIndex,
@@ -203,7 +203,7 @@ const LabelSetupTemplate = ({
         </div>
         <div className="overflow-x-auto">
           <Form form={form} component={false}>
-            <Table<DataType>
+            <Table<LabelInfo>
               components={{
                 body: { cell: EditableCell },
               }}

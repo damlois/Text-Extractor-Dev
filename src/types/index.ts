@@ -100,7 +100,7 @@ export interface LabelSetupTemplateProps {
   className?: string;
 }
 
-export interface DataType {
+export interface LabelInfo {
   key: string;
   label: string;
   description: string;
@@ -108,8 +108,8 @@ export interface DataType {
 
 export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
-  dataIndex: keyof DataType;
+  dataIndex: keyof LabelInfo;
   title: string;
   inputType: "text";
-  record: DataType;
+  record: LabelInfo;
 }
