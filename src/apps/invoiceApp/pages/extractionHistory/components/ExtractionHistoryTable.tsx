@@ -98,7 +98,7 @@ const ExtractionHistoryTable = () => {
         <span
           className={`${text.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
         >
-          {text}
+          {text.toLowerCase()}
         </span>
       ),
     },

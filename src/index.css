@@ -342,9 +342,10 @@ input {
   border-bottom: 1px solid #E4E7EC;
 }
 
-td .successful {
+td .successful, td .completed {
   color: #006A94;
   background: #CCE1EA;
+  text-transform: capitalize;
 }
 
 td .failed {
