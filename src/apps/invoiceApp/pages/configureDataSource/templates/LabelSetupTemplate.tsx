@@ -43,7 +43,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 const LabelSetupTemplate = ({
   buttonComponent,
-  onSuccessCallback,
   className,
 }: LabelSetupTemplateProps) => {
   const [form] = Form.useForm();
@@ -218,7 +217,7 @@ const LabelSetupTemplate = ({
           </Form>
         </div>
       </div>
-      <div onClick={onSuccessCallback}>
+      <div>
         {buttonComponent({loading: templateLoading})}
       </div>
     </>
