@@ -226,7 +226,7 @@ export const useChatHistory = (chatType: "document" | "image" | undefined) => {
         currentProject.project_id,
         chatType
       );
-      
+
       setChatHistory(response.data.data);
       setLoading(false);
     };

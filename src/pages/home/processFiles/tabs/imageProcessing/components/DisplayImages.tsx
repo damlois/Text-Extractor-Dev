@@ -1,9 +1,5 @@
 import { Card, Spin } from "antd";
-import {
-  useEffect,
-  useState,
-  useMemo,
-} from "react";
+import { useEffect, useState, useMemo } from "react";
 import AppInput from "../../../../../../components/AppInput";
 import { DownloadOutlined, SearchOutlined } from "@ant-design/icons";
 import ImageModal from "./ImageModal";

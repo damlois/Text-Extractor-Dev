@@ -3,9 +3,22 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
+import { useTemplate } from "../../../../context/TemplateContext";
+import { showNotification } from "../../../../utils/notification";
 
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
+  const { saveTemplate } = useTemplate();
+
+  const handleContinue = async () => {
+    try {
+      await saveTemplate();
+      showNotification("success", "Template saved successfully");
+      navigate("../data-source");
+    } catch (error) {
+      showNotification("error", "Failed to save template");
+    }
+  };
 
   return (
     <div className="w-full relative">
@@ -26,7 +39,13 @@ const SetupLabel: React.FC = () => {
           </p>
         </div>
       </div>
-      <LabelSetupTemplate buttonComponent={<AppButton width="70%" onClick={() => navigate("../data-source")}>Continue</AppButton>} />
+      <LabelSetupTemplate
+        buttonComponent={
+          <AppButton width="70%" onClick={handleContinue}>
+            Continue
+          </AppButton>
+        }
+      />
     </div>
   );
 };
