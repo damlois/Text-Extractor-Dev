@@ -1,4 +1,4 @@
-import { DataSourceInfo, TemplateItem, TemplateResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -10,4 +10,7 @@ export const invoiceProcessorApi = {
 
   updateTemplate: (items: TemplateItem[]) =>
     apiClient.put("/invoices/template", { items }),
+
+  getProcessedInvoices: (params: ProcessedInvoicesParams) =>
+    apiClient.get<ProcessedInvoicesResponse>(`/invoices/processed?page=${params.page}&size=${params.size}`),
 };
