@@ -1,4 +1,4 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -13,4 +13,12 @@ export const invoiceProcessorApi = {
 
   getProcessedInvoices: (params: ProcessedInvoicesParams) =>
     apiClient.get<ProcessedInvoicesResponse>(`/invoices/processed?page=${params.page}&size=${params.size}`),
+
+  getDataSourceDetails: (dataSourceId: string) =>
+
+    apiClient.get<DataSourceResponse>(`/invoices/data-sources/${dataSourceId}`),
+
+  toggleDataSourceStatus: (dataSourceId: string, status: "active" | "inactive") =>
+    apiClient.post<ToggleStatusResponse>(`/invoices/data-sources/${dataSourceId}/toggle-status`, { status }),
 };
+

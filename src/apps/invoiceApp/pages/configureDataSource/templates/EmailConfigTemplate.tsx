@@ -10,12 +10,14 @@ interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
   onSuccessCallback?: (values: Record<string, any>) => void;
   className?: string;
+  initialEmail?: string;
 }
 
 const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   buttonComponent,
   onSuccessCallback,
   className,
+  initialEmail,
 }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -104,7 +106,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       onFinish={onFinish}
       layout="vertical"
       initialValues={{
-        username: "",
+        username: initialEmail || "",
         password: "",
         server: "",
         port: "",

@@ -3,13 +3,19 @@ import EmailConfigTemplate from "../../templates/EmailConfigTemplate";
 import AppButton from "../../../../../../components/AppButton";
 import SuccessModal from "../../../../../../components/SuccessModal";
 import { useState } from "react";
+import { DataSourceDetails } from "../../../../../../types";
 
 interface UpdateEmailConfigProps {
   open: boolean;
   onCancel: () => void;
+  dataSourceDetails: DataSourceDetails | null;
 }
 
-const UpdateEmailConfig = ({ open, onCancel }: UpdateEmailConfigProps) => {
+const UpdateEmailConfig = ({
+  open,
+  onCancel,
+  dataSourceDetails,
+}: UpdateEmailConfigProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const toggleSuccessModal = () => {
@@ -36,8 +42,9 @@ const UpdateEmailConfig = ({ open, onCancel }: UpdateEmailConfigProps) => {
           </div>
           <EmailConfigTemplate
             className="px-6 pt-6"
+            initialEmail={dataSourceDetails?.username}
             onSuccessCallback={onSuccessCallBack}
-            buttonComponent={({loading}) => (
+            buttonComponent={({ loading }) => (
               <div className="border-t border-[#f0f0f0]">
                 <div className="flex flex-end gap-2 p-6">
                   <AppButton
@@ -58,8 +65,7 @@ const UpdateEmailConfig = ({ open, onCancel }: UpdateEmailConfigProps) => {
                   </AppButton>
                 </div>
               </div>
-            )
-            }
+            )}
           />
         </div>
       </Modal>

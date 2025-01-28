@@ -1,25 +1,31 @@
 import { EditOutlined } from "@ant-design/icons";
 import LabelTag from "../../../../../../components/LabelTag";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
+import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
+import { TemplateItem } from "../../../../../../types";
+import { Spin } from "antd";
 
 const LabelSetupRow = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [labels, setLabels] = useState<TemplateItem[]>([]);
 
-  const labels = [
-    "Invoice Number",
-    "Invoice Name",
-    "Vendor Name",
-    "Vendor Address",
-    "Customer Name",
-    "SubTotal",
-    "Invoice Number",
-    "Invoice Name",
-    "Vendor Name",
-    "Vendor Address",
-    "Customer Name",
-    "SubTotal",
-  ];
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      setLoading(true);
+      try {
+        const response = await invoiceProcessorApi.getTemplate();
+        setLabels(response.data.data.items);
+      } catch (error) {
+        console.error("Error fetching template:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTemplate();
+  }, []);
 
   const toggleModal = () => {
     setShowUpdateModal(!showUpdateModal);
@@ -47,14 +53,18 @@ const LabelSetupRow = () => {
       <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr]">
         <p className="font-medium text-dark-gray text-[16px]">Field List</p>
         <div className="flex flex-wrap gap-4 items-start">
-          {labels.map((label, index) => (
-            <LabelTag
-              key={index}
-              id={index}
-              name={label}
-              style={{ padding: "6px 8px" }}
-            />
-          ))}
+          {loading ? (
+            <Spin />
+          ) : (
+            labels.map((item, index) => (
+              <LabelTag
+                key={index}
+                id={index}
+                name={item.label}
+                style={{ padding: "6px 8px" }}
+              />
+            ))
+          )}
         </div>
       </div>
       <UpdateLabelSetup onCancel={() => toggleModal()} open={showUpdateModal} />
