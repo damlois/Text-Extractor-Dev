@@ -55,7 +55,7 @@ const ExtractionDetailsTable = () => {
       ];
   return (
     <div className="flex gap-4 justify-start items-start w-full">
-      <img src="/assets/icons/blue-circle-icon.svg" width={24} height={24} />
+      <img src="/assets/icons/blue-circle-icon.svg" />
       <div style={{ width: "-webkit-fill-available" }}>
         <p className="text-[13px] font-normal text-dark-gray mb-4">
           Review the details of your extraction below
