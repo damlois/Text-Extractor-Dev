@@ -35,7 +35,7 @@ const ConfigureDataSource = () => {
   return (
     <div className="flex flex-col items-start font-inter">
       {loading ? (
-        <Spin className="mt-20" size="large" />
+        <Spin className="mt-20 mx-auto" size="large" />
       ) : (
         <>
           {dataSourceId ? (

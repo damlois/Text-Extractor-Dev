@@ -15,7 +15,6 @@ export const invoiceProcessorApi = {
     apiClient.get<ProcessedInvoicesResponse>(`/invoices/processed?page=${params.page}&size=${params.size}`),
 
   getDataSourceDetails: (dataSourceId: string) =>
-
     apiClient.get<DataSourceResponse>(`/invoices/data-sources/${dataSourceId}`),
 
   toggleDataSourceStatus: (dataSourceId: string, status: "active" | "inactive") =>

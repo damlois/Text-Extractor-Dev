@@ -3,8 +3,6 @@ import { Button, Input } from "antd";
 import { useState } from "react";
 import PrmoptSuggestionRow from "../../../../../components/PromptSuggestionRow";
 import ChatHistorySection from "./ChatHistorySection";
-import { chatHistoryRecord, Message } from "../../../../../types";
-import AppInput from "../../../../../components/AppInput";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");
@@ -60,7 +58,7 @@ const InsightsSection = () => {
             <Input
               placeholder="Ask interprAIs"
               variant="borderless"
-              className="flex-1 text-base focus:outline-none focus:ring-0 focus:border-none border-none"
+              className="flex-1 text-base outline-none focus:ring-0 focus:border-none border-none"
               value={prompt}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPrompt(e.target.value)

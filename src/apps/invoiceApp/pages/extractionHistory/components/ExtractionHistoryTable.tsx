@@ -133,7 +133,7 @@ const ExtractionHistoryTable = () => {
           rowKey="id"
           columns={extractionHistoryColumns}
           dataSource={invoices}
-          className="invoice-app-table extraction-history-table no-vertical-lines"
+          className="app-table extraction-history-table no-vertical-lines"
           loading={loading}
           pagination={pagination}
           onChange={handleTableChange}

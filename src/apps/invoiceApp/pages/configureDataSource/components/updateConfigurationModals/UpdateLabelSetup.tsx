@@ -3,7 +3,7 @@ import SuccessModal from "../../../../../../components/SuccessModal";
 import { Modal } from "antd";
 import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../../components/AppButton";
-import { useTemplate } from "../../../../../../context/TemplateContext";
+import { useTemplate } from "../../../../context/TemplateContext";
 import { showNotification } from "../../../../../../utils/notification";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,6 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { saveTemplate } = useTemplate();
-  const navigate = useNavigate();
 
   const toggleSuccessModal = () => {
     setShowSuccessModal(!showSuccessModal);

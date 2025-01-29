@@ -10,15 +10,6 @@ export interface User {
   role: string;
 }
 
-export interface Project {
-  project_id: string;
-  name: string;
-  description?: string;
-  created_at: string;
-  files_data: FileResponse[];
-  analysis_data: any;
-  image_data: ImageData[];
-}
 
 export interface ImageData {
   craeted_at: string;
@@ -50,20 +41,19 @@ export interface User {
   role: string;
 }
 
-export interface FileResponse {
-  id: number;
-  file_name: string;
-  content: string;
-  created_at: string;
-}
+// export interface FileResponse {
+//   id: number;
+//   file_name: string;
+//   content: string;
+//   created_at: string;
+// }
 
-export interface Instruction {
-  title: string;
-  description: string;
-  data_type?: string;
-}
+// export interface Instruction {
+//   title: string;
+//   description: string;
+//   data_type?: string;
+// }
 
-export type SessionType = "New" | "Existing";
 
 export interface DataSourceInfo {
   id?: string;
@@ -136,7 +126,13 @@ export interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   record: LabelInfo;
 }
 
-export type DynamicValue = string | number | null | boolean | DynamicObject | DynamicValue[];
+export type DynamicValue =
+  | string
+  | number
+  | null
+  | boolean
+  | DynamicObject
+  | DynamicValue[];
 export interface DynamicObject {
   [key: string]: DynamicValue;
 }
@@ -170,4 +166,9 @@ export interface ProcessedInvoicesResponse {
 export interface ProcessedInvoicesParams {
   page: number;
   size: number;
+}
+
+export interface BreadCrumb {
+  label: string;
+  path?: string;
 }

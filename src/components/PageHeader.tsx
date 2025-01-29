@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
+import { BreadCrumb } from "../types";
 
 interface PageHeaderProps {
-  previousPage?: string;
-  currentPage: string;
+  breadcrumbs: BreadCrumb[];
   noBorder?: boolean;
   action?: string;
   onActionClick?: () => void;
@@ -12,8 +12,7 @@ interface PageHeaderProps {
 }
 
 const PageHeader = ({
-  previousPage,
-  currentPage,
+  breadcrumbs = [],
   noBorder,
   action,
   onActionClick,
@@ -31,24 +30,27 @@ const PageHeader = ({
       <div className="flex gap-2 flex-col">
         {!noBreadCrumb && (
           <div className="flex space-x-2 text-gray-600">
-            {previousPage && (
-              <>
-                <span
-                  className="text-gray cursor-pointer"
-                  onClick={() => navigate("/home")}
-                >
-                  {previousPage}
-                </span>
-                <span className="text-gray">/</span>
-              </>
-            )}
-            <span className="text-dark-grey">{currentPage}</span>
+            {breadcrumbs.map((breadcrumb, index) => (
+              <span key={index} className="flex items-center space-x-2">
+                {breadcrumb.path ? (
+                  <span
+                    className="cursor-pointer hover:underline text-gray"
+                    onClick={() => navigate(breadcrumb.path || "/")}
+                  >
+                    {breadcrumb.label}
+                  </span>
+                ) : (
+                  <span className="text-dark-grey">{breadcrumb.label}</span>
+                )}
+                {index < breadcrumbs.length - 1 && <span>/</span>}
+              </span>
+            ))}
           </div>
         )}
 
         <div className="flex flex-col items-start w-full">
           <h1 className="text-black font-medium text-xl">
-            {pageTitle || currentPage}
+            {pageTitle || breadcrumbs[breadcrumbs.length - 1]?.label || ""}
           </h1>
         </div>
       </div>

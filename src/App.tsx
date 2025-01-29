@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
-import ApplicationList from "./pages/home/applicationList/ApplicationList";
+import ApplicationList from "./pages/home/ApplicationList";
 import InvoiceAppTabSelector from "./apps/invoiceApp/pages/InvoiceAppTabSelector";
 import ConfigureDataSource from "./apps/invoiceApp/pages/configureDataSource";
 import ExtractionHistory from "./apps/invoiceApp/pages/extractionHistory";

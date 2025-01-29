@@ -5,9 +5,9 @@ import {
   useState,
   useEffect,
 } from "react";
-import { invoiceProcessorApi } from "../api/invoice-api";
-import { TemplateItem } from "../types";
-import { showNotification } from "../utils/notification";
+import { invoiceProcessorApi } from "../../../api/invoice-api";
+import { TemplateItem } from "../../../types";
+import { showNotification } from "../../../utils/notification";
 
 interface TemplateContextProps {
   templateItems: TemplateItem[];

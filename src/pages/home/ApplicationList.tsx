@@ -1,5 +1,5 @@
 import { Image } from "antd";
-import ApplicationCard from "./components/ApplicationCard";
+import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationList = () => {
