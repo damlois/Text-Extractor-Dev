@@ -26,7 +26,7 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
       onCancel={onCancel}
       footer={null}
       className="app-modal"
-      style={{ minWidth: '30%', top: "30%" }}
+      style={{ minWidth: "30%", top: "30%" }}
     >
       <div>
         <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
@@ -36,11 +36,14 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
           <div className={`flex items-center gap-2 mb-2 `}>
             <p className="text-dark-gray font-bold text-[14.5px]">Date Range</p>
 
-            <Tooltip title="Date Range">
+            <Tooltip title="Select a start and end date to filter data within a specific time period. Only data within this range will be displayed">
               <InfoCircleOutlined className="text-gray-500 text-[14px] cursor-pointer" />
             </Tooltip>
           </div>
-          <RangePicker className="w-full h-[38px]" onChange={handleDateChange} />
+          <RangePicker
+            className="w-full h-[38px]"
+            onChange={handleDateChange}
+          />
         </div>
         <div className="border-t border-[#f0f0f0]">
           <div className="flex flex-end gap-2 p-6 flex-wrap">
