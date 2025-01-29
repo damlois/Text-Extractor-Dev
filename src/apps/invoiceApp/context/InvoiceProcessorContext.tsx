@@ -6,7 +6,7 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceInfo, User } from "../types";
+import { DataSourceInfo, User } from "../../../types";
 
 interface InvoiceProcessorContextProps {
   currentDataSource: DataSourceInfo | null;

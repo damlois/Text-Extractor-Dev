@@ -1,4 +1,4 @@
-import { useInvoiceProcessor } from "../context/InvoiceProcessorContext";
+import { useInvoiceProcessor } from "../apps/invoiceApp/context/InvoiceProcessorContext";
 import { invoiceProcessorApi } from "../api/invoice-api";
 import { DataSourceInfo } from "../types";
 

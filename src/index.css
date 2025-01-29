@@ -106,8 +106,8 @@ table {
   box-shadow: 0 0 0 1px #D9D9D9;
 }
 
-td, th {
-  border: 1px solid #D9D9D9;
+.mono-space-table td, .monospace-table th {
+  border: 1px solid #000;
 }
 
 thead > tr {
@@ -250,7 +250,7 @@ input {
 
 /* For WebKit browsers (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-  width: 5px; /* Horizontal scrollbar height */
+  width: 3px; /* Horizontal scrollbar height */
   height: 5px; /* Vertical scrollbar width */
 }
 
@@ -286,21 +286,25 @@ input {
   color: #006A94 !important;
 }
 
-.invoice-app-table table {
+.app-table td, .app-table th {
+  border: 1px solid #D9D9D9;
+}
+
+.app-table table {
   font-family: "Inter", "sans-serif" !important;
 }
 
-.invoice-app-table td.ant-table-cell {
+.app-table td.ant-table-cell {
   color: rgba(0, 0, 0, 0.85) !important;
   font-size: 14px !important;
   font-weight: 400 !important;
 }
 
-.invoice-app-table .ant-table-tbody>tr>td {
+.app-table .ant-table-tbody>tr>td {
   padding: 10px 12px !important;
 }
 
-.invoice-app-table .ant-table-content >table >thead>tr>th {
+.app-table .ant-table-content >table >thead>tr>th {
   color:  rgba(0, 0, 0, 0.85) !important;
   font-weight: 700 !important;
   font-size: 14px !important;

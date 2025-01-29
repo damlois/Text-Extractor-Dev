@@ -3,7 +3,7 @@ import { Form, Input, Popconfirm, Table, Typography } from "antd";
 import AppButton from "../../../../../components/AppButton";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useTemplate } from "../../../../../context/TemplateContext";
+import { useTemplate } from "../../../context/TemplateContext";
 import {
   LabelInfo,
   EditableCellProps,
@@ -211,7 +211,7 @@ const LabelSetupTemplate = ({
               columns={mergedColumns}
               rowClassName="editable-row"
               pagination={{ onChange: cancel }}
-              className="invoice-app-table"
+              className="app-table"
               loading={templateLoading}
             />
           </Form>

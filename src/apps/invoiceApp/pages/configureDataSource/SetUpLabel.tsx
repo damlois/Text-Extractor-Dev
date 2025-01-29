@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
-import { useTemplate } from "../../../../context/TemplateContext";
+import { useTemplate } from "../../context/TemplateContext";
 import { showNotification } from "../../../../utils/notification";
 
 const SetupLabel: React.FC = () => {

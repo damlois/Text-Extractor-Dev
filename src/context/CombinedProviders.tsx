@@ -1,16 +1,13 @@
 import { ReactNode } from "react";
-import { InvoiceProcessorProvider } from "./InvoiceProcessorContext";
+import { InvoiceProcessorProvider } from "../apps/invoiceApp/context/InvoiceProcessorContext";
 import { FileProcessorProvider } from "./FileProcessorContext";
-import { ImageProcessorProvider } from "./ImageProcessorContext";
-import { TemplateProvider } from "./TemplateContext";
+import { TemplateProvider } from "../apps/invoiceApp/context/TemplateContext";
 
 export const CombinedProviders = ({ children }: { children: ReactNode }) => {
   return (
     <InvoiceProcessorProvider>
       <FileProcessorProvider>
-        <ImageProcessorProvider>
-          <TemplateProvider>{children}</TemplateProvider>
-        </ImageProcessorProvider>
+        <TemplateProvider>{children}</TemplateProvider>
       </FileProcessorProvider>
     </InvoiceProcessorProvider>
   );
