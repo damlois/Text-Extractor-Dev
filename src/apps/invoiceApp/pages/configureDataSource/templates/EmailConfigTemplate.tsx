@@ -2,9 +2,9 @@ import { Form } from "antd";
 import AppInput from "../../../../../components/AppInput";
 import { requiredRule } from "../../../../../utils";
 import { useState } from "react";
-import { useConfigureDataSource } from "../../../../../hooks/useInvoiceProcessor";
 import { showNotification } from "../../../../../utils/notification";
 import React from "react";
+import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -22,18 +22,13 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { configureDataSource } = useConfigureDataSource();
-
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await configureDataSource({
+      await invoiceProcessorApi.configureDataSource({
         source_type: "email",
         ...values,
       });
-
-      localStorage.setItem("username", response.data.username);
-      localStorage.setItem("data_source_id", response.data.data_source_id);
 
       if (onSuccessCallback) {
         onSuccessCallback(values);

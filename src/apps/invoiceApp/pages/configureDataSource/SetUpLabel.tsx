@@ -5,14 +5,16 @@ import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
 import { useTemplate } from "../../context/TemplateContext";
 import { showNotification } from "../../../../utils/notification";
+import { useInvoiceProcessor } from "../../context/InvoiceProcessorContext";
 
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
   const { saveTemplate } = useTemplate();
 
+  const { currentDataSource } = useInvoiceProcessor();
+
   useEffect(() => {
-    const dataSourceExists = localStorage.getItem("data_source_id");
-    if (!dataSourceExists) {
+    if (!currentDataSource) {
       navigate("/invoice-processing/data-source");
     }
   }, []);
@@ -47,7 +49,7 @@ const SetupLabel: React.FC = () => {
         </div>
       </div>
       <LabelSetupTemplate
-        buttonComponent={({loading}) => (
+        buttonComponent={({ loading }) => (
           <AppButton width="70%" onClick={handleContinue} loading={loading}>
             Continue
           </AppButton>
