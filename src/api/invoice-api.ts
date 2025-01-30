@@ -1,4 +1,4 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse, SuggestedPromptsResponse } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -19,5 +19,49 @@ export const invoiceProcessorApi = {
 
   toggleDataSourceStatus: (dataSourceId: string, status: "active" | "inactive") =>
     apiClient.post<ToggleStatusResponse>(`/invoices/data-sources/${dataSourceId}/toggle-status`, { status }),
+
+  chatWithInvoices: (data: ChatRequest) =>
+    apiClient.post<ChatResponse>("/invoices/chat", data),
+
+  getChatSession: (sessionId: string) =>
+    apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
+
+  getInvoiceMetrics: () =>
+    apiClient.get<InvoiceMetricsResponse>("/invoices/invoice-metrics"),
+
+  getInvoiceDetails: async (invoiceId: string) => {
+    try {
+      const response = await apiClient.get(`/invoices/invoices/${invoiceId}`);
+      return response;
+    } catch (error) {
+      console.error("Error fetching invoice details:", error);
+      throw error;
+    }
+  },
+
+  getBatchInvoiceDetails: async (invoiceIds: string[]) => {
+    try {
+      const response = await apiClient.post('/invoices/invoices/batch', invoiceIds);
+      return response;
+    } catch (error) {
+      console.error("Error fetching batch invoice details:", error);
+      throw error;
+    }
+  },
+
+  getSuggestedPrompts: async (invoiceIds: string[], sessionId?: string) => {
+    try {
+      const queryParams = new URLSearchParams();
+      invoiceIds.forEach(id => queryParams.append('invoice_ids', id));
+      if (sessionId) {
+        queryParams.append('session_id', sessionId);
+      }
+      const response = await apiClient.get<SuggestedPromptsResponse>(`/invoices/chat/suggested-prompts?${queryParams}`);
+      return response;
+    } catch (error) {
+      console.error("Error fetching suggested prompts:", error);
+      throw error;
+    }
+  },
 };
 

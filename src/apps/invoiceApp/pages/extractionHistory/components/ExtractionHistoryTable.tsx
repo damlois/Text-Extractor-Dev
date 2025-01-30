@@ -123,7 +123,11 @@ const ExtractionHistoryTable = () => {
           children="View and Generate Insight"
           width="fit-content"
           className="mr-0 ml-0"
-          onClick={() => navigate("../extraction-history/generate-insights")}
+          onClick={() =>
+            navigate("../extraction-history/generate-insights", {
+              state: { selectedInvoiceIds },
+            })
+          }
           disabled={selectedInvoiceIds.length === 0}
         />
       </div>
