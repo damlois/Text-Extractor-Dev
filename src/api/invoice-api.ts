@@ -28,5 +28,25 @@ export const invoiceProcessorApi = {
 
   getInvoiceMetrics: () =>
     apiClient.get<InvoiceMetricsResponse>("/invoices/invoice-metrics"),
+
+  getInvoiceDetails: async (invoiceId: string) => {
+    try {
+      const response = await apiClient.get(`/invoices/invoices/${invoiceId}`);
+      return response;
+    } catch (error) {
+      console.error("Error fetching invoice details:", error);
+      throw error;
+    }
+  },
+
+  getBatchInvoiceDetails: async (invoiceIds: string[]) => {
+    try {
+      const response = await apiClient.post('/invoices/invoices/batch', invoiceIds);
+      return response;
+    } catch (error) {
+      console.error("Error fetching batch invoice details:", error);
+      throw error;
+    }
+  },
 };
 

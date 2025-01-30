@@ -40,18 +40,15 @@ const ExtractionDetailsTable = () => {
 
   useEffect(() => {
     const fetchSelectedInvoices = async () => {
+      if (selectedInvoiceIds.length === 0) return;
+
       setLoading(true);
       try {
-        const response = await invoiceProcessorApi.getProcessedInvoices({
-          page: 1,
-          size: 100,
-        });
-
-        const filtered = response.data.data.invoices.filter((invoice) =>
-          selectedInvoiceIds.includes(invoice.id)
+        const response = await invoiceProcessorApi.getBatchInvoiceDetails(
+          selectedInvoiceIds
         );
-
-        setSelectedInvoices(formatInvoiceData(filtered));
+        const invoices = response.data.data;
+        setSelectedInvoices(formatInvoiceData(invoices));
       } catch (error) {
         console.error("Error fetching selected invoices:", error);
       } finally {
@@ -59,9 +56,7 @@ const ExtractionDetailsTable = () => {
       }
     };
 
-    if (selectedInvoiceIds.length > 0) {
-      fetchSelectedInvoices();
-    }
+    fetchSelectedInvoices();
   }, [selectedInvoiceIds]);
 
   return (
