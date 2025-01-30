@@ -1,51 +1,23 @@
 import { useState, useEffect } from "react";
 import { Table, Dropdown, Button } from "antd";
-import type {TableColumnsType } from "antd";
+import type { TableColumnsType } from "antd";
 import { FaEllipsisVertical } from "react-icons/fa6";
 import FilterInsightsModal from "./components/FilterInsightsModal";
-
-export interface SavedInsights {
-  insightSummary: string;
-  created_at: string;
-}
+import { invoiceProcessorApi } from "../../../../api/invoice-api";
+import { ChatSessionSummary } from "../../../../types";
+import { useNavigate } from "react-router-dom";
 
 const SavedInsights = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [savedInsights, setSavedInsights] = useState<SavedInsights[]>([]);
+  const [savedInsights, setSavedInsights] = useState<ChatSessionSummary[]>([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
 
-  const data = [
-    {
-      insightSummary: "Difference in payment terms across invoices",
-      created_at: "9th January 2025",
-    },
-    {
-      insightSummary: "Difference in payment terms across invoices",
-      created_at: "9th January 2025",
-    },
-    {
-      insightSummary: "Difference in payment terms across invoices",
-      created_at: "9th January 2025",
-    },
-    {
-      insightSummary: "Difference in payment terms across invoices",
-      created_at: "9th January 2025",
-    },
-    {
-      insightSummary: "Difference in payment terms across invoices",
-      created_at: "9th January 2025",
-    },
-  ];
-
-  const fetchSavedInsights = async (page: number, size: number) => {
+  const fetchSavedInsights = async () => {
     setLoading(true);
     try {
-      setSavedInsights(data);
+      const response = await invoiceProcessorApi.getChatSessions();
+      setSavedInsights(response.data.data);
     } catch (error) {
       console.error("Error fetching saved insights:", error);
     } finally {
@@ -56,15 +28,29 @@ const SavedInsights = () => {
   const toggleFilterModal = () => setShowFilterModal(!showFilterModal);
 
   useEffect(() => {
-    fetchSavedInsights(1, 10);
+    fetchSavedInsights();
   }, []);
 
-  const savedInsightsColumns: TableColumnsType<SavedInsights> = [
+  const handleViewSession = (sessionId: string, invoiceIds: string[]) => {
+    navigate("../extraction-history/generate-insights", {
+      state: {
+        selectedInvoiceIds: invoiceIds,
+        sessionId: sessionId,
+      },
+    });
+  };
+
+  const savedInsightsColumns: TableColumnsType<ChatSessionSummary> = [
     {
       title: "Saved Insights",
-      dataIndex: "insightSummary",
-      render: (text: string, record: SavedInsights) => (
-        <button className="text-dark-gray text-[14px] font-medium underline text-left">
+      dataIndex: "title",
+      render: (text: string, record: ChatSessionSummary) => (
+        <button
+          className="text-dark-gray text-[14px] font-medium underline text-left"
+          onClick={() =>
+            handleViewSession(record.session_id, record.invoice_ids)
+          }
+        >
           {text}
         </button>
       ),
@@ -73,23 +59,30 @@ const SavedInsights = () => {
       title: "Date",
       dataIndex: "created_at",
       render: (text: string) => (
-        <span className="text-[#28373] text-[14px]">{text}</span>
+        <span className="text-[#28373] text-[14px]">
+          {new Date(text).toLocaleDateString()}
+        </span>
       ),
     },
     {
       title: "",
       key: "actions",
       align: "center" as const,
-      render: (_: any, record: SavedInsights) => (
+      render: (_: any, record: ChatSessionSummary) => (
         <Dropdown
           menu={{
             items: [
               {
                 key: "1",
                 label: (
-                  <a onClick={() => alert(`view ${record.insightSummary}`)}>
+                  <button
+                    className="w-full text-left"
+                    onClick={() =>
+                      handleViewSession(record.session_id, record.invoice_ids)
+                    }
+                  >
                     View
-                  </a>
+                  </button>
                 ),
               },
             ],
@@ -105,10 +98,6 @@ const SavedInsights = () => {
     },
   ];
 
-  const handleTableChange = (pagination: any) => {
-    // fetchInvoices(pagination.current, pagination.pageSize);
-  };
-
   return (
     <div>
       <div
@@ -123,14 +112,13 @@ const SavedInsights = () => {
         />
       </div>
       <div className="overflow-x-auto">
-        <Table<SavedInsights>
-          rowKey="id"
+        <Table<ChatSessionSummary>
+          rowKey="session_id"
           columns={savedInsightsColumns}
           dataSource={savedInsights}
           className="invoice-app-table extraction-history-table no-vertical-lines"
           loading={loading}
-          pagination={pagination}
-          onChange={handleTableChange}
+          pagination={savedInsights.length > 10 ? { pageSize: 10 } : false}
         />
       </div>
       <FilterInsightsModal
