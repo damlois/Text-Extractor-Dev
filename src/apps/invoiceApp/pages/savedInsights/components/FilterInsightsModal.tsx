@@ -1,6 +1,6 @@
-import { DatePicker, Modal, Tooltip } from "antd";
+import { Modal } from "antd";
 import AppButton from "../../../../../components/AppButton";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import DateRangePicker from "../../../../../components/DateRangePicker";
 
 interface FilterInsightsModalProps {
   open: boolean;
@@ -8,8 +8,6 @@ interface FilterInsightsModalProps {
 }
 
 const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
-  const { RangePicker } = DatePicker;
-
   const handleDateChange = (dates: any) => {
     if (dates) {
       const [dateFrom, dateTo] = dates;
@@ -33,16 +31,10 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
           Filter by Date
         </div>
         <div className="p-6">
-          <div className={`flex items-center gap-2 mb-2 `}>
-            <p className="text-dark-gray font-bold text-[14.5px]">Date Range</p>
-
-            <Tooltip title="Select a start and end date to filter data within a specific time period. Only data within this range will be displayed">
-              <InfoCircleOutlined className="text-gray-500 text-[14px] cursor-pointer" />
-            </Tooltip>
-          </div>
-          <RangePicker
-            className="w-full h-[38px]"
-            onChange={handleDateChange}
+          <DateRangePicker
+            onDateChange={(dates) => {
+              handleDateChange(dates);
+            }}
           />
         </div>
         <div className="border-t border-[#f0f0f0]">
