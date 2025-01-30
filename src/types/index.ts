@@ -210,6 +210,18 @@ export interface ChatRequest {
   prompt: string;
 }
 
+export interface SuggestedPromptsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    prompts: {
+      [key: string]: string;
+    };
+  };
+}
+
+
 export interface InvoiceMetricsResponse {
   status_code: number;
   status: string;

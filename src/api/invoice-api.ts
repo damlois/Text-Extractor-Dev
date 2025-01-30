@@ -1,4 +1,4 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse, SuggestedPromptsResponse } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -45,6 +45,21 @@ export const invoiceProcessorApi = {
       return response;
     } catch (error) {
       console.error("Error fetching batch invoice details:", error);
+      throw error;
+    }
+  },
+
+  getSuggestedPrompts: async (invoiceIds: string[], sessionId?: string) => {
+    try {
+      const queryParams = new URLSearchParams();
+      invoiceIds.forEach(id => queryParams.append('invoice_ids', id));
+      if (sessionId) {
+        queryParams.append('session_id', sessionId);
+      }
+      const response = await apiClient.get<SuggestedPromptsResponse>(`/invoices/chat/suggested-prompts?${queryParams}`);
+      return response;
+    } catch (error) {
+      console.error("Error fetching suggested prompts:", error);
       throw error;
     }
   },

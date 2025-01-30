@@ -1,8 +1,8 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Input } from "antd";
-import { useState } from "react";
+import { Button, Input, Spin } from "antd";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-// import PrmoptSuggestionRow from "../../../../../components/PromptSuggestionRow";
+import PrmoptSuggestionRow from "../../../../../components/PromptSuggestionRow";
 import ChatHistorySection from "./ChatHistorySection";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ChatSession, chatHistoryRecord } from "../../../../../types";
@@ -11,14 +11,39 @@ const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");
   const [responseLoading, setResponseLoading] = useState(false);
   const [chatSession, setChatSession] = useState<ChatSession | null>(null);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const location = useLocation();
-  const selectedInvoiceIds = location.state?.selectedInvoiceIds || [];
 
-  // const suggestions = [
-  //   "What's the difference in payment terms across invoices?",
-  //   "How do currency and exchange rates differ between invoices?",
-  //   "How do discounts vary across invoices?",
-  // ];
+  const selectedInvoiceIds = useMemo(
+    () => location.state?.selectedInvoiceIds || [],
+    [location.state?.selectedInvoiceIds]
+  );
+
+  const fetchSuggestedPrompts = useCallback(async () => {
+    setLoadingSuggestions(true);
+    try {
+      const response = await invoiceProcessorApi.getSuggestedPrompts(
+        selectedInvoiceIds,
+        chatSession?.session_id
+      );
+      // Extract just the prompt text values from the prompts object
+      const promptValues = Object.values(response.data.data.prompts || {});
+      setSuggestedPrompts(promptValues);
+    } catch (error) {
+      console.error("Error fetching suggested prompts:", error);
+      setSuggestedPrompts([]);
+    } finally {
+      setLoadingSuggestions(false);
+    }
+  }, [selectedInvoiceIds, chatSession?.session_id]);
+
+  // Fetch initial suggestions when component mounts
+  useEffect(() => {
+    if (selectedInvoiceIds.length > 0) {
+      fetchSuggestedPrompts();
+    }
+  }, [selectedInvoiceIds, fetchSuggestedPrompts]);
 
   const mapMessagesToHistory = (session: ChatSession): chatHistoryRecord[] => {
     return session.messages.map((msg) => ({
@@ -44,6 +69,9 @@ const InsightsSection = () => {
 
       setChatSession(response.data.data);
       setPrompt("");
+
+      // Fetch new suggestions after each message
+      await fetchSuggestedPrompts();
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
@@ -59,10 +87,12 @@ const InsightsSection = () => {
       />
 
       <div className="border-t border-[#0000000F] px-6 py-5">
-        {/* <PrmoptSuggestionRow
-          promptSuggestions={suggestions}
-          setPrompt={setPrompt}
-        /> */}
+        <Spin spinning={loadingSuggestions}>
+          <PrmoptSuggestionRow
+            promptSuggestions={suggestedPrompts}
+            setPrompt={setPrompt}
+          />
+        </Spin>
 
         <div className="w-full text-center">
           <div className="flex items-center border border-[#D9D9D9] rounded-full px-4 py-2 shadow-sm mt-5">
