@@ -198,3 +198,12 @@ export interface ChatRequest {
   invoice_ids: string[];
   prompt: string;
 }
+
+export interface InvoiceMetricsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    [key: string]: number; 
+  };
+}
