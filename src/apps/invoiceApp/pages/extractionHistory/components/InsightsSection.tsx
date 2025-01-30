@@ -1,37 +1,48 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Input } from "antd";
 import { useState } from "react";
-import PrmoptSuggestionRow from "../../../../../components/PromptSuggestionRow";
+import { useLocation } from "react-router-dom";
+// import PrmoptSuggestionRow from "../../../../../components/PromptSuggestionRow";
 import ChatHistorySection from "./ChatHistorySection";
+import { invoiceProcessorApi } from "../../../../../api/invoice-api";
+import { ChatSession, chatHistoryRecord } from "../../../../../types";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");
   const [responseLoading, setResponseLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatSession, setChatSession] = useState<ChatSession | null>(null);
+  const location = useLocation();
+  const selectedInvoiceIds = location.state?.selectedInvoiceIds || [];
 
-  const suggestions = [
-    "What’s the difference in payment terms across invoices?",
-    "How do currency and exchange rates differ between invoices?",
-    "How do discounts vary across invoices?",
-  ];
+  // const suggestions = [
+  //   "What's the difference in payment terms across invoices?",
+  //   "How do currency and exchange rates differ between invoices?",
+  //   "How do discounts vary across invoices?",
+  // ];
+
+  const mapMessagesToHistory = (session: ChatSession): chatHistoryRecord[] => {
+    return session.messages.map((msg) => ({
+      prompt: msg.prompt,
+      response: msg.response,
+      session_id: session.session_id,
+      type: "chat",
+      timestamp: msg.created_at,
+    }));
+  };
 
   const handleSendMessage = async (query?: string) => {
-    if (!prompt?.trim() && !query?.trim()) return;
-
-    setChatHistory((prevMessages) => [
-      ...prevMessages,
-      { prompt: prompt, from: "user" },
-    ]);
+    const messageText = query?.trim() || prompt?.trim();
+    if (!messageText) return;
 
     setResponseLoading(true);
     try {
-      const apiResponse = "Here is the API's response to your prompt.";
+      const response = await invoiceProcessorApi.chatWithInvoices({
+        session_id: chatSession?.session_id,
+        invoice_ids: selectedInvoiceIds,
+        prompt: messageText,
+      });
 
-      setChatHistory((prevMessages) => [
-        ...prevMessages,
-        { response: apiResponse, from: "model" },
-      ]);
-
+      setChatSession(response.data.data);
       setPrompt("");
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -43,15 +54,15 @@ const InsightsSection = () => {
   return (
     <div>
       <ChatHistorySection
-        chatHistory={chatHistory}
+        chatHistory={chatSession ? mapMessagesToHistory(chatSession) : []}
         handleSendMessage={handleSendMessage}
       />
 
       <div className="border-t border-[#0000000F] px-6 py-5">
-        <PrmoptSuggestionRow
+        {/* <PrmoptSuggestionRow
           promptSuggestions={suggestions}
           setPrompt={setPrompt}
-        />
+        /> */}
 
         <div className="w-full text-center">
           <div className="flex items-center border border-[#D9D9D9] rounded-full px-4 py-2 shadow-sm mt-5">
@@ -64,6 +75,7 @@ const InsightsSection = () => {
                 setPrompt(e.target.value)
               }
               onPressEnter={() => handleSendMessage()}
+              disabled={selectedInvoiceIds.length === 0}
             />
             <Button
               type="primary"
@@ -72,7 +84,7 @@ const InsightsSection = () => {
               className="bg-gradient-to-b from-deep-blue to-[#F25325]"
               onClick={() => handleSendMessage()}
               loading={responseLoading}
-              disabled={responseLoading}
+              disabled={responseLoading || selectedInvoiceIds.length === 0}
             />
           </div>
 

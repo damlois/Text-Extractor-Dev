@@ -1,4 +1,4 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -19,5 +19,11 @@ export const invoiceProcessorApi = {
 
   toggleDataSourceStatus: (dataSourceId: string, status: "active" | "inactive") =>
     apiClient.post<ToggleStatusResponse>(`/invoices/data-sources/${dataSourceId}/toggle-status`, { status }),
+
+  chatWithInvoices: (data: ChatRequest) =>
+    apiClient.post<ChatResponse>("/invoices/chat", data),
+
+  getChatSession: (sessionId: string) =>
+    apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
 };
 

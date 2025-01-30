@@ -172,3 +172,29 @@ export interface BreadCrumb {
   label: string;
   path?: string;
 }
+
+export interface ChatMessage {
+  prompt: string;
+  response: string;
+  created_at: string;
+}
+
+export interface ChatSession {
+  session_id: string;
+  invoice_ids: string[];
+  messages: ChatMessage[];
+  created_at: string;
+}
+
+export interface ChatResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: ChatSession;
+}
+
+export interface ChatRequest {
+  session_id?: string;
+  invoice_ids: string[];
+  prompt: string;
+}

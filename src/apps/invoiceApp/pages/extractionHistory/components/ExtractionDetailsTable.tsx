@@ -1,76 +1,93 @@
+import { useLocation } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
 import CustomTable from "../../../../../components/CustomTable";
 import { constructTableColumns } from "../../../../../utils";
+import { useEffect, useState, useMemo } from "react";
+import { invoiceProcessorApi } from "../../../../../api/invoice-api";
+import { ProcessedInvoice } from "../../../../../types";
+import { Spin } from "antd";
+
+interface DisplayInvoice
+  extends Pick<
+    ProcessedInvoice,
+    "id" | "file_name" | "processing_status" | "created_at" | "invoice_data"
+  > {}
 
 const ExtractionDetailsTable = () => {
-  const result = [
-    {
-      id: "1",
-      "Invoice Name": "Lois Adegbohungbe",
-      "Invoice Date": "26-01-2025",
-      "Vendor Name": "Lola Akindipe",
-      "Vendor Address": "34 Kings Strret",
-      "Loan Term": "15 days",
-      "Due Date": "15-03-2023",
-      "Total Sales": "$25",
-      "Late Payment Fee": "$25,000",
-      "Payment Due Date": "15-09-2027",
-    },
-    {
-      id: "2",
-      "Invoice Name": "Lois Adegbohungbe",
-      "Invoice Date": "26-01-2025",
-      "Vendor Name": "Lola Akindipe",
-      "Vendor Address": "34 Kings Strret",
-      "Loan Term": "15 days",
-      "Due Date": "15-03-2023",
-      "Total Sales": "$25",
-      "Late Payment Fee": "$25,000",
-      "Payment Due Date": "15-09-2027",
-    },
-    {
-      id: "3",
-      "Invoice Name": "Lois Adegbohungbe",
-      "Invoice Date": "26-01-2025",
-      "Vendor Name": "Lola Akindipe",
-      "Vendor Address": "34 Kings Strret",
-      "Loan Term": "15 days",
-      "Due Date": "15-03-2023",
-      "Total Sales": "$25",
-      "Late Payment Fee": "$25,000",
-      "Payment Due Date": "15-09-2027",
-    },
-    {
-      id: "4",
-      "Invoice Name": "Lois Adegbohungbe",
-      "Invoice Date": "26-01-2025",
-      "Vendor Name": "Lola Akindipe",
-      "Vendor Address": "34 Kings Strret",
-      "Loan Term": "15 days",
-      "Due Date": "15-03-2023",
-      "Total Sales": "$25",
-      "Late Payment Fee": "$25,000",
-      "Payment Due Date": "15-09-2027",
-    },
-  ];
+  const [selectedInvoices, setSelectedInvoices] = useState<DisplayInvoice[]>(
+    []
+  );
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const selectedInvoiceIds = useMemo(
+    () => location.state?.selectedInvoiceIds || [],
+    [location.state?.selectedInvoiceIds]
+  );
+
+  const formatInvoiceData = (
+    invoices: ProcessedInvoice[]
+  ): DisplayInvoice[] => {
+    return invoices.map(
+      ({ id, file_name, processing_status, created_at, invoice_data }) => ({
+        id,
+        file_name,
+        processing_status,
+        created_at: new Date(created_at).toLocaleDateString(),
+        invoice_data,
+      })
+    );
+  };
+
+  useEffect(() => {
+    const fetchSelectedInvoices = async () => {
+      setLoading(true);
+      try {
+        const response = await invoiceProcessorApi.getProcessedInvoices({
+          page: 1,
+          size: 100,
+        });
+
+        const filtered = response.data.data.invoices.filter((invoice) =>
+          selectedInvoiceIds.includes(invoice.id)
+        );
+
+        setSelectedInvoices(formatInvoiceData(filtered));
+      } catch (error) {
+        console.error("Error fetching selected invoices:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedInvoiceIds.length > 0) {
+      fetchSelectedInvoices();
+    }
+  }, [selectedInvoiceIds]);
+
   return (
     <div className="flex gap-4 justify-start items-start w-full">
-      <img src="/assets/icons/blue-circle-icon.svg" />
+      <img src="/assets/icons/blue-circle-icon.svg" alt="InterprAIs Logo" />
       <div style={{ width: "-webkit-fill-available" }}>
         <p className="text-[13px] font-normal text-dark-gray mb-4">
           Review the details of your extraction below
         </p>
         <div className="w-full monospace-table mr-[48px]">
-          <CustomTable
-            dataSource={result}
-            columns={constructTableColumns(result)}
-            rowKey="id"
-            pagination={result.length > 7 ? { pageSize: 7 } : false}
-            bordered
-            striped
-          />
+          <Spin spinning={loading}>
+            <CustomTable
+              dataSource={selectedInvoices}
+              columns={
+                selectedInvoices.length > 0
+                  ? constructTableColumns(selectedInvoices)
+                  : []
+              }
+              rowKey="id"
+              pagination={selectedInvoices.length > 7 ? { pageSize: 7 } : false}
+              bordered
+              striped
+            />
+          </Spin>
         </div>
-        <DownloadResults result={result} />
+        <DownloadResults result={selectedInvoices} />
       </div>
     </div>
   );
