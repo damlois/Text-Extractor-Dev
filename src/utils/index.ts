@@ -91,11 +91,60 @@ export const requiredRule = (field: string) => ({
   message: `${field} is required`,
 });
 
-export const constructTableColumns = (result: any) =>
-  result.length > 0
-    ? Object.keys(result[0]).map((key) => ({
-        title: key.charAt(0).toUpperCase() + key.slice(1),
-        dataIndex: key,
-        key,
-      }))
-    : [];
+export const constructTableColumns = (result: any) => {
+  if (result.length === 0) return [];
+
+  const flattenObject = (obj: any, prefix = '') => {
+    return Object.keys(obj).reduce((acc: any, key: string) => {
+      const value = obj[key];
+      const newKey = prefix ? `${prefix}_${key}` : key;
+
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        Object.assign(acc, flattenObject(value, newKey));
+      } else {
+        acc[newKey] = value;
+      }
+
+      return acc;
+    }, {});
+  };
+
+  // Get the first result with invoice_data flattened
+  const firstResult = result[0];
+  const flattenedInvoiceData = firstResult.invoice_data
+    ? flattenObject(firstResult.invoice_data)
+    : {};
+
+  // Combine base fields with flattened invoice data fields
+  const baseColumns = [
+    {
+      title: '#',
+      key: 'index',
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+      title: 'File Name',
+      dataIndex: 'file_name',
+      key: 'file_name',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'processing_status',
+      key: 'processing_status',
+    },
+    {
+      title: 'Date Created',
+      dataIndex: 'created_at',
+      key: 'created_at',
+    },
+  ];
+
+  const invoiceDataColumns = Object.keys(flattenedInvoiceData).map(key => ({
+    title: key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+    dataIndex: ['invoice_data', ...key.split('_')],
+    key,
+  }));
+
+  return [...baseColumns, ...invoiceDataColumns];
+};
+

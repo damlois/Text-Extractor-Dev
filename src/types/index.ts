@@ -126,15 +126,26 @@ export interface DynamicObject {
 export interface ProcessedInvoice {
   id: string;
   file_name: string;
-  content: DynamicObject;
-  processing_status: string;
-  created_at: string;
-  invoice_data: DynamicObject & {
-    sender: string;
-  };
+  content: string;
+  invoice_data: DynamicObject;
   image_data: string;
   sender: string;
-  images: null | string[];
+  processing_status: string;
+  created_at: string;
+}
+
+export interface InvoiceDetailsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: ProcessedInvoice;
+}
+
+export interface BatchInvoiceDetailsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: ProcessedInvoice[];
 }
 
 export interface ProcessedInvoicesResponse {
@@ -167,4 +178,50 @@ export interface ExtractionHistoryFilter {
   status?: ExtractionStatus;
   dateFrom?: string;
   dateTo?: string;
+}
+export interface ChatMessage {
+  prompt: string;
+  response: string;
+  created_at: string;
+}
+
+export interface ChatSession {
+  session_id: string;
+  invoice_ids: string[];
+  messages: ChatMessage[];
+  created_at: string;
+}
+
+export interface ChatResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: ChatSession;
+}
+
+export interface ChatRequest {
+  session_id?: string;
+  invoice_ids: string[];
+  prompt: string;
+}
+
+export interface SuggestedPromptsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    prompts: {
+      [key: string]: string;
+    };
+  };
+}
+
+
+export interface InvoiceMetricsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: {
+    [key: string]: number;
+  };
 }
