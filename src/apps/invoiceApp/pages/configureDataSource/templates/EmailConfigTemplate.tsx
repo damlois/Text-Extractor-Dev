@@ -78,7 +78,14 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       label: "Mail Server",
       placeholder: "smtp.gmail.com",
       tooltip: "Enter the mail server used to configure your mailbox.",
-      rules: [requiredRule("Mail Server")],
+      rules: [
+        requiredRule("Mail Server"),
+        {
+          pattern: /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          message:
+            "Please enter a valid mail server (e.g., smtp.gmail.com, mail.company.com)",
+        },
+      ],
     },
     {
       name: "port",
@@ -89,8 +96,8 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       rules: [
         requiredRule("Mail Port Number"),
         {
-          pattern: /^[0-9]+$/,
-          message: "Port Number must be a valid number",
+          pattern: /^[0-9]{2,5}$/,
+          message: "Please enter a valid port number (between 2 to 5 digits).",
         },
       ],
     },

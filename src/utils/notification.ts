@@ -6,6 +6,11 @@ import { notification } from "antd";
  * @param message - The title of the notification.
  * @param description - The body of the notification.
  */
+
+notification.config({
+  placement: "top",
+});
+
 export const showNotification = (
   type: "success" | "error" | "info" | "warning",
   message: string,
@@ -16,6 +21,7 @@ export const showNotification = (
     description,
   });
 };
+
 
 /**
  * Formats an ISO date string into a human-readable format like "23 Nov 2024".
