@@ -19,9 +19,9 @@ export const showNotification = (
   notification[type]({
     message,
     description,
+    style: { padding: "8px" },
   });
 };
-
 
 /**
  * Formats an ISO date string into a human-readable format like "23 Nov 2024".
