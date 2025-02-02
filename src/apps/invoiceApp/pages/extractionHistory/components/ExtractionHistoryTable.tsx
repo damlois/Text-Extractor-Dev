@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../components/AppButton";
@@ -7,6 +7,8 @@ import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../types";
 import { useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
+import { filterInvoices } from "../../../../../utils/filterInvoices";
+import { ExtractionHistoryFilter } from "../../../../../types";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -21,6 +23,8 @@ const ExtractionHistoryTable = () => {
     pageSize: 10,
     total: 0,
   });
+  const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
+  const [allInvoices, setAllInvoices] = useState<ProcessedInvoice[]>([]);
 
   const navigate = useNavigate();
 
@@ -32,7 +36,9 @@ const ExtractionHistoryTable = () => {
         size,
       });
 
-      setInvoices(response.data.data.invoices);
+      const invoices = response.data.data.invoices;
+      setAllInvoices(invoices);
+      setInvoices(filterInvoices(invoices, filters));
       setPagination({
         current: response.data.data.page,
         pageSize: response.data.data.size,
@@ -46,8 +52,20 @@ const ExtractionHistoryTable = () => {
   };
 
   useEffect(() => {
-    fetchInvoices(1, 10);
+    fetchInvoices(1, 30);
   }, []);
+
+  useEffect(() => {
+    if (allInvoices.length) {
+      setInvoices(filterInvoices(allInvoices, filters));
+    }
+  }, [filters, allInvoices]);
+
+  const uniqueSenders = useMemo(() => {
+    return Array.from(
+      new Set(allInvoices.map((invoice) => invoice.sender))
+    ).filter(Boolean);
+  }, [allInvoices]);
 
   const togglePreviewModal = (invoice?: ProcessedInvoice) => {
     setSelectedInvoice(invoice || null);
@@ -56,6 +74,16 @@ const ExtractionHistoryTable = () => {
 
   const toggleFilterModal = () => {
     setShowFilterModal(!showFilterModal);
+  };
+
+  const handleFilterApply = (newFilters: ExtractionHistoryFilter) => {
+    setFilters(newFilters);
+    setShowFilterModal(false);
+  };
+
+  const handleFilterClear = () => {
+    setFilters(null);
+    setShowFilterModal(false);
   };
 
   const rowSelection = {
@@ -157,7 +185,14 @@ const ExtractionHistoryTable = () => {
         onCancel={() => togglePreviewModal(undefined)}
         invoiceDetails={selectedInvoice}
       />
-      <FilterHistoryModal open={showFilterModal} onCancel={toggleFilterModal} />
+      <FilterHistoryModal
+        open={showFilterModal}
+        onCancel={toggleFilterModal}
+        onApply={handleFilterApply}
+        onClear={handleFilterClear}
+        initialFilters={filters}
+        senders={uniqueSenders}
+      />
     </div>
   );
 };
