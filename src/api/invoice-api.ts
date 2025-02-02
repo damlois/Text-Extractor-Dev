@@ -1,4 +1,4 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse, SuggestedPromptsResponse } from "../types";
+import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse, SuggestedPromptsResponse, ChatSessionsResponse } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
@@ -25,6 +25,9 @@ export const invoiceProcessorApi = {
 
   getChatSession: (sessionId: string) =>
     apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
+
+  getChatSessions: () =>
+    apiClient.get<ChatSessionsResponse>("/invoices/chat-sessions"),
 
   getInvoiceMetrics: () =>
     apiClient.get<InvoiceMetricsResponse>("/invoices/invoice-metrics"),

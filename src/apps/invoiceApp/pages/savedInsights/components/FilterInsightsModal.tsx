@@ -5,19 +5,29 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 interface FilterInsightsModalProps {
   open: boolean;
   onCancel: () => void;
+  onFilter: (dateFrom?: string, dateTo?: string) => void;
 }
 
-const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
+const FilterInsightsModal = ({
+  open,
+  onCancel,
+  onFilter,
+}: FilterInsightsModalProps) => {
   const { RangePicker } = DatePicker;
 
-  const handleDateChange = (dates: any) => {
+  const handleFilter = (dates: any) => {
     if (dates) {
       const [dateFrom, dateTo] = dates;
-      console.log("From:", dateFrom?.format("YYYY-MM-DD"));
-      console.log("To:", dateTo?.format("YYYY-MM-DD"));
+      onFilter(dateFrom?.format("YYYY-MM-DD"), dateTo?.format("YYYY-MM-DD"));
     } else {
-      console.log("No date selected.");
+      onFilter();
     }
+    onCancel();
+  };
+
+  const handleClear = () => {
+    onFilter();
+    onCancel();
   };
 
   return (
@@ -35,15 +45,11 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
         <div className="p-6">
           <div className={`flex items-center gap-2 mb-2 `}>
             <p className="text-dark-gray font-bold text-[14.5px]">Date Range</p>
-
             <Tooltip title="Select a start and end date to filter data within a specific time period. Only data within this range will be displayed">
               <InfoCircleOutlined className="text-gray-500 text-[14px] cursor-pointer" />
             </Tooltip>
           </div>
-          <RangePicker
-            className="w-full h-[38px]"
-            onChange={handleDateChange}
-          />
+          <RangePicker className="w-full h-[38px]" onChange={handleFilter} />
         </div>
         <div className="border-t border-[#f0f0f0]">
           <div className="flex flex-end gap-2 p-6 flex-wrap">
@@ -51,11 +57,15 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
               width="82px"
               className="mr-0"
               variant="secondary"
-              onClick={onCancel}
+              onClick={handleClear}
             >
               Clear All
             </AppButton>
-            <AppButton width="82px" className="ml-0 mr-0">
+            <AppButton
+              width="82px"
+              className="ml-0 mr-0"
+              onClick={() => handleFilter(null)}
+            >
               Filter
             </AppButton>
           </div>

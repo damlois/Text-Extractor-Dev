@@ -230,3 +230,19 @@ export interface InvoiceMetricsResponse {
     [key: string]: number;
   };
 }
+
+export interface ChatSessionSummary {
+  session_id: string;
+  invoice_ids: string[];
+  created_at: string;
+  last_message: string;
+  message_count: number;
+  title: string;
+}
+
+export interface ChatSessionsResponse {
+  status_code: number;
+  status: string;
+  message: string;
+  data: ChatSessionSummary[];
+}
