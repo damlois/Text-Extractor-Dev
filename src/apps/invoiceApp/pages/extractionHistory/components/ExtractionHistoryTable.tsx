@@ -6,9 +6,11 @@ import InvoicePreviewModal from "./InvoicePreviewModal";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../types";
 import { useNavigate } from "react-router-dom";
+import FilterHistoryModal from "./FilterHistoryModal";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] =
     useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
@@ -50,6 +52,10 @@ const ExtractionHistoryTable = () => {
   const togglePreviewModal = (invoice?: ProcessedInvoice) => {
     setSelectedInvoice(invoice || null);
     setShowPreviewModal(!showPreviewModal);
+  };
+
+  const toggleFilterModal = () => {
+    setShowFilterModal(!showFilterModal);
   };
 
   const rowSelection = {
@@ -114,11 +120,14 @@ const ExtractionHistoryTable = () => {
         className="flex p-4 border-r border-l border-t border-[#E4E7EC] gap-4 justify-end flex-wrap"
         style={{ borderTop: "2px solid #E4E7EC" }}
       >
-        <img
-          src="/assets/images/filter-btn.png"
-          alt="Filter"
-          className="cursor-pointer"
-        />
+        {!loading && (
+          <img
+            src="/assets/images/filter-btn.png"
+            alt="Filter"
+            className="cursor-pointer"
+            onClick={toggleFilterModal}
+          />
+        )}
         <AppButton
           children="View and Generate Insight"
           width="fit-content"
@@ -148,6 +157,7 @@ const ExtractionHistoryTable = () => {
         onCancel={() => togglePreviewModal(undefined)}
         invoiceDetails={selectedInvoice}
       />
+      <FilterHistoryModal open={showFilterModal} onCancel={toggleFilterModal} />
     </div>
   );
 };

@@ -197,7 +197,7 @@ const LabelSetupTemplate = ({
             width="fit-content"
             className="mr-0"
             onClick={addNewRow}
-            disabled={!!editingKey}
+            disabled={!!editingKey || templateLoading}
           />
         </div>
         <div className="overflow-x-auto">
@@ -217,9 +217,7 @@ const LabelSetupTemplate = ({
           </Form>
         </div>
       </div>
-      <div>
-        {buttonComponent({loading: templateLoading})}
-      </div>
+      <div>{buttonComponent({ loading: templateLoading })}</div>
     </>
   );
 };

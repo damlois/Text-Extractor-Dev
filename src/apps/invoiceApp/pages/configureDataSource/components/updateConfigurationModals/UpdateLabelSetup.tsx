@@ -54,6 +54,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
                     width="fit-content"
                     className="mr-0"
                     onClick={onCancel}
+                    disabled={loading}
                   >
                     Cancel
                   </AppButton>

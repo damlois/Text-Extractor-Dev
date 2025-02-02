@@ -10,7 +10,6 @@ export interface User {
   role: string;
 }
 
-
 export interface ImageData {
   craeted_at: string;
   image_name: string;
@@ -40,19 +39,6 @@ export interface User {
   username: string;
   role: string;
 }
-
-// export interface FileResponse {
-//   id: number;
-//   file_name: string;
-//   content: string;
-//   created_at: string;
-// }
-
-// export interface Instruction {
-//   title: string;
-//   description: string;
-//   data_type?: string;
-// }
 
 
 export interface DataSourceInfo {
@@ -184,6 +170,15 @@ export interface BreadCrumb {
   path?: string;
 }
 
+export type ExtractionStatus = "Successful" | "Failed" | null;
+
+export interface ExtractionHistoryFilter {
+  sources?: string[];
+  senders?: string[];
+  status?: ExtractionStatus;
+  dateFrom?: string;
+  dateTo?: string;
+}
 export interface ChatMessage {
   prompt: string;
   response: string;
