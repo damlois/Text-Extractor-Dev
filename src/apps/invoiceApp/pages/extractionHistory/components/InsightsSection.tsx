@@ -20,6 +20,30 @@ const InsightsSection = () => {
     [location.state?.selectedInvoiceIds]
   );
 
+  const sessionId = useMemo(
+    () => location.state?.sessionId,
+    [location.state?.sessionId]
+  );
+
+  // Load existing chat session if sessionId is provided
+  useEffect(() => {
+    const loadExistingSession = async () => {
+      if (!sessionId) return;
+
+      setResponseLoading(true);
+      try {
+        const response = await invoiceProcessorApi.getChatSession(sessionId);
+        setChatSession(response.data.data);
+      } catch (error) {
+        console.error("Error loading chat session:", error);
+      } finally {
+        setResponseLoading(false);
+      }
+    };
+
+    loadExistingSession();
+  }, [sessionId]);
+
   const fetchSuggestedPrompts = useCallback(async () => {
     setLoadingSuggestions(true);
     try {

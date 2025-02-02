@@ -5,17 +5,27 @@ import DateRangePicker from "../../../../../components/DateRangePicker";
 interface FilterInsightsModalProps {
   open: boolean;
   onCancel: () => void;
+  onFilter: (dateFrom?: string, dateTo?: string) => void;
 }
 
-const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
+const FilterInsightsModal = ({
+  open,
+  onCancel,
+  onFilter,
+}: FilterInsightsModalProps) => {
   const handleDateChange = (dates: any) => {
     if (dates) {
       const [dateFrom, dateTo] = dates;
-      console.log("From:", dateFrom?.format("YYYY-MM-DD"));
-      console.log("To:", dateTo?.format("YYYY-MM-DD"));
+      onFilter(dateFrom?.format("YYYY-MM-DD"), dateTo?.format("YYYY-MM-DD"));
     } else {
-      console.log("No date selected.");
+      onFilter();
     }
+    onCancel();
+  };
+
+  const handleClear = () => {
+    onFilter();
+    onCancel();
   };
 
   return (
@@ -43,11 +53,11 @@ const FilterInsightsModal = ({ open, onCancel }: FilterInsightsModalProps) => {
               width="82px"
               className="mr-0"
               variant="secondary"
-              onClick={onCancel}
+              onClick={handleClear}
             >
               Clear All
             </AppButton>
-            <AppButton width="82px" className="ml-0 mr-0">
+            <AppButton width="82px" className="ml-0 mr-0" onClick={onFilter}>
               Filter
             </AppButton>
           </div>
