@@ -6,11 +6,11 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceInfo, User } from "../../../types";
+import { DataSourceDetails, User } from "../../../types";
 
 interface InvoiceProcessorContextProps {
-  currentDataSource: DataSourceInfo | null;
-  setCurrentDataSource: Dispatch<SetStateAction<DataSourceInfo | null>>;
+  currentDataSource: DataSourceDetails | null;
+  setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | null>>;
 }
 
 interface InvoiceProcessorProviderProps {
@@ -25,7 +25,7 @@ export const InvoiceProcessorProvider: React.FC<
   InvoiceProcessorProviderProps
 > = ({ children }) => {
   const [currentDataSource, setCurrentDataSource] =
-    useState<DataSourceInfo | null>(null);
+    useState<DataSourceDetails | null>(null);
   return (
     <InvoiceProcessorContext.Provider
       value={{

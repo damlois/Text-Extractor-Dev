@@ -2,11 +2,12 @@ import { useNavigate, Outlet } from "react-router-dom";
 import { Tabs } from "antd";
 import PageHeader from "../../../components/PageHeader";
 import { routeConfig } from "../constants";
+import { useInvoiceProcessor } from "../context/InvoiceProcessorContext";
 
 const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
 
-  const dataSourceExists = localStorage.getItem("data_source_id");
+  const { currentDataSource } = useInvoiceProcessor();
 
   const handleTabChange = (key: string) => {
     navigate(`/invoice-processing/${key}`);
@@ -19,7 +20,8 @@ const InvoiceAppTabSelector = () => {
     (nestedRoute) => nestedRoute.key === splittedPathName[3]
   );
 
-  const currentTabLabel = currentNestedRoute?.label || currentPageData?.label || "";
+  const currentTabLabel =
+    currentNestedRoute?.label || currentPageData?.label || "";
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -31,7 +33,7 @@ const InvoiceAppTabSelector = () => {
         action={
           splittedPathName[2] === "data-source" &&
           !splittedPathName[3] &&
-          !dataSourceExists
+          !currentDataSource
             ? "+ New Data Source"
             : undefined
         }

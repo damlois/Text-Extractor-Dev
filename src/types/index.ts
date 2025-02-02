@@ -76,7 +76,7 @@ export interface DataSourceResponse {
   status_code: number;
   status: string;
   message: string;
-  data: DataSourceDetails;
+  data: DataSourceDetails[];
 }
 
 export interface ToggleStatusResponse {

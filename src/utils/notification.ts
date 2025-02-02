@@ -6,6 +6,11 @@ import { notification } from "antd";
  * @param message - The title of the notification.
  * @param description - The body of the notification.
  */
+
+notification.config({
+  placement: "top",
+});
+
 export const showNotification = (
   type: "success" | "error" | "info" | "warning",
   message: string,
@@ -14,6 +19,7 @@ export const showNotification = (
   notification[type]({
     message,
     description,
+    style: { padding: "8px" },
   });
 };
 

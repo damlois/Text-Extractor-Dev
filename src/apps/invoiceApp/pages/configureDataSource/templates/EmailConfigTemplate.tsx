@@ -2,9 +2,9 @@ import { Form } from "antd";
 import AppInput from "../../../../../components/AppInput";
 import { requiredRule } from "../../../../../utils";
 import { useState } from "react";
-import { useConfigureDataSource } from "../../../../../hooks/useInvoiceProcessor";
 import { showNotification } from "../../../../../utils/notification";
 import React from "react";
+import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -22,18 +22,13 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { configureDataSource } = useConfigureDataSource();
-
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await configureDataSource({
+      await invoiceProcessorApi.configureDataSource({
         source_type: "email",
         ...values,
       });
-
-      localStorage.setItem("username", response.data.username);
-      localStorage.setItem("data_source_id", response.data.data_source_id);
 
       if (onSuccessCallback) {
         onSuccessCallback(values);
@@ -83,7 +78,14 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       label: "Mail Server",
       placeholder: "smtp.gmail.com",
       tooltip: "Enter the mail server used to configure your mailbox.",
-      rules: [requiredRule("Mail Server")],
+      rules: [
+        requiredRule("Mail Server"),
+        {
+          pattern: /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          message:
+            "Please enter a valid mail server (e.g., smtp.gmail.com, mail.company.com)",
+        },
+      ],
     },
     {
       name: "port",
@@ -94,8 +96,8 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       rules: [
         requiredRule("Mail Port Number"),
         {
-          pattern: /^[0-9]+$/,
-          message: "Port Number must be a valid number",
+          pattern: /^[0-9]{2,5}$/,
+          message: "Please enter a valid port number (between 2 to 5 digits).",
         },
       ],
     },
