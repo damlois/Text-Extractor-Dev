@@ -1,23 +1,14 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../components/AppButton";
 import { useTemplate } from "../../context/TemplateContext";
 import { showNotification } from "../../../../utils/notification";
-import { useInvoiceProcessor } from "../../context/InvoiceProcessorContext";
 
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
   const { saveTemplate } = useTemplate();
-
-  const { currentDataSource } = useInvoiceProcessor();
-
-  useEffect(() => {
-    if (!currentDataSource) {
-      navigate("/invoice-processing/data-source");
-    }
-  }, []);
 
   const handleContinue = async () => {
     try {
