@@ -66,10 +66,12 @@ const ExtractionDetailsTable = () => {
         <p className="text-[13px] font-normal text-dark-gray mb-4">
           Review the details of your extraction below
         </p>
-        <div className="w-full monospace-table mr-[48px]">
-          <Spin spinning={loading}>
+        <div className="w-full monospace-table">
+          {loading ? (
+            <Spin spinning={loading}> </Spin>
+          ) : (
             <CustomTable
-              dataSource={selectedInvoices}
+              dataSource={[selectedInvoices]}
               columns={
                 selectedInvoices.length > 0
                   ? constructTableColumns(selectedInvoices)
@@ -79,8 +81,9 @@ const ExtractionDetailsTable = () => {
               pagination={selectedInvoices.length > 7 ? { pageSize: 7 } : false}
               bordered
               striped
+              className="overflow-x-auto mr-[48px]"
             />
-          </Spin>
+          )}
         </div>
         <DownloadResults result={selectedInvoices} />
       </div>

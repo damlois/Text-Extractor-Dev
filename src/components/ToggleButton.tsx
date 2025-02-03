@@ -3,15 +3,16 @@ import { ExtractionStatus } from "../types";
 
 interface ToggleButtonProps {
   options: ExtractionStatus[];
-  onSelect: (selected: ExtractionStatus) => void;
+  onSelect: (selected: ExtractionStatus | null) => void;
 }
 
 const ToggleButton: React.FC<ToggleButtonProps> = ({ options, onSelect }) => {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<ExtractionStatus | null>(null);
 
   const handleClick = (option: ExtractionStatus) => {
-    setSelected(option);
-    onSelect(option);
+    const newSelection = selected === option ? null : option;
+    setSelected(newSelection);
+    onSelect(newSelection);
   };
 
   return (

@@ -58,7 +58,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
       rowKey={rowKey}
       pagination={pagination}
       bordered={bordered}
-      className={`app-table ${striped ? "striped" : ""} ${className || ""}`}
+      className={`${striped ? "striped" : ""} ${className || ""}`}
     />
   );
 };
