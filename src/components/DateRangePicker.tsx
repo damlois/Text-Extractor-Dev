@@ -27,7 +27,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
       </div>
       <RangePicker
         className="w-full h-[38px]"
-        onChange={(dates) => onDateChange(dates)}
+        onChange={(dates) => onDateChange(dates || [])}
       />
     </>
   );

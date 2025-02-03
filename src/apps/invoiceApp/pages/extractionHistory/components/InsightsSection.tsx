@@ -110,13 +110,21 @@ const InsightsSection = () => {
         handleSendMessage={handleSendMessage}
       />
 
-      <div className="border-t border-[#0000000F] px-6 py-5">
-        <Spin spinning={loadingSuggestions}>
+      <div
+        className={`${
+          loadingSuggestions || suggestedPrompts.length > 0
+            ? "border-t border-[#0000000F] "
+            : ""
+        } px-6 py-5`}
+      >
+        {loadingSuggestions ? (
+          <Spin spinning={loadingSuggestions} className="w-full mx-auto"></Spin>
+        ) : (
           <PrmoptSuggestionRow
             promptSuggestions={suggestedPrompts}
             setPrompt={setPrompt}
           />
-        </Spin>
+        )}
 
         <div className="w-full text-center">
           <div className="flex items-center border border-[#D9D9D9] rounded-full px-4 py-2 shadow-sm mt-5">

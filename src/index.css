@@ -108,6 +108,8 @@ table {
 
 .monospace-table table{
   font-family: "DM Mono", "monospace" !important;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .monospace-table td, .monospace-table th {
@@ -429,4 +431,8 @@ td .failed {
 .ant-spin-spinning {
   background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
+}
+
+.custom-notification .anticon-close {
+  margin-top: -6px;
 }

@@ -36,7 +36,13 @@ const ExtractionHistoryTable = () => {
         size,
       });
 
-      const invoices = response.data.data.invoices;
+      const invoices = response.data.data.invoices.map((item) => ({
+        ...item,
+        processing_status:
+          item.processing_status === "COMPLETED"
+            ? "Successful"
+            : item.processing_status,
+      }));
       setAllInvoices(invoices);
       setInvoices(filterInvoices(invoices, filters));
       setPagination({
@@ -176,7 +182,7 @@ const ExtractionHistoryTable = () => {
           dataSource={invoices}
           className="app-table extraction-history-table no-vertical-lines"
           loading={loading}
-          pagination={pagination}
+          pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
           onChange={handleTableChange}
         />
       </div>

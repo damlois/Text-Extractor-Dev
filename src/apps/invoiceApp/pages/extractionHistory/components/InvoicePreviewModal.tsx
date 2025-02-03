@@ -66,77 +66,25 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
     return value.toString();
   };
 
-  const renderSection = (data: Record<string, any>, title: string) => {
-    const entries = Object.entries(data).filter(
-      ([key, value]) =>
-        !["images", "image_data"].includes(key) &&
-        key !== "sender" &&
-        value !== undefined &&
-        value !== null &&
-        renderDynamicValue(value) !== null
-    );
-
-    if (entries.length === 0) return null;
-
-    return (
-      <div className="border rounded p-4">
-        <h3 className="text-lg font-medium mb-4">{title}</h3>
-        <div className="grid gap-y-3">
-          {entries.map(([key, value]) => {
-            const renderedValue = renderDynamicValue(value);
-            return renderedValue ? (
-              <div key={key}>
-                <p className="font-medium capitalize mb-1">
-                  {key.split("_").join(" ")}:
-                </p>
-                <div className="ml-4">{renderedValue}</div>
-              </div>
-            ) : null;
-          })}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <Modal
-      title={`Invoice Preview - ${invoiceDetails.file_name}`}
       open={open}
       onCancel={onCancel}
       footer={null}
-      width={800}
+      width={600}
+      className="app-modal"
+      style={{ top: "24px" }}
     >
-      <div className="flex flex-col gap-4">
-        <div className="border rounded p-4">
-          <h3 className="text-lg font-medium mb-4">Basic Information</h3>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-            <p>
-              <strong>Status:</strong> {invoiceDetails.processing_status}
-            </p>
-            <p>
-              <strong>Created At:</strong>{" "}
-              {new Date(invoiceDetails.created_at).toLocaleString()}
-            </p>
-            <p>
-              <strong>Sender:</strong> {invoiceDetails.sender}
-            </p>
-            <p>
-              <strong>File Name:</strong> {invoiceDetails.file_name}
-            </p>
-          </div>
-        </div>
-
-        {/* TODO: add this later */}
-
-        {/* {renderSection(invoiceDetails.invoice_data, "Invoice Data")} */}
-
+      <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
+        Preview of {invoiceDetails.file_name}
+      </div>
+      <div className="p-6">
         {invoiceDetails.image_data && (
-          <div className="border rounded p-4">
-            <h3 className="text-lg font-medium mb-2">Invoice Image</h3>
+          <div>
             <img
               src={`data:image/jpeg;base64,${invoiceDetails.image_data}`}
               alt="Invoice Preview"
-              className="w-full border rounded"
+              className="w-full rounded"
             />
           </div>
         )}

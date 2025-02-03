@@ -19,7 +19,8 @@ export const showNotification = (
   notification[type]({
     message,
     description,
-    style: { padding: "8px" },
+    style: { padding: "16px 8px 8px 8px" },
+    className: "custom-notification",
   });
 };
 
