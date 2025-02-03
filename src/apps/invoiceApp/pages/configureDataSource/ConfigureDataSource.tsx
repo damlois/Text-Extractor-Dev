@@ -15,7 +15,8 @@ const ConfigureDataSource = () => {
       setLoading(true);
       try {
         const response = await invoiceProcessorApi.getDataSourceDetails();
-        setCurrentDataSource(response.data.data[0]);
+        const data = response.data.data;
+        setCurrentDataSource(data[data.length - 1]);
       } catch (error) {
         console.error("Error fetching data source details:", error);
       } finally {
