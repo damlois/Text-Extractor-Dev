@@ -130,6 +130,7 @@ export interface ProcessedInvoice {
   invoice_data: DynamicObject;
   image_data: string;
   sender: string;
+  source?: string; // Added optional source field
   processing_status: string;
   created_at: string;
 }
@@ -173,12 +174,12 @@ export interface BreadCrumb {
 export type ExtractionStatus = "Successful" | "Failed" | null;
 
 export interface ExtractionHistoryFilter {
-  sources?: string[];
   senders?: string[];
   status?: ExtractionStatus;
   dateFrom?: string;
   dateTo?: string;
 }
+
 export interface ChatMessage {
   prompt: string;
   response: string;

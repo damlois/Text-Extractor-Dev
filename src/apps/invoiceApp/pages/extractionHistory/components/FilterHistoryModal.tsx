@@ -2,26 +2,46 @@ import { Modal } from "antd";
 import AppButton from "../../../../../components/AppButton";
 import AppSelect from "../../../../../components/AppSelect";
 import ToggleButton from "../../../../../components/ToggleButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ExtractionHistoryFilter } from "../../../../../types";
 import DateRangePicker from "../../../../../components/DateRangePicker";
 
 interface FilterHistoryModalProps {
   open: boolean;
   onCancel: () => void;
+  onApply: (filters: ExtractionHistoryFilter) => void;
+  onClear: () => void;
+  initialFilters: ExtractionHistoryFilter | null;
+  senders: string[];
 }
 
-const FilterHistoryModal = ({ open, onCancel }: FilterHistoryModalProps) => {
-  const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
+const FilterHistoryModal = ({
+  open,
+  onCancel,
+  onApply,
+  onClear,
+  initialFilters,
+  senders,
+}: FilterHistoryModalProps) => {
+  const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(
+    initialFilters
+  );
 
-  const sources = [
-    "loisade@mail.com",
-    "Blesso@mail.com",
-    "tao@mail.com",
-    "modupsy@mail.com",
-  ];
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
-  console.log(filters, "filters");
+  const handleClear = () => {
+    setFilters(null);
+    onClear();
+  };
+
+  const handleApply = () => {
+    if (filters) {
+      onApply(filters);
+    }
+  };
+
 
   return (
     <Modal
@@ -37,18 +57,9 @@ const FilterHistoryModal = ({ open, onCancel }: FilterHistoryModalProps) => {
         </div>
         <div className="p-6">
           <AppSelect
-            title="Source"
-            placeholder="Select multiple sources"
-            options={sources}
-            onSelectionChange={(selected: string[]) => {
-              setFilters({ ...filters, sources: selected });
-            }}
-            className="mb-4"
-          />
-          <AppSelect
             title="Sender"
             placeholder="Select multiple senders"
-            options={sources}
+            options={senders}
             onSelectionChange={(selected: string[]) => {
               setFilters({ ...filters, senders: selected });
             }}
@@ -81,11 +92,16 @@ const FilterHistoryModal = ({ open, onCancel }: FilterHistoryModalProps) => {
               width="82px"
               className="mr-0"
               variant="secondary"
-              onClick={onCancel}
+              onClick={handleClear}
             >
               Clear All
             </AppButton>
-            <AppButton width="82px" className="ml-0 mr-0">
+            <AppButton
+              width="82px"
+              className="ml-0 mr-0"
+              onClick={handleApply}
+              disabled={!filters}
+            >
               Filter
             </AppButton>
           </div>
