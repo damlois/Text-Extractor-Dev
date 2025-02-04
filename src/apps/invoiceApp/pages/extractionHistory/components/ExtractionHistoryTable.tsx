@@ -95,7 +95,6 @@ const ExtractionHistoryTable = () => {
   const rowSelection = {
     onChange: (
       selectedRowKeys: React.Key[],
-      selectedRows: ProcessedInvoice[]
     ) => {
       setSelectedInvoiceIds(selectedRowKeys as string[]);
     },

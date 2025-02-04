@@ -94,12 +94,12 @@ export const requiredRule = (field: string) => ({
 export const constructTableColumns = (result: any) => {
   if (result.length === 0) return [];
 
-  const flattenObject = (obj: any, prefix = '') => {
+  const flattenObject = (obj: any, prefix = "") => {
     return Object.keys(obj).reduce((acc: any, key: string) => {
       const value = obj[key];
       const newKey = prefix ? `${prefix}_${key}` : key;
 
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
         Object.assign(acc, flattenObject(value, newKey));
       } else {
         acc[newKey] = value;
@@ -118,33 +118,46 @@ export const constructTableColumns = (result: any) => {
   // Combine base fields with flattened invoice data fields
   const baseColumns = [
     {
-      title: '#',
-      key: 'index',
+      title: "#",
+      key: "index",
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: 'File Name',
-      dataIndex: 'file_name',
-      key: 'file_name',
+      title: "File Name",
+      dataIndex: "file_name",
+      key: "file_name",
     },
     {
-      title: 'Status',
-      dataIndex: 'processing_status',
-      key: 'processing_status',
+      title: "Status",
+      dataIndex: "processing_status",
+      key: "processing_status",
     },
     {
-      title: 'Date Created',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Date Created",
+      dataIndex: "created_at",
+      key: "created_at",
     },
   ];
 
-  const invoiceDataColumns = Object.keys(flattenedInvoiceData).map(key => ({
-    title: key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-    dataIndex: ['invoice_data', ...key.split('_')],
+  const invoiceDataColumns = Object.keys(flattenedInvoiceData).map((key) => ({
+    title: key
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" "),
+    dataIndex: ["invoice_data", ...key.split("_")],
     key,
   }));
 
   return [...baseColumns, ...invoiceDataColumns];
 };
 
+export const formatExtractionValue = (value: any) => {
+  if (typeof value === "object" && value !== null) {
+    return Array.isArray(value)
+      ? value.join(", ")
+      : Object.entries(value)
+          .map(([key, val]) => `${key}: ${val}`)
+          .join(", ");
+  }
+  return value ?? "N/A";
+};

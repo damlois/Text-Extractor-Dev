@@ -75,6 +75,7 @@ const UpdateEmailConfig = ({
         open={showSuccessModal}
         title="Email Address Updated Successfully"
         subtitle="You will be automatically redirected to the main page."
+        refresh
       />
     </>
   );

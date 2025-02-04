@@ -6,6 +6,7 @@ interface SuccessModalProps {
   onCancel: () => void;
   title: string;
   subtitle: string;
+  refresh?: boolean;
 }
 
 const SuccessModal = ({
@@ -13,6 +14,7 @@ const SuccessModal = ({
   onCancel,
   title,
   subtitle,
+  refresh,
 }: SuccessModalProps) => {
   useEffect(() => {
     if (open) {
@@ -20,6 +22,7 @@ const SuccessModal = ({
         onCancel();
       }, 1000);
 
+      refresh && window.location.reload(); // Refresh to show updates
       return () => clearTimeout(timer);
     }
   }, [open, onCancel]);
