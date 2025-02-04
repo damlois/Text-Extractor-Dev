@@ -23,7 +23,7 @@ const ExtractionDetailsTable = () => {
       return {
         file_name,
         ...filteredInvoiceData,
-        raw_data: { file_name, image_data, invoice_data },
+        raw_data: { file_name, image_data },
       };
     });
   };
