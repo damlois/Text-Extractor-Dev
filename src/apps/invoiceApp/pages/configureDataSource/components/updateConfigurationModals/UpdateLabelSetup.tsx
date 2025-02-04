@@ -78,6 +78,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
         open={showSuccessModal}
         title="Fields Updated Successfully"
         subtitle="You will be automatically redirected to the main page."
+        refresh
       />
     </>
   );

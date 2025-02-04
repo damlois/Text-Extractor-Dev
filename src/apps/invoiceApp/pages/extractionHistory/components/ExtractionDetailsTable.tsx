@@ -1,41 +1,31 @@
 import { useLocation } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
 import CustomTable from "../../../../../components/CustomTable";
-import { constructTableColumns } from "../../../../../utils";
 import { useEffect, useState, useMemo } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../types";
-import { Spin } from "antd";
-
-interface DisplayInvoice
-  extends Pick<
-    ProcessedInvoice,
-    "id" | "file_name" | "processing_status" | "created_at" | "invoice_data"
-  > {}
+import { Spin, Modal } from "antd";
+import { formatExtractionValue } from "../../../../../utils";
 
 const ExtractionDetailsTable = () => {
-  const [selectedInvoices, setSelectedInvoices] = useState<DisplayInvoice[]>(
-    []
-  );
+  const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<any>();
   const location = useLocation();
   const selectedInvoiceIds = useMemo(
     () => location.state?.selectedInvoiceIds || [],
     [location.state?.selectedInvoiceIds]
   );
 
-  const formatInvoiceData = (
-    invoices: ProcessedInvoice[]
-  ): DisplayInvoice[] => {
-    return invoices.map(
-      ({ id, file_name, processing_status, created_at, invoice_data }) => ({
-        id,
+  const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
+    return invoices.map(({ file_name, image_data, invoice_data }) => {
+      const { sender, receiver, ...filteredInvoiceData } = invoice_data;
+      return {
         file_name,
-        processing_status,
-        created_at: new Date(created_at).toLocaleDateString(),
-        invoice_data,
-      })
-    );
+        ...filteredInvoiceData,
+        raw_data: { file_name, image_data },
+      };
+    });
   };
 
   useEffect(() => {
@@ -59,6 +49,41 @@ const ExtractionDetailsTable = () => {
     fetchSelectedInvoices();
   }, [selectedInvoiceIds]);
 
+  const handleFileClick = (raw_data: any) => {
+    setSelectedFile(raw_data);
+  };
+
+  const closeModal = () => {
+    setSelectedFile(null);
+  };
+
+  const tableColumns = useMemo(() => {
+    if (selectedInvoices.length === 0) return [];
+
+    const sampleInvoice = selectedInvoices[0];
+    return Object.keys(sampleInvoice)
+      .filter((key) => key !== "raw_data")
+      .map((key) => ({
+        title: key.replace(/_/g, " ").toUpperCase(),
+        dataIndex: key,
+        key,
+        render: (value: any, record: any) =>
+          key === "file_name" ? (
+            <span
+              style={{
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={() => handleFileClick(record.raw_data)}
+            >
+              {value}
+            </span>
+          ) : (
+            formatExtractionValue(value)
+          ),
+      }));
+  }, [selectedInvoices]);
+
   return (
     <div className="flex gap-4 justify-start items-start w-full">
       <img src="/assets/icons/blue-circle-icon.svg" alt="InterprAIs Logo" />
@@ -71,12 +96,8 @@ const ExtractionDetailsTable = () => {
             <Spin spinning={loading}> </Spin>
           ) : (
             <CustomTable
-              dataSource={[selectedInvoices]}
-              columns={
-                selectedInvoices.length > 0
-                  ? constructTableColumns(selectedInvoices)
-                  : []
-              }
+              dataSource={selectedInvoices}
+              columns={tableColumns}
               rowKey="id"
               pagination={selectedInvoices.length > 7 ? { pageSize: 7 } : false}
               bordered
@@ -86,6 +107,24 @@ const ExtractionDetailsTable = () => {
           )}
         </div>
         <DownloadResults result={selectedInvoices} />
+
+        <Modal
+          title={selectedFile?.file_name}
+          open={!!selectedFile}
+          onCancel={closeModal}
+          footer={null}
+          width={700}
+        >
+          <div className="p-6">
+            <div>
+              <img
+                src={`data:image/jpeg;base64,${selectedFile?.image_data}`}
+                alt="Invoice Preview"
+                className="w-full rounded"
+              />
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );
