@@ -37,6 +37,7 @@ const DownloadResults = ({ result }: DownloadResultsProp) => {
     link.click();
     document.body.removeChild(link);
   };
+
   return (
     <div>
       <div className="mt-4 text-dark-gray text-[13px] font-normal">

@@ -152,12 +152,22 @@ export const constructTableColumns = (result: any) => {
 };
 
 export const formatExtractionValue = (value: any) => {
-  if (typeof value === "object" && value !== null) {
-    return Array.isArray(value)
-      ? value.join(", ")
-      : Object.entries(value)
-          .map(([key, val]) => `${key}: ${val}`)
-          .join(", ");
+  if (value === null || value === undefined) {
+    return "N/A";
   }
-  return value ?? "N/A";
+
+  if (typeof value === "object") {
+    if (Array.isArray(value)) {
+      // Handle arrays
+      return value.length > 0 ? value.join(", ") : "N/A";
+    } else {
+      // Handle objects
+      return Object.entries(value)
+        .map(([key, val]) => `${key}: ${val ?? "N/A"}`) // Handle nested null/undefined values
+        .join(", ");
+    }
+  }
+
+  return value.toString();
 };
+
