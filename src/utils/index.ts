@@ -151,23 +151,36 @@ export const constructTableColumns = (result: any) => {
   return [...baseColumns, ...invoiceDataColumns];
 };
 
-export const formatExtractionValue = (value: any) => {
+export const formatExtractionValue = (value: any): string => {
   if (value === null || value === undefined) {
     return "N/A";
   }
 
   if (typeof value === "object") {
     if (Array.isArray(value)) {
-      // Handle arrays
-      return value.length > 0 ? value.join(", ") : "N/A";
+      if (value.length === 0) return "N/A";
+
+      // Check if array contains objects
+      if (value.every((item) => typeof item === "object" && item !== null)) {
+        return value
+          .map((obj, index) => 
+            `{${index + 1}} ` + 
+            Object.entries(obj)
+              .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+              .join(", ")
+          )
+          .join(" | ");
+      }
+
+      return value.join(", ");
     } else {
-      // Handle objects
       return Object.entries(value)
-        .map(([key, val]) => `${key}: ${val ?? "N/A"}`) // Handle nested null/undefined values
+        .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
         .join(", ");
     }
   }
 
   return value.toString();
 };
+
 
