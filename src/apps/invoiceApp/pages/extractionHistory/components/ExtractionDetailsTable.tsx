@@ -6,6 +6,7 @@ import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../types";
 import { Spin, Modal } from "antd";
 import { formatExtractionValue } from "../../../../../utils";
+import { camelCase } from "lodash";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -17,14 +18,24 @@ const ExtractionDetailsTable = () => {
     [location.state?.selectedInvoiceIds]
   );
 
+  const standardizeInvoice = (
+    invoice: Record<string, any>
+  ): Record<string, any> => {
+    return Object.keys(invoice).reduce<Record<string, any>>((acc, key) => {
+      const formattedKey = camelCase(key);
+      acc[formattedKey] = invoice[key] ?? "N/A";
+      return acc;
+    }, {});
+  };
+
   const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
     return invoices.map(({ file_name, image_data, invoice_data }) => {
       const { sender, receiver, ...filteredInvoiceData } = invoice_data;
-      return {
+      return standardizeInvoice({
         file_name,
         ...filteredInvoiceData,
         raw_data: { file_name, image_data },
-      };
+      });
     });
   };
 
@@ -61,25 +72,40 @@ const ExtractionDetailsTable = () => {
     if (selectedInvoices.length === 0) return [];
 
     const sampleInvoice = selectedInvoices[0];
+    const commonStyle = {
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      maxWidth: "200px",
+      display: "inline-block",
+    };
+
     return Object.keys(sampleInvoice)
-      .filter((key) => key !== "raw_data")
+      .filter((key) => key !== "rawData")
       .map((key) => ({
-        title: key.replace(/_/g, " ").toUpperCase(),
+        title: key
+          .replace(/([a-z])([A-Z])/g, "$1 $2")
+          .replace(/_/g, " ")
+          .toUpperCase(),
         dataIndex: key,
         key,
         render: (value: any, record: any) =>
-          key === "file_name" ? (
+          key === "fileName" ? (
             <span
               style={{
+                ...commonStyle,
                 textDecoration: "underline",
                 cursor: "pointer",
               }}
-              onClick={() => handleFileClick(record.raw_data)}
+              title={value}
+              onClick={() => handleFileClick(record.rawData)}
             >
               {value}
             </span>
           ) : (
-            formatExtractionValue(value)
+            <span style={commonStyle} title={formatExtractionValue(value)}>
+              {formatExtractionValue(value)}
+            </span>
           ),
       }));
   }, [selectedInvoices]);
@@ -106,7 +132,13 @@ const ExtractionDetailsTable = () => {
             />
           )}
         </div>
-        <DownloadResults result={selectedInvoices} />
+        
+        <DownloadResults
+          result={selectedInvoices.map((invoice) => {
+            const { rawData, ...filteredData } = invoice;
+            return filteredData;
+          })}
+        />
 
         <Modal
           title={selectedFile?.file_name}
