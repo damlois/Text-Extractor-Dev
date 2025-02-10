@@ -7,6 +7,7 @@ import { useInvoiceProcessor } from "../../context/InvoiceProcessorContext";
 
 const ConfigureDataSource = () => {
   const [loading, setLoading] = useState(false);
+  const [pageRefresh, setPageRefresh] = useState(false);
 
   const { currentDataSource, setCurrentDataSource } = useInvoiceProcessor();
 
@@ -25,7 +26,9 @@ const ConfigureDataSource = () => {
     };
 
     fetchData();
-  }, []);
+  }, [pageRefresh]);
+
+  const refreshPage = () => setPageRefresh(!pageRefresh)
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -34,7 +37,7 @@ const ConfigureDataSource = () => {
       ) : (
         <>
           {currentDataSource ? (
-            <ViewDataSourceDetails dataSourceDetails={currentDataSource} />
+            <ViewDataSourceDetails dataSourceDetails={currentDataSource} refreshPage={refreshPage} />
           ) : (
             <NoDataSource />
           )}

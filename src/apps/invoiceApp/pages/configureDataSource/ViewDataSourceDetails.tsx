@@ -5,16 +5,24 @@ import { DataSourceDetails } from "../../../../types";
 
 interface ViewDataSourceDetailsProps {
   dataSourceDetails: DataSourceDetails | null;
+  refreshPage: () => void;
 }
 
 const ViewDataSourceDetails = ({
   dataSourceDetails,
+  refreshPage,
 }: ViewDataSourceDetailsProps) => {
   return (
     <div className="w-full border border-[#DBDFEA] rounded-lg py-4 px-6">
-      <EmailConfigRow dataSourceDetails={dataSourceDetails} />
-      <LabelSetupRow />
-      <DeactivateRow dataSourceDetails={dataSourceDetails} />
+      <EmailConfigRow
+        dataSourceDetails={dataSourceDetails}
+        refreshPage={refreshPage}
+      />
+      <LabelSetupRow refreshPage={refreshPage} />
+      <DeactivateRow
+        dataSourceDetails={dataSourceDetails}
+        refreshPage={refreshPage}
+      />
     </div>
   );
 };
