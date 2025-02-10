@@ -21,7 +21,6 @@ const DeactivateRow = ({
 
   const toggleModal = () => {
     setShowConfirmationModal(!showConfirmationModal);
-    setShowSuccessModal(!showSuccessModal);
   };
 
   const handleToggleStatus = async () => {
@@ -40,6 +39,7 @@ const DeactivateRow = ({
     } finally {
       setLoading(false);
       toggleModal();
+      setShowSuccessModal(!showSuccessModal);
     }
   };
 
