@@ -1,6 +1,16 @@
 import Keycloak from "keycloak-js";
-const _kc = new Keycloak('/keycloak.dev.json');
 
+const getKeycloakConfig = () => {
+  const environment = process.env.REACT_APP_ENV;
+  const configMap = {
+    dev: '/keycloak.dev.json',
+    demo: '/keycloak.demo.json',
+  };
+
+  return configMap[environment] || configMap.dev; 
+};
+
+const _kc = new Keycloak(getKeycloakConfig());
 
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
