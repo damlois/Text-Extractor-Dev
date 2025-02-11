@@ -58,7 +58,7 @@ const ExtractionHistoryTable = () => {
   };
 
   useEffect(() => {
-    fetchInvoices(1, 30);
+    fetchInvoices(1, 10);
   }, []);
 
   useEffect(() => {

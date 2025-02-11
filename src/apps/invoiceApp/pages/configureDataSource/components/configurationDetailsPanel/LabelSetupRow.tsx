@@ -3,8 +3,8 @@ import LabelTag from "../../../../../../components/LabelTag";
 import { useEffect, useState } from "react";
 import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
 import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
-import { TemplateItem } from "../../../../../../types";
 import { Spin } from "antd";
+import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
 
 interface LabelSetupRowProps {
   refreshPage: () => void;
@@ -13,7 +13,8 @@ interface LabelSetupRowProps {
 const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [labels, setLabels] = useState<TemplateItem[]>([]);
+
+  const {labels, setLabels} = useFileProcessor();
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -60,7 +61,7 @@ const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
           {loading ? (
             <Spin />
           ) : (
-            labels.map((item, index) => (
+            labels?.map((item, index) => (
               <LabelTag
                 key={index}
                 id={index}
