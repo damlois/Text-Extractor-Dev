@@ -43,7 +43,8 @@ Thumbs.db
 *.mov
 *.wmv
 
-.env
+.env.demo
+.env.dev
 
 .vercel
 
