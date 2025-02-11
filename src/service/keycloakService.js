@@ -12,6 +12,7 @@ const getKeycloakConfig = () => {
 
 const _kc = new Keycloak(getKeycloakConfig());
 
+
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
  *
