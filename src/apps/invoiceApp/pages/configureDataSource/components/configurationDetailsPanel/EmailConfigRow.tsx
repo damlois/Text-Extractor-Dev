@@ -5,9 +5,13 @@ import { DataSourceDetails } from "../../../../../../types";
 
 interface EmailConfigRowProps {
   dataSourceDetails: DataSourceDetails | null;
+  refreshPage: () => void;
 }
 
-const EmailConfigRow = ({ dataSourceDetails }: EmailConfigRowProps) => {
+const EmailConfigRow = ({
+  dataSourceDetails,
+  refreshPage,
+}: EmailConfigRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const toggleModal = () => {
@@ -44,6 +48,7 @@ const EmailConfigRow = ({ dataSourceDetails }: EmailConfigRowProps) => {
         onCancel={() => toggleModal()}
         open={showUpdateModal}
         dataSourceDetails={dataSourceDetails}
+        refreshPage={refreshPage}
       />
     </div>
   );

@@ -5,19 +5,20 @@ import { useState } from "react";
 import { showNotification } from "../../../../../utils/notification";
 import React from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
+import { DataSourceDetails } from "../../../../../types";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
   onSuccessCallback?: (values: Record<string, any>) => void;
   className?: string;
-  initialEmail?: string;
+  initialData?: DataSourceDetails | null;
 }
 
 const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   buttonComponent,
   onSuccessCallback,
   className,
-  initialEmail,
+  initialData,
 }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -108,10 +109,10 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       onFinish={onFinish}
       layout="vertical"
       initialValues={{
-        username: initialEmail || "",
+        username: initialData?.username || "",
         password: "",
-        server: "",
-        port: "",
+        server: initialData?.server_name || "",
+        port: initialData?.port || "",
       }}
     >
       <div className={className}>

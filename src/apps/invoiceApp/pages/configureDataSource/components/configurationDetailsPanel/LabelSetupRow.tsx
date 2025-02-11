@@ -6,7 +6,11 @@ import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
 import { TemplateItem } from "../../../../../../types";
 import { Spin } from "antd";
 
-const LabelSetupRow = () => {
+interface LabelSetupRowProps {
+  refreshPage: () => void;
+}
+
+const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [labels, setLabels] = useState<TemplateItem[]>([]);
@@ -67,7 +71,11 @@ const LabelSetupRow = () => {
           )}
         </div>
       </div>
-      <UpdateLabelSetup onCancel={toggleModal} open={showUpdateModal} />
+      <UpdateLabelSetup
+        onCancel={toggleModal}
+        open={showUpdateModal}
+        refreshPage={refreshPage}
+      />
     </div>
   );
 };
