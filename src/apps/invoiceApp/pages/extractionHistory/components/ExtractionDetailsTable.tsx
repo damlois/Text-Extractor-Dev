@@ -7,6 +7,7 @@ import { ProcessedInvoice } from "../../../../../types";
 import { Spin, Modal } from "antd";
 import { formatExtractionValue } from "../../../../../utils";
 import { camelCase } from "lodash";
+import { useFileProcessor } from "../../../../../context/FileProcessorContext";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -17,6 +18,8 @@ const ExtractionDetailsTable = () => {
     () => location.state?.selectedInvoiceIds || [],
     [location.state?.selectedInvoiceIds]
   );
+
+  const { labels } = useFileProcessor();
 
   const standardizeInvoice = (
     invoice: Record<string, any>
@@ -69,9 +72,8 @@ const ExtractionDetailsTable = () => {
   };
 
   const tableColumns = useMemo(() => {
-    if (selectedInvoices.length === 0) return [];
+    if (labels?.length === 0) return [];
 
-    const sampleInvoice = selectedInvoices[0];
     const commonStyle = {
       whiteSpace: "nowrap",
       overflow: "hidden",
@@ -80,35 +82,36 @@ const ExtractionDetailsTable = () => {
       display: "inline-block",
     };
 
-    return Object.keys(sampleInvoice)
-      .filter((key) => key !== "rawData")
-      .map((key) => ({
-        title: key
-          .replace(/([a-z])([A-Z])/g, "$1 $2")
-          .replace(/_/g, " ")
-          .toUpperCase(),
-        dataIndex: key,
-        key,
-        render: (value: any, record: any) =>
-          key === "fileName" ? (
-            <span
-              style={{
-                ...commonStyle,
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-              title={value}
-              onClick={() => handleFileClick(record.rawData)}
-            >
-              {value}
-            </span>
-          ) : (
-            <span style={commonStyle} title={formatExtractionValue(value)}>
-              {formatExtractionValue(value)}
-            </span>
-          ),
-      }));
-  }, [selectedInvoices]);
+    return [{ label: "FILE NAME" }, ...(labels ?? [])]?.map(
+      ({ label }: { label: string }) => {
+        const key = camelCase(label);
+
+        return {
+          title: label.toUpperCase(),
+          dataIndex: key,
+          key,
+          render: (value: any, record: any) =>
+            key === "fileName" ? (
+              <span
+                style={{
+                  ...commonStyle,
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                title={value}
+                onClick={() => handleFileClick(record.rawData)}
+              >
+                {value}
+              </span>
+            ) : (
+              <span style={commonStyle} title={formatExtractionValue(value)}>
+                {formatExtractionValue(value)}
+              </span>
+            ),
+        };
+      }
+    );
+  }, [labels]);
 
   return (
     <div className="flex gap-4 justify-start items-start w-full">
@@ -123,7 +126,7 @@ const ExtractionDetailsTable = () => {
           ) : (
             <CustomTable
               dataSource={selectedInvoices}
-              columns={tableColumns}
+              columns={tableColumns || []}
               rowKey="id"
               pagination={selectedInvoices.length > 7 ? { pageSize: 7 } : false}
               bordered
@@ -132,7 +135,7 @@ const ExtractionDetailsTable = () => {
             />
           )}
         </div>
-        
+
         <DownloadResults
           result={selectedInvoices.map((invoice) => {
             const { rawData, ...filteredData } = invoice;

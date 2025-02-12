@@ -6,11 +6,13 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { User } from "../types";
+import { TemplateItem, User } from "../types";
 
 interface FileProcessorContextProps {
   currentUser: User | null;
   setCurrentUser: Dispatch<SetStateAction<User | null>>;
+  labels: TemplateItem[] | null;
+  setLabels: Dispatch<SetStateAction<TemplateItem[] | null>>;
 }
 
 interface FileProcessorProviderProps {
@@ -25,12 +27,15 @@ export const FileProcessorProvider: React.FC<FileProcessorProviderProps> = ({
   children,
 }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [labels, setLabels] = useState<TemplateItem[] | null>(null);
 
   return (
     <FileProcessorContext.Provider
       value={{
         currentUser,
         setCurrentUser,
+        labels,
+        setLabels,
       }}
     >
       {children}
