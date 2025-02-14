@@ -134,7 +134,7 @@ const ExtractionDetailsTable = () => {
               dataSource={selectedInvoices}
               columns={tableColumns || []}
               rowKey="id"
-              pagination={selectedInvoices.length > 7 ? { pageSize: 7 } : false}
+              pagination={selectedInvoices.length > 6 ? { pageSize: 6 } : false}
               bordered
               striped
               className="overflow-x-auto mr-[48px]"
