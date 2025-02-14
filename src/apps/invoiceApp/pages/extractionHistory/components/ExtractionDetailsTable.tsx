@@ -19,7 +19,7 @@ const ExtractionDetailsTable = () => {
     [location.state?.selectedInvoiceIds]
   );
 
-  const { labels } = useFileProcessor();
+  const { labels, setLabels } = useFileProcessor();
 
   const standardizeInvoice = (
     invoice: Record<string, any>
@@ -42,6 +42,11 @@ const ExtractionDetailsTable = () => {
     });
   };
 
+  const fetchLabels = async () => {
+    const response = await invoiceProcessorApi.getTemplate();
+    setLabels(response.data.data.items);
+  };
+
   useEffect(() => {
     const fetchSelectedInvoices = async () => {
       if (selectedInvoiceIds.length === 0) return;
@@ -60,6 +65,7 @@ const ExtractionDetailsTable = () => {
       }
     };
 
+    !labels && fetchLabels();
     fetchSelectedInvoices();
   }, [selectedInvoiceIds]);
 
@@ -139,7 +145,17 @@ const ExtractionDetailsTable = () => {
         <DownloadResults
           result={selectedInvoices.map((invoice) => {
             const { rawData, ...filteredData } = invoice;
-            return filteredData;
+            const filteredResult = labels?.reduce<Record<string, any>>(
+              (acc, { label }) => {
+                const key = camelCase(label);
+                if (filteredData[key]) {
+                  acc[key] = filteredData[key];
+                }
+                return acc;
+              },
+              {}
+            );
+            return filteredResult;
           })}
         />
 
