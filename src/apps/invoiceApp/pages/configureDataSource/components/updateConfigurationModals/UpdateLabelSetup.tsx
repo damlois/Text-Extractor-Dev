@@ -5,14 +5,14 @@ import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../../components/AppButton";
 import { useTemplate } from "../../../../context/TemplateContext";
 import { showNotification } from "../../../../../../utils/notification";
-import { useNavigate } from "react-router-dom";
 
 interface UpdateLabelSetupProps {
   open: boolean;
   onCancel: () => void;
+  refreshPage: () => void;
 }
 
-const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
+const UpdateLabelSetup = ({ open, onCancel, refreshPage }: UpdateLabelSetupProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { saveTemplate } = useTemplate();
@@ -78,7 +78,7 @@ const UpdateLabelSetup = ({ open, onCancel }: UpdateLabelSetupProps) => {
         open={showSuccessModal}
         title="Fields Updated Successfully"
         subtitle="You will be automatically redirected to the main page."
-        refresh
+        refreshPage={refreshPage}
       />
     </>
   );

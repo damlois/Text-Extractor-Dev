@@ -9,12 +9,14 @@ interface UpdateEmailConfigProps {
   open: boolean;
   onCancel: () => void;
   dataSourceDetails: DataSourceDetails | null;
+  refreshPage: () => void;
 }
 
 const UpdateEmailConfig = ({
   open,
   onCancel,
   dataSourceDetails,
+  refreshPage,
 }: UpdateEmailConfigProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -42,7 +44,7 @@ const UpdateEmailConfig = ({
           </div>
           <EmailConfigTemplate
             className="px-6 pt-6"
-            initialEmail={dataSourceDetails?.username}
+            initialData = {dataSourceDetails}
             onSuccessCallback={onSuccessCallBack}
             buttonComponent={({ loading }) => (
               <div className="border-t border-[#f0f0f0]">
@@ -75,7 +77,7 @@ const UpdateEmailConfig = ({
         open={showSuccessModal}
         title="Email Address Updated Successfully"
         subtitle="You will be automatically redirected to the main page."
-        refresh
+        refreshPage={refreshPage}
       />
     </>
   );

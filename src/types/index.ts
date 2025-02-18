@@ -53,7 +53,7 @@ export interface DataSourceDetails {
   source_type: string;
   username: string;
   password: string;
-  server: string;
+  server_name: string;
   port: number;
   status: "active" | "inactive";
 }

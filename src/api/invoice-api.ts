@@ -34,7 +34,7 @@ export const invoiceProcessorApi = {
 
   getInvoiceDetails: async (invoiceId: string) => {
     try {
-      const response = await apiClient.get(`/invoices/invoices/${invoiceId}`);
+      const response = await apiClient.get(`/invoices/${invoiceId}`);
       return response;
     } catch (error) {
       console.error("Error fetching invoice details:", error);
@@ -44,7 +44,7 @@ export const invoiceProcessorApi = {
 
   getBatchInvoiceDetails: async (invoiceIds: string[]) => {
     try {
-      const response = await apiClient.post('/invoices/invoices/batch', invoiceIds);
+      const response = await apiClient.post('/invoices/batch', invoiceIds);
       return response;
     } catch (error) {
       console.error("Error fetching batch invoice details:", error);

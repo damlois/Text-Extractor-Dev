@@ -3,13 +3,18 @@ import LabelTag from "../../../../../../components/LabelTag";
 import { useEffect, useState } from "react";
 import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
 import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
-import { TemplateItem } from "../../../../../../types";
 import { Spin } from "antd";
+import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
 
-const LabelSetupRow = () => {
+interface LabelSetupRowProps {
+  refreshPage: () => void;
+}
+
+const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [labels, setLabels] = useState<TemplateItem[]>([]);
+
+  const {labels, setLabels} = useFileProcessor();
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -56,7 +61,7 @@ const LabelSetupRow = () => {
           {loading ? (
             <Spin />
           ) : (
-            labels.map((item, index) => (
+            labels?.map((item, index) => (
               <LabelTag
                 key={index}
                 id={index}
@@ -67,7 +72,11 @@ const LabelSetupRow = () => {
           )}
         </div>
       </div>
-      <UpdateLabelSetup onCancel={toggleModal} open={showUpdateModal} />
+      <UpdateLabelSetup
+        onCancel={toggleModal}
+        open={showUpdateModal}
+        refreshPage={refreshPage}
+      />
     </div>
   );
 };

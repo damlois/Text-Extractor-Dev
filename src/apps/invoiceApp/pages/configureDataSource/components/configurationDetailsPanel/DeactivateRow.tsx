@@ -3,13 +3,20 @@ import AppButton from "../../../../../../components/AppButton";
 import { useState } from "react";
 import { DataSourceDetails } from "../../../../../../types";
 import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
+import SuccessModal from "../../../../../../components/SuccessModal";
 
 interface DeactivateRowProps {
   dataSourceDetails: DataSourceDetails | null;
+  refreshPage: () => void;
 }
 
-const DeactivateRow = ({ dataSourceDetails }: DeactivateRowProps) => {
+const DeactivateRow = ({
+  dataSourceDetails,
+  refreshPage,
+}: DeactivateRowProps) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const toggleModal = () => {
@@ -27,12 +34,12 @@ const DeactivateRow = ({ dataSourceDetails }: DeactivateRowProps) => {
         dataSourceDetails.data_source_id,
         newStatus
       );
-      window.location.reload(); // Refresh to show updated status
     } catch (error) {
       console.error("Error toggling data source status:", error);
     } finally {
       setLoading(false);
       toggleModal();
+      setShowSuccessModal(!showSuccessModal);
     }
   };
 
@@ -95,6 +102,15 @@ const DeactivateRow = ({ dataSourceDetails }: DeactivateRowProps) => {
           </div>
         </div>
       </Modal>
+      <SuccessModal
+        onCancel={() => setShowSuccessModal(!showSuccessModal)}
+        open={showSuccessModal}
+        title={`Data Source ${
+          isActive ? "Deactivated" : "Activated"
+        } Successfully`}
+        subtitle="You will be automatically redirected to the main page."
+        refreshPage={refreshPage}
+      />
     </div>
   );
 };
