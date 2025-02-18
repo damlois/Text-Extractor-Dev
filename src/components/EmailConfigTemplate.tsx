@@ -1,11 +1,11 @@
 import { Form } from "antd";
-import AppInput from "../../../../../components/AppInput";
-import { requiredRule } from "../../../../../utils";
+import AppInput from "./AppInput";
+import { requiredRule } from "../utils";
 import { useState } from "react";
-import { showNotification } from "../../../../../utils/notification";
+import { showNotification } from "../utils/notification";
 import React from "react";
-import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { DataSourceDetails } from "../../../../../types";
+import { invoiceProcessorApi } from "../api/invoice-api";
+import { DataSourceDetails } from "../types";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;

@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import EmailConfigTemplate from "../../templates/EmailConfigTemplate";
+import EmailConfigTemplate from "../../../../../../components/EmailConfigTemplate";
 import AppButton from "../../../../../../components/AppButton";
 import SuccessModal from "../../../../../../components/SuccessModal";
 import { useState } from "react";

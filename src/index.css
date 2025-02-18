@@ -437,3 +437,7 @@ td .failed {
   margin-top: -6px;
 }
 
+.ant-form-item .ant-form-item-explain-error {
+  text-align: left !important;
+}
+

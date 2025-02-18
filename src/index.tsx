@@ -17,9 +17,11 @@ const renderApp = () =>
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <ConfigProvider theme={theme}>
-          <App />
+        <App />
       </ConfigProvider>
     </React.StrictMode>
   );
 
-keycloakService.initKeycloak(renderApp);
+renderApp();
+
+// keycloakService.initKeycloak(renderApp);
