@@ -9,10 +9,9 @@ import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/Create
 import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
 import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
 import GenerateInsights from "./apps/invoiceApp/pages/extractionHistory/GenerateInsights";
-import CreateAccount from "./pages/createAccount";
 import { CombinedProviders } from "./context/CombinedProviders";
 import LandingPage from "./pages/landingPage";
-import SetUpEmailServer from "./pages/createAccount/SetUpEmailServer";
+import SetPassword from "./pages/createAccount/SetPassword";
 
 const App = () => {
   return (
@@ -20,8 +19,7 @@ const App = () => {
       <Router>
         <Routes>
           {/* <Route path="/sign-in" element={<LandingPage />} /> */}
-          <Route path="/" element={<CreateAccount />} />
-          <Route path="/configure-email" element={<SetUpEmailServer />} />
+          <Route path="/" element={<SetPassword />} />
           <Route element={<PageLayout />}>
             <Route path="/home" element={<ApplicationList />} />
 
