@@ -40,7 +40,6 @@ export interface User {
   role: string;
 }
 
-
 export interface DataSourceInfo {
   id?: string;
   name: string;
@@ -217,7 +216,6 @@ export interface SuggestedPromptsResponse {
   };
 }
 
-
 export interface InvoiceMetricsResponse {
   status_code: number;
   status: string;
@@ -241,4 +239,13 @@ export interface ChatSessionsResponse {
   status: string;
   message: string;
   data: ChatSessionSummary[];
+}
+
+export interface UserData {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email_address: string;
+  role: string;
+  status: string;
 }
