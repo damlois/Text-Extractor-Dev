@@ -18,7 +18,8 @@ const ConfirmEmailPrompt = ({ emailAddress }: { emailAddress: string }) => {
           <span className="font-medium text-dark-gray">{emailAddress}</span>
         </p>
         <p className="text-[#373737] mb-8 mt-6">
-          Please check your inbox and click the link to verify your account.
+          Please check your inbox and click the link <br /> to verify your
+          account.
         </p>
         <p className="text-[#4E4E4E] font-medium mb-4">
           Didn’t receive the mail?
