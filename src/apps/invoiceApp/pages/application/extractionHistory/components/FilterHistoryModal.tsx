@@ -42,7 +42,6 @@ const FilterHistoryModal = ({
     }
   };
 
-
   return (
     <Modal
       open={open}
@@ -57,13 +56,14 @@ const FilterHistoryModal = ({
         </div>
         <div className="p-6">
           <AppSelect
-            title="Sender"
+            label="Sender"
             placeholder="Select multiple senders"
             options={senders}
-            onSelectionChange={(selected: string[]) => {
-              setFilters({ ...filters, senders: selected });
+            onSelectionChange={(selected: string[] | string) => {
+              setFilters({ ...filters, senders: selected as string[] });
             }}
             className="mb-4"
+            multiple
           />
           <div className="mb-4">
             <p className="text-dark-gray font-bold text-[14.5px] mb-2">
