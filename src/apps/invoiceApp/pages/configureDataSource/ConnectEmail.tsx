@@ -1,7 +1,7 @@
 import AppButton from "../../../../components/AppButton";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import EmailConfigTemplate from "./templates/EmailConfigTemplate";
+import EmailConfigTemplate from "../../../../components/EmailConfigTemplate";
 import { showNotification } from "../../../../utils/notification";
 
 const ConnectEmail = () => {

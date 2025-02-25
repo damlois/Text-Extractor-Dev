@@ -35,7 +35,8 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         const response = await invoiceProcessorApi.getTemplate();
         setTemplateItems(response.data.data.items);
       } catch {
-        showNotification("error", "Failed to load template");
+        // Uncomment later
+        // showNotification("error", "Failed to load template");
       } finally {
         setLoading(false);
       }

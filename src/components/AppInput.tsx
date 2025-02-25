@@ -10,6 +10,7 @@ interface AppInputProps {
   name?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   required?: boolean;
   rightIcon?: React.ReactNode;
@@ -24,6 +25,8 @@ interface AppInputProps {
   loading?: boolean;
   maxCount?: number;
   fileType?: string;
+  error?: string;
+  bottomText?: string;
 }
 
 const AppInput: React.FC<AppInputProps> = ({
@@ -44,6 +47,9 @@ const AppInput: React.FC<AppInputProps> = ({
   loading = false,
   maxCount,
   fileType,
+  onBlur,
+  error,
+  bottomText,
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -103,6 +109,7 @@ const AppInput: React.FC<AppInputProps> = ({
             value={value}
             name={name}
             onChange={onChange}
+            onBlur={onBlur}
             className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
             style={style}
             disabled={loading}
@@ -114,6 +121,7 @@ const AppInput: React.FC<AppInputProps> = ({
             name={name}
             type={type}
             onChange={onChange}
+            onBlur={onBlur}
             className={`py-[8px] h-[40px] rounded-sm border-1 border-[#D9D9D9] ${className}`}
             style={style}
             disabled={loading}
@@ -151,6 +159,18 @@ const AppInput: React.FC<AppInputProps> = ({
             }
             onPressEnter={(e) => !loading && handleSend(e)}
           />
+        )}
+
+        {error ? (
+          <span className="text-red-500 text-sm flex justify-start text-left">
+            {error}
+          </span>
+        ) : (
+          bottomText && (
+            <span className="text-gray text-sm flex justify-start text-left">
+              {bottomText}
+            </span>
+          )
         )}
 
         {file && (

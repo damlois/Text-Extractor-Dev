@@ -2,24 +2,22 @@ import React, { useState } from "react";
 import { Layout, Menu, Avatar, Button, MenuProps } from "antd";
 import {
   HomeOutlined,
-  UploadOutlined,
-  FolderOpenOutlined,
   UserOutlined,
   MenuOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import keycloakService from "../service/keycloakService";
+import { Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
 interface PageLayoutProps {
   hideLayout?: boolean;
-  children: React.ReactNode;
 }
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
+const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
@@ -30,7 +28,12 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
       label: "Home",
       onClick: () => navigate("/home"),
     },
-    { key: "2", icon: <UserOutlined />, label: "Account" },
+    {
+      key: "2",
+      icon: <UserOutlined />,
+      label: "Account",
+      onClick: () => navigate("/account"),
+    },
   ];
 
   const toggleCollapsed = () => {
@@ -59,7 +62,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
 
           <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
             <Header className="header bg-white p-0 border-b border-[#F0F0F0]">
-              <div className="toolbar flex items-center px-4">
+              <div className="toolbar flex items-center px-4 py-4">
                 <Button
                   type="text"
                   icon={<MenuOutlined />}
@@ -67,7 +70,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
                   className="menu-toggle hidden md:inline"
                 />
                 <Avatar icon={<UserOutlined />} className="ml-auto" />
-                <span className="ml-2">{keycloakService.getFullName()}</span>
+                <div className="ml-2">{keycloakService.getFullName()}</div>
               </div>
             </Header>
 
@@ -75,7 +78,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
               className="overflow-auto bg-white shadow-sm"
               style={{ height: "calc(100vh - 300px)" }}
             >
-              <div>{children}</div>
+              <Outlet />
             </Content>
           </Layout>
         </>
@@ -84,7 +87,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout, children }) => {
           className="overflow-auto bg-white shadow-sm"
           style={{ height: "calc(100vh - 64px)" }}
         >
-          <div>{children}</div>
+          <Outlet />
         </Content>
       )}
     </Layout>
