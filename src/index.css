@@ -400,15 +400,22 @@ input {
   border-bottom: 1px solid #E4E7EC;
 }
 
-td .successful, td .completed {
+td .successful, td .completed, td .active {
   color: #006A94;
   background: #CCE1EA;
   text-transform: capitalize;
 }
 
-td .failed {
+td .pending {
+color: #FAAD14;
+background: #FFFBE6;
+text-transform: capitalize;
+}
+
+td .failed, td .inactive{
   color: #CF1322;
   background: #FFA39E;
+  text-transform: capitalize;
 }
 
 .ant-select-selector {

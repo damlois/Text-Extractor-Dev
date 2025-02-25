@@ -1,17 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
 import ApplicationList from "./pages/home/ApplicationList";
-import InvoiceAppTabSelector from "./apps/invoiceApp/pages/InvoiceAppTabSelector";
-import ConfigureDataSource from "./apps/invoiceApp/pages/configureDataSource";
-import ExtractionHistory from "./apps/invoiceApp/pages/extractionHistory";
-import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
-import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
-import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
-import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
-import GenerateInsights from "./apps/invoiceApp/pages/extractionHistory/GenerateInsights";
+import InvoiceAppTabSelector from "./apps/invoiceApp/pages/application/InvoiceAppTabSelector";
+import ConfigureDataSource from "./apps/invoiceApp/pages/application/configureDataSource";
+import ExtractionHistory from "./apps/invoiceApp/pages/application/extractionHistory";
+import SavedInsights from "./apps/invoiceApp/pages/application/savedInsights";
+import CreateDataSource from "./apps/invoiceApp/pages/application/configureDataSource/CreateDataSource";
+import ConnectEmail from "./apps/invoiceApp/pages/application/configureDataSource/ConnectEmail";
+import SetupLabel from "./apps/invoiceApp/pages/application/configureDataSource/SetUpLabel";
+import GenerateInsights from "./apps/invoiceApp/pages/application/extractionHistory/GenerateInsights";
 import { CombinedProviders } from "./context/CombinedProviders";
 import LandingPage from "./pages/landingPage";
 import SetPassword from "./pages/createAccount/SetPassword";
+import UsersList from "./apps/invoiceApp/pages/users";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/" element={<SetPassword />} />
           <Route element={<PageLayout />}>
             <Route path="/home" element={<ApplicationList />} />
+            <Route path="/users" element={<UsersList />} />
 
             <Route
               path="/invoice-processing"
