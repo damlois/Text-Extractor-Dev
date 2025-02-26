@@ -138,7 +138,7 @@ const UsersList = () => {
         onActionClick={() => toggleModal("create_user")}
         noBorder
       />
-      <div className="overflow-x-auto p-4">
+      <div className="overflow-x-auto py-4 px-6">
         <Table<UserData>
           rowKey="id"
           columns={usersListColumns}
