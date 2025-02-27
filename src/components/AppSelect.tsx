@@ -5,25 +5,29 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 
 interface AppSelectProps {
   options: string[];
-  onSelectionChange: (selected: string[]) => void;
+  onSelectionChange: (selected: string[] | string) => void;
   tooltipText?: string;
-  title?: string;
+  label?: string;
   placeholder?: string;
   className: string;
+  multiple?: boolean;
+  error?: string;
 }
 
 const AppSelect: React.FC<AppSelectProps> = ({
   options,
   onSelectionChange,
   tooltipText,
-  title,
+  label,
   placeholder,
   className,
+  multiple,
+  error,
   ...props
 }) => {
   const [fetching, setFetching] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options);
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[] | string>([]);
 
   const debounceFilter = useMemo(() => {
     return debounce((search: string) => {
@@ -39,16 +43,20 @@ const AppSelect: React.FC<AppSelectProps> = ({
     }, 800);
   }, [options]);
 
-  const handleChange = (newValue: string[] | string) => {
-    const updatedValues = Array.isArray(newValue) ? newValue : [newValue];
-    setSelectedValues(updatedValues);
-    onSelectionChange(updatedValues);
+  const handleChange = (newValue: string | string[]) => {
+    if (!multiple) {
+      setSelectedValues(newValue as string);
+      onSelectionChange(newValue as string);
+    } else {
+      setSelectedValues(newValue as string[]);
+      onSelectionChange(newValue as string[]);
+    }
   };
 
   return (
     <div className={className}>
       <div className={`flex items-center gap-2 mb-2 w-full`}>
-        <p className="text-dark-gray font-normal text-[14px]">{title}</p>
+        <p className="text-dark-gray font-normal text-[14px]">{label}</p>
         {tooltipText && (
           <Tooltip title={tooltipText}>
             <InfoCircleOutlined className="text-gray-500 text-[14px] cursor-pointer" />
@@ -56,7 +64,7 @@ const AppSelect: React.FC<AppSelectProps> = ({
         )}
       </div>
       <Select
-        mode="multiple"
+        mode={multiple ? "multiple" : undefined}
         filterOption={false}
         onSearch={debounceFilter}
         notFoundContent={fetching ? <Spin size="small" /> : null}
@@ -70,6 +78,13 @@ const AppSelect: React.FC<AppSelectProps> = ({
         placeholder={placeholder}
         className="w-full min-h-[39px]"
       />
+      {error ? (
+        <span className="text-red-500 text-sm flex justify-start text-left">
+          {error}
+        </span>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   LogoutOutlined,
   QuestionCircleOutlined,
   SettingOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import keycloakService from "../service/keycloakService";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -40,6 +41,18 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
       icon: <UserOutlined />,
       label: "Account",
       onClick: () => navigate("/account"),
+    },
+    {
+      key: "3",
+      icon: <TeamOutlined />,
+      label: "User",
+      onClick: () => navigate("/users"),
+    },
+    {
+      key: "4",
+      icon: <UserOutlined />,
+      label: "Role & permission",
+      onClick: () => navigate("/roles"),
     },
   ];
 

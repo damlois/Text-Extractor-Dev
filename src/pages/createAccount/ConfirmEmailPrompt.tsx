@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 const ConfirmEmailPrompt = ({ emailAddress }: { emailAddress: string }) => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="h-screen w-full flex items-center justify-center bg-cover bg-center"
@@ -24,7 +28,10 @@ const ConfirmEmailPrompt = ({ emailAddress }: { emailAddress: string }) => {
         <p className="text-[#4E4E4E] font-medium mb-4">
           Didn’t receive the mail?
         </p>
-        <button className="text-deep-blue font-medium underline cursor-pointer">
+        <button
+          className="text-deep-blue font-medium underline cursor-pointer"
+          onClick={() => navigate("/users")}
+        >
           Click to resend
         </button>
       </div>
