@@ -70,7 +70,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
             <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
-            <Menu defaultSelectedKeys={["3"]} mode="inline" items={items} />
+            <Menu defaultSelectedKeys={["1"]} mode="inline" items={items} />
           </Sider>
 
           <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
