@@ -1,28 +1,35 @@
 import React, { useState } from "react";
-import { Layout, Menu, Avatar, Button, MenuProps } from "antd";
+import { Layout, Menu, Avatar, Button, Dropdown } from "antd";
 import {
-  HomeOutlined,
   UserOutlined,
   MenuOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  QuestionCircleOutlined,
+  SettingOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import keycloakService from "../service/keycloakService";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import SignOutModal from "./SignOutModal";
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 interface PageLayoutProps {
   hideLayout?: boolean;
 }
 
-type MenuItem = Required<MenuProps>["items"][number];
-
 const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+
   const navigate = useNavigate();
 
-  const items: MenuItem[] = [
+  const toggleCollapsed = () => setCollapsed(!collapsed);
+
+  const toggleSignOutModal = () => setShowSignOutModal(!showSignOutModal);
+
+  const navBarItems = [
     {
       key: "1",
       icon: <HomeOutlined />,
@@ -49,8 +56,31 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
     },
   ];
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
+  const toolbarDropdownMenu = {
+    items: [
+      {
+        key: "1",
+        label: "Profile",
+        icon: <UserOutlined />,
+      },
+      {
+        key: "2",
+        label: "Settings",
+        icon: <SettingOutlined />,
+      },
+      {
+        key: "3",
+        label: "Help Center",
+        icon: <QuestionCircleOutlined />,
+      },
+      {
+        key: "4",
+        label: "Sign Out",
+        onClick: toggleSignOutModal,
+        icon: <LogoutOutlined />,
+        danger: true,
+      },
+    ],
   };
 
   return (
@@ -70,22 +100,31 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
             <div className="flex px-[19px] py-[15px] h-16 text-xl text-black font-semibold border-b border-[#F0F0F0]">
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
-            <Menu defaultSelectedKeys={["1"]} mode="inline" items={items} />
+            <Menu
+              defaultSelectedKeys={["1"]}
+              mode="inline"
+              items={navBarItems}
+            />
           </Sider>
 
           <Layout style={{ flex: 1, width: "85%" }} className="h-screen">
-            <Header className="header bg-white p-0 border-b border-[#F0F0F0]">
-              <div className="toolbar flex items-center px-4 py-4">
+            <div className="header bg-white p-0 border-b border-[#F0F0F0] py-4">
+              <div className="toolbar flex justify-between items-center px-4">
                 <Button
                   type="text"
                   icon={<MenuOutlined />}
                   onClick={toggleCollapsed}
                   className="menu-toggle hidden md:inline"
                 />
-                <Avatar icon={<UserOutlined />} className="ml-auto" />
-                <div className="ml-2">{keycloakService.getFullName()}</div>
+
+                <Dropdown menu={toolbarDropdownMenu} trigger={["click"]}>
+                  <div className="cursor-pointer flex gap-2 items-center">
+                    <Avatar icon={<UserOutlined />} />
+                    <div>{keycloakService.getFullName()}</div>
+                  </div>
+                </Dropdown>
               </div>
-            </Header>
+            </div>
 
             <Content
               className="overflow-auto bg-white shadow-sm"
@@ -94,6 +133,10 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
               <Outlet />
             </Content>
           </Layout>
+          <SignOutModal
+            isOpen={showSignOutModal}
+            onCancel={toggleSignOutModal}
+          />
         </>
       ) : (
         <Content
