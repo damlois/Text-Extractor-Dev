@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { ConfigProvider } from "antd";
-import keycloakService from "./service/keycloakService";
 
 const theme = {
   token: {
@@ -23,5 +22,3 @@ const renderApp = () =>
   );
 
 renderApp();
-
-// keycloakService.initKeycloak(renderApp);

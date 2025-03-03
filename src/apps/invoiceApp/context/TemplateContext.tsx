@@ -13,7 +13,7 @@ interface TemplateContextProps {
   templateItems: TemplateItem[];
   setTemplateItems: (items: TemplateItem[]) => void;
   loading: boolean;
-  error: string | null;
+  fetchTemplate: () => Promise<void>;
   saveTemplate: () => Promise<void>;
 }
 
@@ -26,24 +26,18 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [templateItems, setTemplateItems] = useState<TemplateItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTemplate = async () => {
-      try {
-        setLoading(true);
-        const response = await invoiceProcessorApi.getTemplate();
-        setTemplateItems(response.data.data.items);
-      } catch {
-        // Uncomment later
-        // showNotification("error", "Failed to load template");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTemplate();
-  }, []);
+  const fetchTemplate = async () => {
+    try {
+      setLoading(true);
+      const response = await invoiceProcessorApi.getTemplate();
+      setTemplateItems(response.data.data.items);
+    } catch {
+      showNotification("error", "Failed to load template");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const saveTemplate = async () => {
     try {
@@ -62,7 +56,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         templateItems,
         setTemplateItems,
         loading,
-        error,
+        fetchTemplate,
         saveTemplate,
       }}
     >

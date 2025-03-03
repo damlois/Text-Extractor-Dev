@@ -4,12 +4,6 @@ export type Message = {
   image?: string;
 };
 
-export interface User {
-  id: string;
-  username: string;
-  role: string;
-}
-
 export interface ImageData {
   craeted_at: string;
   image_name: string;
@@ -32,12 +26,6 @@ export interface chatHistoryRecord {
   session_id: string;
   type: string;
   timestamp: string;
-}
-
-export interface User {
-  id: string;
-  username: string;
-  role: string;
 }
 
 export interface DataSourceInfo {
@@ -69,12 +57,6 @@ export interface ToggleStatusResponse {
   status: string;
   message: string;
   data: Record<string, never>;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
 }
 
 export interface TemplateItem {
@@ -241,11 +223,22 @@ export interface ChatSessionsResponse {
   data: ChatSessionSummary[];
 }
 
-export interface UserData {
+export interface User {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  password?: string;
+  role?: string;
+  is_invited: boolean;
+}
+
+export interface UserResponse {
   id: string;
   first_name: string;
   last_name: string;
-  email_address: string;
-  role: string;
+  email: string;
+  username: string;
+  role: string | undefined;
   status: string;
 }

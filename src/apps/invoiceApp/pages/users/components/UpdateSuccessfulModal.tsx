@@ -1,9 +1,9 @@
 import { Modal, Button } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import { UserData } from "../../../../../types";
+import { UserResponse } from "../../../../../types";
 
 interface UpdateSuccessfulModalProps {
-  user: UserData | undefined;
+  user: UserResponse | undefined;
   open: boolean;
   onCancel: () => void;
 }

@@ -13,41 +13,46 @@ import { CombinedProviders } from "./context/CombinedProviders";
 import LandingPage from "./pages/landingPage";
 import SetPassword from "./pages/createAccount/SetPassword";
 import UsersList from "./apps/invoiceApp/pages/users";
+import RouteProtector from "./components/RouteProtector";
 
 const App = () => {
   return (
     <CombinedProviders>
       <Router>
         <Routes>
-          {/* <Route path="/sign-in" element={<LandingPage />} /> */}
-          <Route path="/" element={<SetPassword />} />
-          <Route element={<PageLayout />}>
-            <Route path="/home" element={<ApplicationList />} />
-            <Route path="/users" element={<UsersList />} />
-
-            <Route
-              path="/invoice-processing"
-              element={<InvoiceAppTabSelector />}
-            >
-              <Route path="data-source" element={<ConfigureDataSource />} />
-              <Route path="data-source/create" element={<CreateDataSource />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/create-account" element={<SetPassword />} />
+          <Route element={<RouteProtector />}>
+            <Route element={<PageLayout />}>
+              <Route path="/home" element={<ApplicationList />} />
+              <Route path="/users" element={<UsersList />} />
               <Route
-                path="data-source/connect-email"
-                element={<ConnectEmail />}
-              />
-              <Route
-                path="data-source/field-extraction-setup"
-                element={<SetupLabel />}
-              />
-              <Route
-                path="extraction-history"
-                element={<ExtractionHistory />}
-              />
-              <Route
-                path="extraction-history/generate-insights"
-                element={<GenerateInsights />}
-              />
-              <Route path="saved-insights" element={<SavedInsights />} />
+                path="/invoice-processing"
+                element={<InvoiceAppTabSelector />}
+              >
+                <Route path="data-source" element={<ConfigureDataSource />} />
+                <Route
+                  path="data-source/create"
+                  element={<CreateDataSource />}
+                />
+                <Route
+                  path="data-source/connect-email"
+                  element={<ConnectEmail />}
+                />
+                <Route
+                  path="data-source/field-extraction-setup"
+                  element={<SetupLabel />}
+                />
+                <Route
+                  path="extraction-history"
+                  element={<ExtractionHistory />}
+                />
+                <Route
+                  path="extraction-history/generate-insights"
+                  element={<GenerateInsights />}
+                />
+                <Route path="saved-insights" element={<SavedInsights />} />
+              </Route>
             </Route>
           </Route>
         </Routes>

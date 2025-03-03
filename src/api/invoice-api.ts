@@ -11,6 +11,8 @@ import {
   InvoiceMetricsResponse,
   SuggestedPromptsResponse,
   ChatSessionsResponse,
+  User,
+  UserResponse,
 } from "../types";
 import apiClient from "../service/apiClient";
 
@@ -91,13 +93,23 @@ export const invoiceProcessorApi = {
 
   checkOrgHasAdmin: async () => {
     try {
-      const response = await apiClient.get<{ data: boolean }>(
+      const response = await apiClient.get<{ data: boolean; message: string }>(
         "/users/has-admin"
       );
-      return response.data.data;
+      return response;
     } catch (error) {
       console.error("Error checking if organization has admin");
       throw error;
     }
   },
+
+  createUser: async (UserResponse: User) => {
+    const response = await apiClient.post<{
+      data: UserResponse;
+    }>("/users", UserResponse);
+
+    return response;
+  },
+
+  getUsers: async () => await apiClient.get<{ data: UserResponse[] }>("/users"),
 };

@@ -4,6 +4,10 @@ import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { createUserSchema } from "../validation";
 import AppSelect from "../../../../../components/AppSelect";
+import { useState } from "react";
+import { User } from "../../../../../types";
+import { invoiceProcessorApi } from "../../../../../api/invoice-api";
+import { showNotification } from "../../../../../utils/notification";
 
 interface CreateUserModalProps {
   open: boolean;
@@ -11,16 +15,48 @@ interface CreateUserModalProps {
 }
 
 const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
+  const [loading, setLoading] = useState(false);
+
   const initialValues = {
-    firstName: "",
-    lastName: "",
-    emailAddress: "",
+    first_name: "",
+    last_name: "",
+    email: "",
     role: "",
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
-    console.log(values);
-    onCancel();
+  const handleSubmit = async ({
+    first_name,
+    last_name,
+    email,
+    role,
+  }: typeof initialValues) => {
+    console.log("here");
+    const data: User = {
+      first_name,
+      last_name,
+      email,
+      is_invited: true,
+      username: email,
+      password: email,
+      role,
+    };
+
+    try {
+      setLoading(true);
+      await invoiceProcessorApi.createUser(data);
+
+      showNotification("success", "An invite has been sent to the user");
+      onCancel();
+    } catch (error: any) {
+      showNotification(
+        "error",
+        error.response.data.detail.startsWith("400:")
+          ? "User already exists with the same email address"
+          : "Something went wrong. Please check your internet connection and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,49 +91,49 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Field
                     as={AppInput}
-                    name="firstName"
+                    name="first_name"
                     type="text"
                     label="First Name"
                     placeholder="Enter first name"
-                    value={values.firstName}
+                    value={values.first_name}
                     onChange={handleChange}
                     onBlur={(e: any) => {
                       handleBlur(e);
-                      setFieldTouched("firstName", true);
+                      setFieldTouched("first_name", true);
                     }}
-                    error={errors.firstName}
+                    error={errors.first_name}
                     className="w-full"
                   />
                   <Field
                     as={AppInput}
-                    name="lastName"
+                    name="last_name"
                     type="text"
                     label="Last Name"
                     placeholder="Enter last name"
-                    value={values.lastName}
+                    value={values.last_name}
                     onChange={handleChange}
                     onBlur={(e: any) => {
                       handleBlur(e);
-                      setFieldTouched("lastName", true);
+                      setFieldTouched("last_name", true);
                     }}
-                    error={errors.lastName}
+                    error={errors.last_name}
                     className="w-full"
                   />
                 </div>
 
                 <Field
                   as={AppInput}
-                  name="emailAddress"
+                  name="email"
                   type="email"
                   label="Email Address"
                   placeholder="Enter email address"
-                  value={values.emailAddress}
+                  value={values.email}
                   onChange={handleChange}
                   onBlur={(e: any) => {
                     handleBlur(e);
-                    setFieldTouched("emailAddress", true);
+                    setFieldTouched("email", true);
                   }}
-                  error={errors.emailAddress}
+                  error={errors.email}
                 />
 
                 <Field
@@ -106,7 +142,7 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
                   label="Role"
                   placeholder="Select an Option"
                   value={values.role}
-                  options={["Admin", "User"]}
+                  options={["admin"]}
                   onSelectionChange={(value: any) =>
                     setFieldValue("role", value)
                   }
@@ -121,6 +157,8 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
                   htmlType="submit"
                   className="w-full h-[40px] mt-6"
                   disabled={!isValid}
+                  loading={loading}
+                  onClick={() => handleSubmit(values)}
                 >
                   Create User
                 </AppButton>

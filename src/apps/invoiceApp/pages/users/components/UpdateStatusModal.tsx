@@ -1,11 +1,11 @@
 import { Modal, Button } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { UserData } from "../../../../../types";
+import { UserResponse } from "../../../../../types";
 import { ModalType } from "../types";
 import { useEffect, useState } from "react";
 
 interface UpdateStatusModalProps {
-  user: UserData | undefined;
+  user: UserResponse | undefined;
   open: boolean;
   onCancel: () => void;
   toggleModal: (type: ModalType) => void;

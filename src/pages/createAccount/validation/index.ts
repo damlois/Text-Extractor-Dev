@@ -1,15 +1,15 @@
 import * as Yup from "yup";
 
 export const setPasswordSchema = Yup.object({
-  firstName: Yup.string()
+  first_name: Yup.string()
     .trim()
     .min(1, "Please, enter a valid first name")
     .required("First name is required"),
-  lastName: Yup.string()
+  last_name: Yup.string()
     .trim()
     .min(1, "Please enter a valid last name")
     .required("Last name is required"),
-  emailAddress: Yup.string()
+  email: Yup.string()
     .trim()
     .email("Please input a valid email address")
     .required("Email is required"),
