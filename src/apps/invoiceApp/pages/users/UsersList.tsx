@@ -1,45 +1,41 @@
 import PageHeader from "../../../../components/PageHeader";
-import { UserData } from "../../../../types";
-import { Button, Dropdown, Table, TableColumnsType } from "antd";
+import { UserResponse } from "../../../../types";
+import { Button, Dropdown, Spin, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import CreateUserModal from "./components/CreateUserModal";
 import { FaEllipsisVertical } from "react-icons/fa6";
 import UpdateStatusModal from "./components/UpdateStatusModal";
 import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
+import { invoiceProcessorApi } from "../../../../api/invoice-api";
+import { showNotification } from "../../../../utils/notification";
 
 const UsersList = () => {
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [selectedUser, setSelectedUser] = useState<UserData | undefined>();
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserResponse | undefined>();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState<ModalConfig>({
     type: "create_user",
     open: false,
   });
 
-  console.log(modal)
-
   useEffect(() => {
-    setUsers([
-      {
-        id: "1",
-        first_name: "John",
-        last_name: "Doe",
-        email_address: "johndoe@mail.com",
-        role: "Admin",
-        status: "Active",
-      },
-      {
-        id: "2",
-        first_name: "Mary",
-        last_name: "Adams",
-        email_address: "maryadams@mail.com",
-        role: "Admin",
-        status: "Inactive",
-      },
-    ]);
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await invoiceProcessorApi.getUsers();
+        setUsers(response.data.data);
+      } catch (e) {
+        showNotification("error", "Something went wrong. Please check your internet connection and try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  const usersListColumns: TableColumnsType<UserData> = [
+  const usersListColumns: TableColumnsType<UserResponse> = [
     {
       title: "First Name",
       dataIndex: "first_name",
@@ -56,7 +52,7 @@ const UsersList = () => {
     },
     {
       title: "Email Address",
-      dataIndex: "email_address",
+      dataIndex: "email",
       render: (text: string) => text,
     },
     {
@@ -81,7 +77,7 @@ const UsersList = () => {
       title: "",
       key: "actions",
       align: "center" as const,
-      render: (_: any, record: UserData) => (
+      render: (_: any, record: UserResponse) => (
         <Dropdown
           menu={{
             items:
@@ -124,7 +120,7 @@ const UsersList = () => {
   const shouldOpenModal = (type: ModalType) =>
     modal.type === type && modal.open;
 
-  const handleUpdate = (record: UserData) => {
+  const handleUpdate = (record: UserResponse) => {
     setSelectedUser(record);
     toggleModal("update_status");
   };
@@ -139,12 +135,13 @@ const UsersList = () => {
         noBorder
       />
       <div className="overflow-x-auto py-4 px-6">
-        <Table<UserData>
+        <Table<UserResponse>
           rowKey="id"
           columns={usersListColumns}
           dataSource={users}
           className="no-vertical-lines"
-          pagination={users.length > 10 ? { pageSize: 10 } : false}
+          pagination={users.length > 7 ? { pageSize: 7 } : false}
+          loading={loading}
         />
       </div>
       <CreateUserModal

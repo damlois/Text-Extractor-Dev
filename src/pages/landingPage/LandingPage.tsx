@@ -1,32 +1,49 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import keycloakService from "../../service/keycloakService";
+import { invoiceProcessorApi } from "../../api/invoice-api";
+import { showNotification } from "../../utils/notification";
+import { Spin } from "antd";
 
 const LandingPage = () => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [showDisplayMsg, setShowDisplayMsg] = useState(false);
-  const redirectUrl = process.env.REACT_APP_REDIRECT_URL;
 
   useEffect(() => {
-    if (keycloakService) {
-      if (keycloakService.isLoggedIn()) {
-        if (keycloakService.hasRole(["ADMIN"])) {
-          navigate("/home");
+    const checkAdminThenAuth = async () => {
+      try {
+        const response = await invoiceProcessorApi.checkOrgHasAdmin();
+        const hasAdmin = response.data.data;
+
+        if (!hasAdmin) {
+          navigate("/create-account", { state: { fromLandingPage: true } });
         } else {
-          setShowDisplayMsg(true);
+          keycloakService.initKeycloak(() => {
+            navigate("/home");
+          });
         }
-      } else {
-        keycloakService.doLogin({ redirectUri: redirectUrl });
+      } catch (e) {
+        showNotification(
+          "error",
+          "Something went wrong. Please check your internet connection and try again."
+        );
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    checkAdminThenAuth();
   }, []);
 
-  return (
-    <div>
-      {showDisplayMsg &&
-        "User Doesn't have role or user's role not yet handled."}
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="flex w-full h-screen items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default LandingPage;
