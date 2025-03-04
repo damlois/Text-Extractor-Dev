@@ -4,10 +4,13 @@ import keycloakService from "../../service/keycloakService";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { showNotification } from "../../utils/notification";
 import { Spin } from "antd";
+import { useTemplate } from "../../apps/invoiceApp/context/TemplateContext";
 
 const LandingPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const { fetchTemplate } = useTemplate();
 
   useEffect(() => {
     const checkAdminThenAuth = async () => {
@@ -20,6 +23,7 @@ const LandingPage = () => {
         } else {
           keycloakService.initKeycloak(() => {
             navigate("/home");
+            fetchTemplate();
           });
         }
       } catch (e) {
