@@ -10,8 +10,6 @@ const LandingPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const { fetchTemplate } = useTemplate();
-
   useEffect(() => {
     const checkAdminThenAuth = async () => {
       try {
@@ -23,7 +21,6 @@ const LandingPage = () => {
         } else {
           keycloakService.initKeycloak(() => {
             navigate("/home");
-            fetchTemplate();
           });
         }
       } catch (e) {

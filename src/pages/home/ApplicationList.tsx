@@ -1,9 +1,18 @@
 import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useTemplate } from "../../apps/invoiceApp/context/TemplateContext";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
+
+  const { fetchTemplate } = useTemplate();
+
+  useEffect(() => {
+    fetchTemplate();
+  }, []);
+
   return (
     <div className="flex flex-col items-start font-inter">
       <div className="flex flex-col items-center w-full p-6">

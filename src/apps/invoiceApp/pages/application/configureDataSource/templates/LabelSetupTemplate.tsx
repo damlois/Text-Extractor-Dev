@@ -50,8 +50,13 @@ const LabelSetupTemplate = ({
     templateItems,
     setTemplateItems,
     loading: templateLoading,
+    fetchTemplate
   } = useTemplate();
   const [editingKey, setEditingKey] = useState<string>("");
+
+  useEffect(() => {
+    fetchTemplate()
+  }, [])
 
   const getTableData = (): LabelInfo[] => {
     return templateItems.map((item, index) => ({
