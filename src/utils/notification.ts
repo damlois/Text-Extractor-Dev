@@ -14,11 +14,13 @@ notification.config({
 export const showNotification = (
   type: "success" | "error" | "info" | "warning",
   message: string,
-  description?: string
+  description?: string,
+  duration?: number
 ): void => {
   notification[type]({
     message,
     description,
+    duration,
     style: { padding: "16px 8px 8px 8px" },
     className: "custom-notification",
   });
