@@ -23,7 +23,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Get current route path
+  const location = useLocation();
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
   const toggleSignOutModal = () => setShowSignOutModal(!showSignOutModal);
