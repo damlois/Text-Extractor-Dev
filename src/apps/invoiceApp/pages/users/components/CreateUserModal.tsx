@@ -15,7 +15,11 @@ interface CreateUserModalProps {
   refreshPage: () => void;
 }
 
-const CreateUserModal = ({ open, onCancel, refreshPage }: CreateUserModalProps) => {
+const CreateUserModal = ({
+  open,
+  onCancel,
+  refreshPage,
+}: CreateUserModalProps) => {
   const [loading, setLoading] = useState(false);
 
   const initialValues = {
@@ -52,7 +56,7 @@ const CreateUserModal = ({ open, onCancel, refreshPage }: CreateUserModalProps) 
     } catch (error: any) {
       showNotification(
         "error",
-        error.response.data.detail.startsWith("400:")
+        error.response?.data?.detail?.startsWith("400:")
           ? "User already exists with the same email address"
           : "Something went wrong. Please check your internet connection and try again."
       );
@@ -88,7 +92,7 @@ const CreateUserModal = ({ open, onCancel, refreshPage }: CreateUserModalProps) 
               isValid,
               setFieldTouched,
               setFieldValue,
-              touched
+              touched,
             }) => (
               <Form className="grid gap-4" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

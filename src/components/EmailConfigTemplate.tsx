@@ -39,7 +39,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
     } catch (error: any) {
       showNotification(
         "error",
-        error.response.data.detail.startsWith("400:")
+        error.response?.data?.detail?.startsWith("400:")
           ? "Incorrect email credentials. Please check and try again"
           : "There was an issue connecting your email. Please try again."
       );

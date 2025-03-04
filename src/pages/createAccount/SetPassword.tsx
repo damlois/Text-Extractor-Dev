@@ -91,7 +91,7 @@ const SetPassword = () => {
     } catch (error: any) {
       showNotification(
         "error",
-        error.response.data.detail.startsWith("400:")
+        error.response?.data?.detail?.startsWith("400:")
           ? "User already exists with the same email address"
           : "Something went wrong. Please check your internet connection and try again."
       );

@@ -21,7 +21,7 @@ export const showNotification = (
     message,
     description,
     duration,
-    style: { padding: "16px 8px 8px 8px" },
+    // style: { padding: "16px 8px 8px 8px" },
     className: "custom-notification",
   });
 };
