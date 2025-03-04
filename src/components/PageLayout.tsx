@@ -10,7 +10,7 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import keycloakService from "../service/keycloakService";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SignOutModal from "./SignOutModal";
 
 const { Sider, Content } = Layout;
@@ -22,36 +22,29 @@ interface PageLayoutProps {
 const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
-
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
-
   const toggleSignOutModal = () => setShowSignOutModal(!showSignOutModal);
 
   const navBarItems = [
     {
-      key: "1",
+      key: "/home",
       icon: <HomeOutlined />,
       label: "Home",
       onClick: () => navigate("/home"),
     },
     {
-      key: "2",
-      icon: <UserOutlined />,
-      label: "Account",
-      onClick: () => navigate("/account"),
-    },
-    {
-      key: "3",
+      key: "/users",
       icon: <TeamOutlined />,
       label: "User",
       onClick: () => navigate("/users"),
     },
     {
-      key: "4",
+      key: "/roles",
       icon: <UserOutlined />,
-      label: "Role & permission",
+      label: "Role & Permission",
       onClick: () => navigate("/roles"),
     },
   ];
@@ -101,7 +94,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
             <Menu
-              defaultSelectedKeys={["1"]}
+              selectedKeys={[location.pathname]}
               mode="inline"
               items={navBarItems}
             />
@@ -116,7 +109,6 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
                   onClick={toggleCollapsed}
                   className="menu-toggle hidden md:inline"
                 />
-
                 <Dropdown menu={toolbarDropdownMenu} trigger={["click"]}>
                   <div className="cursor-pointer flex gap-2 items-center">
                     <Avatar icon={<UserOutlined />} />
@@ -133,6 +125,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
               <Outlet />
             </Content>
           </Layout>
+
           <SignOutModal
             isOpen={showSignOutModal}
             onCancel={toggleSignOutModal}

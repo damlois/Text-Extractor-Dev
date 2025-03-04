@@ -1,6 +1,6 @@
 import PageHeader from "../../../../components/PageHeader";
 import { UserResponse } from "../../../../types";
-import { Button, Dropdown, Spin, Table, TableColumnsType } from "antd";
+import { Button, Dropdown, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import CreateUserModal from "./components/CreateUserModal";
 import { FaEllipsisVertical } from "react-icons/fa6";
@@ -14,6 +14,7 @@ const UsersList = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserResponse | undefined>();
   const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [modal, setModal] = useState<ModalConfig>({
     type: "create_user",
     open: false,
@@ -26,14 +27,17 @@ const UsersList = () => {
         const response = await invoiceProcessorApi.getUsers();
         setUsers(response.data.data);
       } catch (e) {
-        showNotification("error", "Something went wrong. Please check your internet connection and try again.");
+        showNotification(
+          "error",
+          "Something went wrong. Please check your internet connection and try again."
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [refresh]);
 
   const usersListColumns: TableColumnsType<UserResponse> = [
     {
@@ -114,8 +118,9 @@ const UsersList = () => {
     },
   ];
 
-  const toggleModal = (type: ModalType) =>
+  const toggleModal = (type: ModalType) => {
     setModal({ type, open: !modal.open });
+  };
 
   const shouldOpenModal = (type: ModalType) =>
     modal.type === type && modal.open;
@@ -147,6 +152,7 @@ const UsersList = () => {
       <CreateUserModal
         open={shouldOpenModal("create_user")}
         onCancel={() => toggleModal("create_user")}
+        refreshPage={() => setRefresh(!refresh)}
       />
       <UpdateStatusModal
         user={selectedUser}

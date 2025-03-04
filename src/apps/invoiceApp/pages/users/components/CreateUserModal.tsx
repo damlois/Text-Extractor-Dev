@@ -12,9 +12,10 @@ import { showNotification } from "../../../../../utils/notification";
 interface CreateUserModalProps {
   open: boolean;
   onCancel: () => void;
+  refreshPage: () => void;
 }
 
-const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
+const CreateUserModal = ({ open, onCancel, refreshPage }: CreateUserModalProps) => {
   const [loading, setLoading] = useState(false);
 
   const initialValues = {
@@ -46,6 +47,7 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
       await invoiceProcessorApi.createUser(data);
 
       showNotification("success", "An invite has been sent to the user");
+      refreshPage();
       onCancel();
     } catch (error: any) {
       showNotification(
@@ -86,6 +88,7 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
               isValid,
               setFieldTouched,
               setFieldValue,
+              touched
             }) => (
               <Form className="grid gap-4" noValidate>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -156,7 +159,7 @@ const CreateUserModal = ({ open, onCancel }: CreateUserModalProps) => {
                 <AppButton
                   htmlType="submit"
                   className="w-full h-[40px] mt-6"
-                  disabled={!isValid}
+                  disabled={!isValid || Object.keys(touched).length === 0}
                   loading={loading}
                   onClick={() => handleSubmit(values)}
                 >
