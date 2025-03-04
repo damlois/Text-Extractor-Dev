@@ -51,7 +51,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
     {
       key: "4",
       icon: <UserOutlined />,
-      label: "Role & permission",
+      label: "Role & Permission",
       onClick: () => navigate("/roles"),
     },
   ];
