@@ -30,19 +30,19 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
 
   const navBarItems = [
     {
-      key: "/home",
+      key: "home",
       icon: <HomeOutlined />,
       label: "Home",
       onClick: () => navigate("/home"),
     },
     {
-      key: "/users",
+      key: "users",
       icon: <TeamOutlined />,
       label: "User",
       onClick: () => navigate("/users"),
     },
     {
-      key: "/roles",
+      key: "roles",
       icon: <UserOutlined />,
       label: "Role & Permission",
       onClick: () => navigate("/roles"),
@@ -94,7 +94,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
               <img src="/assets/images/logo.png" alt="interprAIs Logo" />
             </div>
             <Menu
-              selectedKeys={[location.pathname]}
+              selectedKeys={[location.pathname.split("/")[1]]}
               mode="inline"
               items={navBarItems}
             />

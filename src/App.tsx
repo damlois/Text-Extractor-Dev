@@ -27,7 +27,7 @@ const App = () => {
               <Route path="/home" element={<ApplicationList />} />
               <Route path="/users" element={<UsersList />} />
               <Route
-                path="/invoice-processing"
+                path="/home/invoice-processing"
                 element={<InvoiceAppTabSelector />}
               >
                 <Route path="data-source" element={<ConfigureDataSource />} />

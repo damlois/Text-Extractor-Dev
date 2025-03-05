@@ -38,6 +38,7 @@ const ExtractionHistoryTable = () => {
 
       const invoices = response.data.data.invoices.map((item) => ({
         ...item,
+        sender: item.email_metadata.sender,
         processing_status:
           item.processing_status === "COMPLETED"
             ? "Successful"
@@ -69,7 +70,7 @@ const ExtractionHistoryTable = () => {
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
-      new Set(allInvoices.map((invoice) => invoice.sender))
+      new Set(allInvoices.map((invoice) => invoice.email_metadata.sender))
     ).filter(Boolean);
   }, [allInvoices]);
 

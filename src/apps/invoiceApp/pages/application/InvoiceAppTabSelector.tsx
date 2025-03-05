@@ -10,14 +10,14 @@ const InvoiceAppTabSelector = () => {
   const { currentDataSource } = useInvoiceProcessor();
 
   const handleTabChange = (key: string) => {
-    navigate(`/invoice-processing/${key}`);
+    navigate(`/home/invoice-processing/${key}`);
   };
 
   const splittedPathName = window.location.pathname.split("/");
-  const activeTabKey = splittedPathName[2];
+  const activeTabKey = splittedPathName[4];
   const currentPageData = routeConfig.find((tab) => tab.key === activeTabKey);
   const currentNestedRoute = currentPageData?.nestedRoutes?.find(
-    (nestedRoute) => nestedRoute.key === splittedPathName[3]
+    (nestedRoute) => nestedRoute.key === splittedPathName[4]
   );
 
   const currentTabLabel =
@@ -31,17 +31,17 @@ const InvoiceAppTabSelector = () => {
         }
         pageTitle={currentTabLabel}
         action={
-          splittedPathName[2] === "data-source" &&
-          !splittedPathName[3] &&
+          splittedPathName[4] === "data-source" &&
+          !splittedPathName[4] &&
           !currentDataSource
             ? "+ New Data Source"
             : undefined
         }
-        onActionClick={() => navigate("/invoice-processing/data-source/create")}
+        onActionClick={() => navigate("/home/invoice-processing/data-source/create")}
         noBorder
       />
 
-      <div className="flex flex-col items-center w-full py-2">
+      <div className="flex flex-col items-center w-full py-4">
         <div className="w-full border-b border-[#F0F0F0]">
           <Tabs
             activeKey={activeTabKey}

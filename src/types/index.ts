@@ -108,10 +108,13 @@ export interface ProcessedInvoice {
   id: string;
   file_name: string;
   content: string;
-  invoice_data: DynamicObject;
+  extracted_content: DynamicObject;
   image_data: string;
-  sender: string;
-  source?: string; // Added optional source field
+  email_metadata: {
+    sender: string;
+    receiver: string;
+  };
+  source?: string;
   processing_status: string;
   created_at: string;
 }
