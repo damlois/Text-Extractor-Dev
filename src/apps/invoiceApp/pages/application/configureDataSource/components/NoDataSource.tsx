@@ -17,7 +17,7 @@ const NoDataSource = () => {
         Click the button below to add a new data source type
       </div>
       <AppButton
-        onClick={() => navigate("/invoice-processing/data-source/create")}
+        onClick={() => navigate("/home/invoice-processing/data-source/create")}
         width="fit-content"
         className="mb-8"
       >

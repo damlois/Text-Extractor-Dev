@@ -37,7 +37,7 @@ const ApplicationList = () => {
             <ApplicationCard
               title="Invoice Processing Application"
               description="Process invoice here"
-              onClick={() => navigate("/invoice-processing/data-source")}
+              onClick={() => navigate("/home/invoice-processing/data-source")}
             />
           </div>
         </>

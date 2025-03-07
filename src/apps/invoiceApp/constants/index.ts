@@ -49,11 +49,11 @@ export const routeConfig = [
           { label: "Home", path: "/home" },
           {
             label: "Invoice Processing",
-            path: "/invoice-processing/data-source",
+            path: "/home/invoice-processing/data-source",
           },
           {
             label: "Extraction History",
-            path: "/invoice-processing/extraction-history",
+            path: "/home/invoice-processing/extraction-history",
           },
           { label: "Preview & Generate Insight" },
         ],

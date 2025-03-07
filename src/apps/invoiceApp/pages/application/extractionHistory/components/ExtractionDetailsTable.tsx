@@ -32,11 +32,10 @@ const ExtractionDetailsTable = () => {
   };
 
   const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
-    return invoices.map(({ file_name, image_data, invoice_data }) => {
-      const { sender, receiver, ...filteredInvoiceData } = invoice_data;
+    return invoices.map(({ file_name, image_data, extracted_content }) => {
       return standardizeInvoice({
         file_name,
-        ...filteredInvoiceData,
+        ...extracted_content,
         raw_data: { file_name, image_data },
       });
     });
