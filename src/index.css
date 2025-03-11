@@ -448,3 +448,25 @@ td .failed, td .inactive{
   text-align: left !important;
 }
 
+.duplicate-row {
+  background-color: #fff5f5 !important;
+}
+
+.duplicate-row:hover, .duplicate-row:focus,
+.duplicate-row.ant-table-row-selected  {
+  background-color: #ffecec !important;
+}
+
+.ant-alert.duplicate-alert {
+  border: 1px solid  #FFCCC7;
+  background: #FFF1F0;
+  font-weight: bold;
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
+  padding: 8px 16px;
+  box-shadow: 0px 3px 6px -4px rgba(0, 0, 0, 0.12), 0px 6px 16px 0px rgba(0, 0, 0, 0.08), 0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
