@@ -111,7 +111,7 @@ const ExtractionHistoryTable = () => {
           onClick={() => togglePreviewModal(record)}
         >
           {text}
-          {record.flag?.toLowerCase() === "Duplicate" && (
+          {record.flag?.toLowerCase() === "duplicate" && (
             <WarningOutlined style={{ color: "#FF4D4F", marginLeft: "8px" }} />
           )}
         </button>
