@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import MetricCard from "../../../../../../components/MetricCard";
 import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
+import { useNavigate } from "react-router-dom";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -19,7 +21,14 @@ const SummaryDashboard = () => {
   }, []);
 
   return (
-    <div className="grid gap-4 space-between flex-wrap lg:grid-cols-3 sm:grid-cols-1">
+    <div className="grid gap-4 space-between flex-wrap lg:grid-cols-4 sm:grid-cols-1">
+      <MetricCard
+        key={"duplicate"}
+        iconUrl={`/assets/icons/dashboard-failed-icon.svg`}
+        status={"Duplicate Invoices"}
+        count={"6"}
+        onClick={() => navigate("/")}
+      />
       {Object.entries(metrics).map(([key, value]) => (
         <MetricCard
           key={key}

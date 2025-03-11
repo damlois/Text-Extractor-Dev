@@ -117,6 +117,7 @@ export interface ProcessedInvoice {
   source?: string;
   processing_status: string;
   created_at: string;
+  flag: string;
 }
 
 export interface InvoiceDetailsResponse {

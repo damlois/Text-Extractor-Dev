@@ -14,10 +14,10 @@ const InvoiceAppTabSelector = () => {
   };
 
   const splittedPathName = window.location.pathname.split("/");
-  const activeTabKey = splittedPathName[4];
+  const activeTabKey = splittedPathName[3];
   const currentPageData = routeConfig.find((tab) => tab.key === activeTabKey);
   const currentNestedRoute = currentPageData?.nestedRoutes?.find(
-    (nestedRoute) => nestedRoute.key === splittedPathName[4]
+    (nestedRoute) => nestedRoute.key === splittedPathName[3]
   );
 
   const currentTabLabel =
@@ -31,8 +31,8 @@ const InvoiceAppTabSelector = () => {
         }
         pageTitle={currentTabLabel}
         action={
-          splittedPathName[4] === "data-source" &&
-          !splittedPathName[4] &&
+          splittedPathName[3] === "data-source" &&
+          !splittedPathName[3] &&
           !currentDataSource
             ? "+ New Data Source"
             : undefined
@@ -41,7 +41,7 @@ const InvoiceAppTabSelector = () => {
         noBorder
       />
 
-      <div className="flex flex-col items-center w-full py-4">
+      <div className="flex flex-col items-center w-full py-3">
         <div className="w-full border-b border-[#F0F0F0]">
           <Tabs
             activeKey={activeTabKey}

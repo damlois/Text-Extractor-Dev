@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Table } from "antd";
+import { Alert, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
 import { filterInvoices } from "../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../types";
+import { WarningOutlined } from "@ant-design/icons";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -94,9 +95,7 @@ const ExtractionHistoryTable = () => {
   };
 
   const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
-    ) => {
+    onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedInvoiceIds(selectedRowKeys as string[]);
     },
     selectedRowKeys: selectedInvoiceIds,
@@ -108,10 +107,13 @@ const ExtractionHistoryTable = () => {
       dataIndex: "file_name",
       render: (text: string, record: ProcessedInvoice) => (
         <button
-          className="text-dark-gray text-[14px] font-medium underline text-left"
+          className={`text-dark-gray text-[14px] font-medium underline text-left`}
           onClick={() => togglePreviewModal(record)}
         >
           {text}
+          {record.flag?.toLowerCase() === "duplicate" && (
+            <WarningOutlined style={{ color: "#FF4D4F", marginLeft: "8px" }} />
+          )}
         </button>
       ),
     },
@@ -181,6 +183,9 @@ const ExtractionHistoryTable = () => {
           columns={extractionHistoryColumns}
           dataSource={invoices}
           className="app-table extraction-history-table no-vertical-lines"
+          rowClassName={(record) =>
+            record.flag?.toLowerCase() === "duplicate" ? "duplicate-row" : ""
+          }
           loading={loading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
           onChange={handleTableChange}
@@ -198,6 +203,31 @@ const ExtractionHistoryTable = () => {
         onClear={handleFilterClear}
         initialFilters={filters}
         senders={uniqueSenders}
+      />
+      <Alert
+        className="duplicate-alert lg:w-[646px] md:w-auto"
+        message={
+          <p className="font-medium text-[14px]">
+            Duplicate Invoices Detected!
+          </p>
+        }
+        description={
+          <div className="font-normal text-[14px]">
+            <p className="text-dark-gray">
+              Found 6 duplicates across invoices.
+            </p>
+            <p
+              style={{ marginTop: 8 }}
+              className="underline text-deep-blue cursor-pointer"
+            >
+              View Duplicates
+            </p>
+          </div>
+        }
+        type="error"
+        icon={<WarningOutlined />}
+        showIcon
+        closable
       />
     </div>
   );

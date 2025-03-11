@@ -38,7 +38,10 @@ export const routeConfig = [
     label: "Extraction History",
     breadcrumbs: [
       { label: "Home", path: "/home" },
-      { label: "Invoice Processing", path: "/invoice-processing/data-source" },
+      {
+        label: "Invoice Processing",
+        path: "/home/invoice-processing/data-source",
+      },
       { label: "Extraction History" },
     ],
     nestedRoutes: [
@@ -65,7 +68,10 @@ export const routeConfig = [
     label: "Saved Insights",
     breadcrumbs: [
       { label: "Home", path: "/home" },
-      { label: "Invoice Processing", path: "/invoice-processing/data-source" },
+      {
+        label: "Invoice Processing",
+        path: "/home/invoice-processing/data-source",
+      },
       { label: "Saved Insights" },
     ],
   },

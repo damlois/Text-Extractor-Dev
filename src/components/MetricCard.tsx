@@ -4,9 +4,10 @@ interface MetricCardProps {
   iconUrl: string;
   status: string;
   count: string;
+  onClick?: () => void;
 }
 
-const MetricCard = ({ iconUrl, status, count }: MetricCardProps) => {
+const MetricCard = ({ iconUrl, status, count, onClick }: MetricCardProps) => {
   return (
     <div className="px-4 py-3 border border-[#E4E7EC] rounded-[10px]">
       <div className="flex justify-between ">
@@ -16,7 +17,19 @@ const MetricCard = ({ iconUrl, status, count }: MetricCardProps) => {
         </p>
       </div>
       <p className="text-[#667185] text-[14px] font-normal mb-2">{status}</p>
-      <p className="text-[18px] text-[#101928] font-semibold">{count}</p>
+      <div className="flex justify-between">
+        <p className="text-[18px] text-[#101928] font-semibold">{count}</p>
+        {onClick ? (
+          <p
+            className="underline text-deep-blue cursor-pointer"
+            onClick={onClick}
+          >
+            Click to view
+          </p>
+        ) : (
+          <></>
+        )}
+      </div>
     </div>
   );
 };
