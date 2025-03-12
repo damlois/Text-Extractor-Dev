@@ -14,6 +14,7 @@ import LandingPage from "./pages/landingPage";
 import SetPassword from "./pages/createAccount/SetPassword";
 import UsersList from "./apps/invoiceApp/pages/users";
 import RouteProtector from "./components/RouteProtector";
+import RolesList from "./apps/invoiceApp/pages/roles";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route element={<PageLayout />}>
               <Route path="/home" element={<ApplicationList />} />
               <Route path="/users" element={<UsersList />} />
+              <Route path="/roles" element={<RolesList />} />
               <Route
                 path="/home/invoice-processing"
                 element={<InvoiceAppTabSelector />}
