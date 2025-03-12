@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import MetricCard from "../../../../../../components/MetricCard";
-import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
+import MetricCard from "../../../../../../../components/MetricCard";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { useNavigate } from "react-router-dom";
 
 const SummaryDashboard = () => {
@@ -27,7 +27,7 @@ const SummaryDashboard = () => {
         iconUrl={`/assets/icons/dashboard-failed-icon.svg`}
         status={"Duplicate Invoices"}
         count={"6"}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("../extraction-history/duplicates")}
       />
       {Object.entries(metrics).map(([key, value]) => (
         <MetricCard

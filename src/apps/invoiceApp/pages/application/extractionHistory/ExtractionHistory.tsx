@@ -1,5 +1,5 @@
-import ExtractionHistoryTable from "./components/ExtractionHistoryTable";
-import SummaryDashboard from "./components/SummaryDashboard";
+import ExtractionHistoryTable from "./components/extraction-history/ExtractionHistoryTable";
+import SummaryDashboard from "./components/extraction-history/SummaryDashboard";
 
 const ExtractionHistory = () => {
   return (

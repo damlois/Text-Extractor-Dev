@@ -2,10 +2,10 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Input, Spin } from "antd";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import PrmoptSuggestionRow from "../../../../../../components/PromptSuggestionRow";
+import PrmoptSuggestionRow from "../../../../../../../components/PromptSuggestionRow";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import { ChatSession, chatHistoryRecord } from "../../../../../../../types";
 import ChatHistorySection from "./ChatHistorySection";
-import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
-import { ChatSession, chatHistoryRecord } from "../../../../../../types";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");

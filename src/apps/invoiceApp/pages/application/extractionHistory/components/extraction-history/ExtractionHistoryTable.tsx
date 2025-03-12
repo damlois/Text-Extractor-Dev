@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Alert, Table } from "antd";
 import type { TableColumnsType } from "antd";
-import AppButton from "../../../../../../components/AppButton";
+import AppButton from "../../../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
-import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
-import { ProcessedInvoice } from "../../../../../../types";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import { ProcessedInvoice } from "../../../../../../../types";
 import { useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
-import { filterInvoices } from "../../../../../../utils/filterInvoices";
-import { ExtractionHistoryFilter } from "../../../../../../types";
+import { filterInvoices } from "../../../../../../../utils/filterInvoices";
+import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
 
 const ExtractionHistoryTable = () => {
@@ -219,6 +219,7 @@ const ExtractionHistoryTable = () => {
             <p
               style={{ marginTop: 8 }}
               className="underline text-deep-blue cursor-pointer"
+              onClick={() => navigate('../extraction-history/duplicates')}
             >
               View Duplicates
             </p>
