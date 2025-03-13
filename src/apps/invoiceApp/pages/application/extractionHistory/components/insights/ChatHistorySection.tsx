@@ -1,5 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import { chatHistoryRecord } from "../../../../../../types";
+import { chatHistoryRecord } from "../../../../../../../types";
 import {
   CopyOutlined,
   ReloadOutlined,

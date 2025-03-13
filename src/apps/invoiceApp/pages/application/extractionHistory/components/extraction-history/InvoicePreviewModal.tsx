@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { ProcessedInvoice, DynamicValue } from "../../../../../../types";
+import { ProcessedInvoice, DynamicValue } from "../../../../../../../types";
 
 interface InvoicePreviewModalProps {
   open: boolean;

@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
-import CustomTable from "../../../../../../components/CustomTable";
+import CustomTable from "../../../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
-import { invoiceProcessorApi } from "../../../../../../api/invoice-api";
-import { ProcessedInvoice } from "../../../../../../types";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import { ProcessedInvoice } from "../../../../../../../types";
 import { Spin, Modal } from "antd";
-import { formatExtractionValue } from "../../../../../../utils";
+import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
-import { useFileProcessor } from "../../../../../../context/FileProcessorContext";
+import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
