@@ -14,6 +14,7 @@ interface CustomTableProps {
   striped?: boolean;
   className?: string;
   pagination?: { pageSize: number } | false;
+  loading?: boolean;
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({
@@ -24,6 +25,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   striped,
   className,
   pagination,
+  loading
 }) => {
   const handleObjectData = (value: any) => {
     if (value === null || value === undefined) {
@@ -59,6 +61,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
       pagination={pagination}
       bordered={bordered}
       className={`${striped ? "striped" : ""} ${className || ""}`}
+      loading={loading}
     />
   );
 };

@@ -115,7 +115,7 @@ const InsightsSection = () => {
           loadingSuggestions || suggestedPrompts.length > 0
             ? "border-t border-[#0000000F] "
             : ""
-        } px-6 py-5`}
+        } px-6 py-5 ${loadingSuggestions ? "mt-9" : ""}`}
       >
         {loadingSuggestions ? (
           <Spin spinning={loadingSuggestions} className="w-full mx-auto"></Spin>

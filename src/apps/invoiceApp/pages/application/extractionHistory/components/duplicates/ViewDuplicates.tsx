@@ -7,6 +7,7 @@ import IgnoreDuplicatesModal from "./IgnoreDuplicatesModal";
 import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
 import { ModalType } from "../../types";
 import DuplicatesTable from "./DuplicatesTable";
+import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 
 const ViewDuplicates = () => {
   const [actionModal, setActionModal] = useState<
@@ -29,6 +30,8 @@ const ViewDuplicates = () => {
   const checkModalDisplay = (type: ModalType) =>
     actionModal?.open && actionModal.type === type;
 
+  const { duplicateMapByFileHash } = useInvoiceProcessor();
+
   return (
     <div>
       <div
@@ -38,35 +41,45 @@ const ViewDuplicates = () => {
         <ArrowLeftOutlined className="mr-6" /> Back
       </div>
 
-      <div className="flex flex-wrap mt-5 mb-5 justify-between gap-5">
-        <div className="flex flex-col gap-1">
-          <p className="font-medium text-[16px]">
-            List of Duplicate Invoices Found
-          </p>
-          <p>
-            Here are invoices with duplicates. You can review and select to
-            delete them as needed.
-          </p>
-        </div>
-        <div className="flex gap-4 flex-wrap ml-auto">
-          <AppButton
-            children="Ignore"
-            variant="secondary"
-            className="!w-fit"
-            onClick={() => toggleActionModal("Ignore")}
-          />
-          <AppButton
-            children="Archive Duplicate"
-            className="!w-fit"
-            onClick={() => toggleActionModal("Archive")}
-          />
-        </div>
-      </div>
+      <>
+        {Object.keys(duplicateMapByFileHash).length > 0 ? (
+          <div>
+            <div className="flex flex-wrap mt-5 mb-5 justify-between gap-5">
+              <div className="flex flex-col gap-1">
+                <p className="font-medium text-[16px]">
+                  List of Duplicate Invoices Found
+                </p>
+                <p>
+                  Here are invoices with duplicates. You can review and select
+                  to delete them as needed.
+                </p>
+              </div>
+              <div className="flex gap-4 flex-wrap ml-auto">
+                <AppButton
+                  children="Ignore"
+                  variant="secondary"
+                  className="!w-fit"
+                  onClick={() => toggleActionModal("Ignore")}
+                />
+                <AppButton
+                  children="Archive Duplicate"
+                  className="!w-fit"
+                  onClick={() => toggleActionModal("Archive")}
+                />
+              </div>
+            </div>
 
-      <DuplicatesTable
-        selectedInvoiceIds={selectedInvoiceIds}
-        setSelectedInvoiceIds={setSelectedInvoiceIds}
-      />
+            <DuplicatesTable
+              selectedInvoiceIds={selectedInvoiceIds}
+              setSelectedInvoiceIds={setSelectedInvoiceIds}
+            />
+          </div>
+        ) : (
+          <div className="w-full h-screen flex justify-center mt-80">
+            There are no duplicate invoices
+          </div>
+        )}
+      </>
       <NotAllowedModal
         open={checkModalDisplay("Not-Allowed")}
         onCancel={() => toggleActionModal("Not-Allowed")}
