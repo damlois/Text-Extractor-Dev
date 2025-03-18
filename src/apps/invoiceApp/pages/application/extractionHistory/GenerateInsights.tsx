@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import InsightsSection from "./components/InsightsSection";
-import ExtractionDetailsTable from "./components/ExtractionDetailsTable";
+import InsightsSection from "./components/insights/InsightsSection";
+import ExtractionDetailsTable from "./components/insights/ExtractionDetailsTable";
 
 const GenerateInsights = () => {
   const navigate = useNavigate();

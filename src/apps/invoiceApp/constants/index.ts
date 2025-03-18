@@ -46,6 +46,22 @@ export const routeConfig = [
     ],
     nestedRoutes: [
       {
+        key: "duplicates",
+        label: "Duplicate Invoices",
+        breadcrumbs: [
+          { label: "Home", path: "/home" },
+          {
+            label: "Invoice Processing",
+            path: "/home/invoice-processing/data-source",
+          },
+          {
+            label: "Extraction History",
+            path: "/home/invoice-processing/extraction-history",
+          },
+          { label: "Duplicate Invoices" },
+        ],
+      },
+      {
         key: "generate-insights",
         label: "Preview of Selected Extraction",
         breadcrumbs: [
