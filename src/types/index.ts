@@ -245,3 +245,10 @@ export interface UserResponse {
   role: string | undefined;
   status: string;
 }
+
+export interface RoleResponse {
+  id: string;
+  title: string;
+  created_by: string;
+  created_at: string;
+}
