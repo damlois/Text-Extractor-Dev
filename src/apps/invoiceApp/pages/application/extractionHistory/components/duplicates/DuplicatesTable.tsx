@@ -49,7 +49,7 @@ const DuplicatesTable = ({
     selectedRowKeys: selectedInvoiceIds[hash] || [],
   });
 
-  const DuplicateInvoiceItemResponsesColumns: TableColumnsType<DuplicateInvoiceItemResponse> =
+  const duplicateInvoiceItemResponsesColumns: TableColumnsType<DuplicateInvoiceItemResponse> =
     [
       {
         title: "File Name",
@@ -114,7 +114,7 @@ const DuplicatesTable = ({
                   <Table<DuplicateInvoiceItemResponse>
                     rowSelection={getRowSelection(hash)}
                     rowKey="id"
-                    columns={DuplicateInvoiceItemResponsesColumns}
+                    columns={duplicateInvoiceItemResponsesColumns}
                     dataSource={invoices}
                     // pagination={invoices.length > 5 ? { pageSize: 5 } : false}
                     className="app-table extraction-history-table no-vertical-lines"
