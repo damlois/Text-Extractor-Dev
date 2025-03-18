@@ -31,7 +31,6 @@ const ExtractionHistoryTable = () => {
     !sessionStorage.getItem("hideDuplicatesAlert")
   );
 
-  const fetchTriggered = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,7 +38,7 @@ const ExtractionHistoryTable = () => {
     duplicatesMapById,
     setInvoicesMapById,
     duplicatesCount,
-    duplicatesCheckDone,
+    duplicatesRefresh,
   } = useInvoiceProcessor();
 
   const fetchInvoices = async (page: number, size: number) => {
@@ -93,11 +92,8 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    if (duplicatesCheckDone && !fetchTriggered.current) {
-      fetchInvoices(1, 10);
-      fetchTriggered.current = true;
-    }
-  }, [duplicatesCheckDone]);
+    fetchInvoices(1, 10);
+  }, [duplicatesRefresh]);
 
   useEffect(() => {
     if (allInvoices.length) {

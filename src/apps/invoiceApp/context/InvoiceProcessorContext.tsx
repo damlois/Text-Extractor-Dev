@@ -27,8 +27,8 @@ interface InvoiceProcessorContextProps {
   setDuplicatesMapByFileHash: Dispatch<
     SetStateAction<DuplicateInvoicesFileHashMap>
   >;
-  duplicatesCheckDone: boolean | null;
-  setDuplicatesCheckDone: Dispatch<SetStateAction<boolean>>;
+  duplicatesRefresh: boolean | null;
+  setDuplicatesRefresh: Dispatch<SetStateAction<boolean>>;
   duplicatesCount: number;
   setDuplicatesCount: Dispatch<SetStateAction<number>>;
 }
@@ -54,7 +54,7 @@ export const InvoiceProcessorProvider: React.FC<
   const [invoicesMapById, setInvoicesMapById] = useState<
     Record<string, ProcessedInvoice>
   >({});
-  const [duplicatesCheckDone, setDuplicatesCheckDone] =
+  const [duplicatesRefresh, setDuplicatesRefresh] =
     useState<boolean>(false);
   const [duplicatesCount, setDuplicatesCount] = useState(0);
 
@@ -69,8 +69,8 @@ export const InvoiceProcessorProvider: React.FC<
         setDuplicatesMapByFileHash,
         invoicesMapById,
         setInvoicesMapById,
-        duplicatesCheckDone,
-        setDuplicatesCheckDone,
+        duplicatesRefresh,
+        setDuplicatesRefresh,
         duplicatesCount,
         setDuplicatesCount,
       }}

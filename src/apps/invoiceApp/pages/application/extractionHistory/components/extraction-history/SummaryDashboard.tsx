@@ -8,6 +8,7 @@ import {
   DuplicateInvoicesFileHashMap,
   DuplicateInvoicesResponse,
 } from "../../types";
+import { areRecordsEqual } from "../../../../../../../utils";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
@@ -17,13 +18,15 @@ const SummaryDashboard = () => {
   const {
     setDuplicatesMapById,
     setDuplicatesMapByFileHash,
-    setDuplicatesCheckDone,
+    setDuplicatesRefresh,
     duplicatesCount,
     setDuplicatesCount,
   } = useInvoiceProcessor();
 
   const metricsFetched = useRef(false);
   const eventSourceRef = useRef<EventSource | null>(null);
+
+  const prevFileHashMap = useRef<DuplicateInvoicesFileHashMap>({});
 
   const fetchMetrics = async () => {
     if (metricsFetched.current) return;
@@ -39,8 +42,6 @@ const SummaryDashboard = () => {
   };
 
   const initializeSSE = () => {
-    setDuplicatesCheckDone(false);
-
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
@@ -90,21 +91,19 @@ const SummaryDashboard = () => {
             {}
           );
 
-          setDuplicatesMapById(invoiceIdMap);
-          setDuplicatesMapByFileHash(fileHashMap);
-          setDuplicatesCount(count);
+          if (!areRecordsEqual(prevFileHashMap.current, fileHashMap)) {
+            prevFileHashMap.current = fileHashMap;
+            setDuplicatesMapById(invoiceIdMap);
+            setDuplicatesMapByFileHash(fileHashMap);
+            setDuplicatesCount(count);
+            setDuplicatesRefresh(prev => !prev);
+          }
         }
       } catch (error) {
         eventSourceRef.current?.close();
       } finally {
         setLoading(false);
-        setDuplicatesCheckDone(true);
       }
-    };
-
-    eventSourceRef.current.onerror = (error) => {
-      eventSourceRef.current?.close();
-      setLoading(false);
     };
   };
 

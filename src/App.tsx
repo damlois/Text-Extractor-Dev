@@ -15,7 +15,6 @@ import SetPassword from "./pages/createAccount/SetPassword";
 import UsersList from "./apps/invoiceApp/pages/users";
 import RouteProtector from "./components/RouteProtector";
 import ViewDuplicates from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/ViewDuplicates";
-import Test from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/test";
 
 const App = () => {
   return (
@@ -28,10 +27,6 @@ const App = () => {
             <Route element={<PageLayout />}>
               <Route path="/home" element={<ApplicationList />} />
               <Route path="/users" element={<UsersList />} />
-              <Route
-                  path="test"
-                  element={<Test />}
-                />
               <Route
                 path="/home/invoice-processing"
                 element={<InvoiceAppTabSelector />}
