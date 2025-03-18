@@ -36,7 +36,11 @@ const ViewDuplicates = () => {
     <div>
       <div
         className="text-deep-blue px-[0] cursor-pointer"
-        onClick={() => navigate("../extraction-history")}
+        onClick={() =>
+          navigate("../extraction-history", {
+            state: { fromDuplicatesPage: true },
+          })
+        }
       >
         <ArrowLeftOutlined className="mr-6" /> Back
       </div>

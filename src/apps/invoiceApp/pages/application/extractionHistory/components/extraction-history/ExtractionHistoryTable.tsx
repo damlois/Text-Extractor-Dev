@@ -83,7 +83,10 @@ const ExtractionHistoryTable = () => {
   };
 
   useEffect(() => {
-    if (!location.state?.fromInsightsPage) {
+    if (
+      !location.state?.fromInsightsPage ||
+      !location.state?.fromDuplicatesPage
+    ) {
       sessionStorage.removeItem("hideDuplicatesAlert");
       setShowAlert(true);
     }

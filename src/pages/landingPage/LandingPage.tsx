@@ -14,7 +14,7 @@ const LandingPage = () => {
     const checkAdminThenAuth = async () => {
       try {
         const response = await invoiceProcessorApi.checkOrgHasAdmin();
-        const hasAdmin = response.data.data;
+        const hasAdmin = !response.data.data;
 
         if (!hasAdmin) {
           navigate("/create-account", { state: { fromLandingPage: true } });
