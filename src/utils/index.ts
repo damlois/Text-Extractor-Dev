@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 interface ExtractionResult {
   [key: string]: string | null;
 }
@@ -181,6 +183,10 @@ export const formatExtractionValue = (value: any): string => {
   }
 
   return value.toString();
+};
+
+export const areRecordsEqual = (obj1: Record<any, any>, obj2: Record<any, any>) => {
+  return _.isEqual(obj1, obj2);
 };
 
 

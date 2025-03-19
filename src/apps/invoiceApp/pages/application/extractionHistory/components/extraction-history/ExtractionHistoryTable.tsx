@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Alert, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../../../types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
 import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
+import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -17,7 +18,7 @@ const ExtractionHistoryTable = () => {
   const [selectedInvoice, setSelectedInvoice] =
     useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState<ProcessedInvoice[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -26,8 +27,19 @@ const ExtractionHistoryTable = () => {
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
   const [allInvoices, setAllInvoices] = useState<ProcessedInvoice[]>([]);
+  const [showAlert, setShowAlert] = useState(
+    !sessionStorage.getItem("hideDuplicatesAlert")
+  );
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const {
+    duplicatesMapById,
+    setInvoicesMapById,
+    duplicatesCount,
+    duplicatesRefresh,
+  } = useInvoiceProcessor();
 
   const fetchInvoices = async (page: number, size: number) => {
     setLoading(true);
@@ -37,15 +49,24 @@ const ExtractionHistoryTable = () => {
         size,
       });
 
-      const invoices = response.data.data.invoices.map((item) => ({
-        ...item,
-        sender: item.email_metadata.sender,
-        processing_status:
-          item.processing_status === "COMPLETED"
-            ? "Successful"
-            : item.processing_status,
-      }));
+      let invoicesMap: Record<string, ProcessedInvoice> = {};
+
+      const invoices = response.data.data.invoices.map((item) => {
+        if (!invoicesMap[item.id]) {
+          invoicesMap[item.id] = item;
+        }
+
+        return {
+          ...item,
+          sender: item.email_metadata.sender,
+          processing_status:
+            item.processing_status === "COMPLETED"
+              ? "Successful"
+              : item.processing_status,
+        };
+      });
       setAllInvoices(invoices);
+      setInvoicesMapById(invoicesMap);
       setInvoices(filterInvoices(invoices, filters));
       setPagination({
         current: response.data.data.page,
@@ -54,14 +75,25 @@ const ExtractionHistoryTable = () => {
       });
     } catch (error) {
       console.error("Error fetching invoices:", error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchInvoices(1, 20);
+    if (
+      !location.state?.fromInsightsPage ||
+      !location.state?.fromDuplicatesPage
+    ) {
+      sessionStorage.removeItem("hideDuplicatesAlert");
+      setShowAlert(true);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchInvoices(1, 10);
+  }, [duplicatesRefresh]);
 
   useEffect(() => {
     if (allInvoices.length) {
@@ -111,7 +143,7 @@ const ExtractionHistoryTable = () => {
           onClick={() => togglePreviewModal(record)}
         >
           {text}
-          {record.flag?.toLowerCase() === "duplicate" && (
+          {duplicatesMapById && duplicatesMapById[record.id] && (
             <WarningOutlined style={{ color: "#FF4D4F", marginLeft: "8px" }} />
           )}
         </button>
@@ -150,6 +182,11 @@ const ExtractionHistoryTable = () => {
     fetchInvoices(pagination.current, pagination.pageSize);
   };
 
+  const handleAlertClose = () => {
+    setShowAlert(false);
+    sessionStorage.setItem("hideDuplicatesAlert", "true");
+  };
+
   return (
     <div>
       <div
@@ -184,7 +221,9 @@ const ExtractionHistoryTable = () => {
           dataSource={invoices}
           className="app-table extraction-history-table no-vertical-lines"
           rowClassName={(record) =>
-            record.flag?.toLowerCase() === "duplicate" ? "duplicate-row" : ""
+            duplicatesMapById && duplicatesMapById[record.id]
+              ? "duplicate-row"
+              : ""
           }
           loading={loading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
@@ -204,32 +243,35 @@ const ExtractionHistoryTable = () => {
         initialFilters={filters}
         senders={uniqueSenders}
       />
-      <Alert
-        className="duplicate-alert lg:w-[646px] md:w-auto"
-        message={
-          <p className="font-medium text-[14px]">
-            Duplicate Invoices Detected!
-          </p>
-        }
-        description={
-          <div className="font-normal text-[14px]">
-            <p className="text-dark-gray">
-              Found 6 duplicates across invoices.
+      {!loading && showAlert && duplicatesCount > 0 && (
+        <Alert
+          className="duplicate-alert lg:w-[646px] md:w-auto"
+          message={
+            <p className="font-medium text-[14px]">
+              Duplicate Invoices Detected!
             </p>
-            <p
-              style={{ marginTop: 8 }}
-              className="underline text-deep-blue cursor-pointer"
-              onClick={() => navigate('../extraction-history/duplicates')}
-            >
-              View Duplicates
-            </p>
-          </div>
-        }
-        type="error"
-        icon={<WarningOutlined />}
-        showIcon
-        closable
-      />
+          }
+          description={
+            <div className="font-normal text-[14px]">
+              <p className="text-dark-gray">
+                Found {duplicatesCount} duplicates across invoices.
+              </p>
+              <p
+                style={{ marginTop: 8 }}
+                className="underline text-deep-blue cursor-pointer"
+                onClick={() => navigate("../extraction-history/duplicates")}
+              >
+                View Duplicates
+              </p>
+            </div>
+          }
+          type="error"
+          icon={<WarningOutlined />}
+          onClose={handleAlertClose}
+          showIcon
+          closable
+        />
+      )}
     </div>
   );
 };

@@ -6,11 +6,31 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceDetails, User } from "../../../types";
+import { DataSourceDetails, ProcessedInvoice } from "../../../types";
+import {
+  DuplicateInvoiceItemResponse,
+  DuplicateInvoicesFileHashMap,
+} from "../pages/application/extractionHistory/types";
 
 interface InvoiceProcessorContextProps {
   currentDataSource: DataSourceDetails | null;
   setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | null>>;
+  invoicesMapById: Record<string, ProcessedInvoice>;
+  setInvoicesMapById: Dispatch<
+    SetStateAction<Record<string, ProcessedInvoice>>
+  >;
+  duplicatesMapById: Record<string, DuplicateInvoiceItemResponse> | null;
+  setDuplicatesMapById: Dispatch<
+    SetStateAction<Record<string, DuplicateInvoiceItemResponse>>
+  >;
+  duplicateMapByFileHash: DuplicateInvoicesFileHashMap;
+  setDuplicatesMapByFileHash: Dispatch<
+    SetStateAction<DuplicateInvoicesFileHashMap>
+  >;
+  duplicatesRefresh: boolean | null;
+  setDuplicatesRefresh: Dispatch<SetStateAction<boolean>>;
+  duplicatesCount: number;
+  setDuplicatesCount: Dispatch<SetStateAction<number>>;
 }
 
 interface InvoiceProcessorProviderProps {
@@ -26,11 +46,33 @@ export const InvoiceProcessorProvider: React.FC<
 > = ({ children }) => {
   const [currentDataSource, setCurrentDataSource] =
     useState<DataSourceDetails | null>(null);
+  const [duplicatesMapById, setDuplicatesMapById] = useState<
+    Record<string, DuplicateInvoiceItemResponse>
+  >({});
+  const [duplicateMapByFileHash, setDuplicatesMapByFileHash] =
+    useState<DuplicateInvoicesFileHashMap>({});
+  const [invoicesMapById, setInvoicesMapById] = useState<
+    Record<string, ProcessedInvoice>
+  >({});
+  const [duplicatesRefresh, setDuplicatesRefresh] =
+    useState<boolean>(false);
+  const [duplicatesCount, setDuplicatesCount] = useState(0);
+
   return (
     <InvoiceProcessorContext.Provider
       value={{
         currentDataSource,
         setCurrentDataSource,
+        duplicatesMapById,
+        setDuplicatesMapById,
+        duplicateMapByFileHash,
+        setDuplicatesMapByFileHash,
+        invoicesMapById,
+        setInvoicesMapById,
+        duplicatesRefresh,
+        setDuplicatesRefresh,
+        duplicatesCount,
+        setDuplicatesCount,
       }}
     >
       {children}

@@ -10,7 +10,9 @@ const GenerateInsights = () => {
     <div className="w-full overflow-hidden">
       <div
         className="mt-2 text-deep-blue px-[0] cursor-pointer mb-8"
-        onClick={() => navigate("../extraction-history")}
+        onClick={() =>
+          navigate("../extraction-history", { state: { fromInsightsPage: true } })
+        }
       >
         <ArrowLeftOutlined className="mr-6" /> Back
       </div>

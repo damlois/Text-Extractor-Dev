@@ -126,37 +126,36 @@ const ExtractionDetailsTable = () => {
           Review the details of your extraction below
         </p>
         <div className="w-full monospace-table">
-          {loading ? (
-            <Spin spinning={loading}> </Spin>
-          ) : (
-            <CustomTable
-              dataSource={selectedInvoices}
-              columns={tableColumns || []}
-              rowKey="id"
-              pagination={selectedInvoices.length > 6 ? { pageSize: 6 } : false}
-              bordered
-              striped
-              className="overflow-x-auto mr-[48px]"
-            />
-          )}
+          <CustomTable
+            dataSource={selectedInvoices}
+            columns={tableColumns || []}
+            rowKey="id"
+            pagination={selectedInvoices.length > 6 ? { pageSize: 6 } : false}
+            bordered
+            striped
+            className="overflow-x-auto mr-[48px]"
+            loading={loading}
+          />
         </div>
 
-        <DownloadResults
-          result={selectedInvoices.map((invoice) => {
-            const { rawData, ...filteredData } = invoice;
-            const filteredResult = labels?.reduce<Record<string, any>>(
-              (acc, { label }) => {
-                const key = camelCase(label);
-                if (filteredData[key]) {
-                  acc[key] = filteredData[key];
-                }
-                return acc;
-              },
-              {}
-            );
-            return filteredResult;
-          })}
-        />
+        {!loading && (
+          <DownloadResults
+            result={selectedInvoices.map((invoice) => {
+              const { rawData, ...filteredData } = invoice;
+              const filteredResult = labels?.reduce<Record<string, any>>(
+                (acc, { label }) => {
+                  const key = camelCase(label);
+                  if (filteredData[key]) {
+                    acc[key] = filteredData[key];
+                  }
+                  return acc;
+                },
+                {}
+              );
+              return filteredResult;
+            })}
+          />
+        )}
 
         <Modal
           title={selectedFile?.file_name}
