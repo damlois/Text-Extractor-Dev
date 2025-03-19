@@ -473,3 +473,13 @@ td .failed, td .inactive{
 .ant-table-tbody > .duplicate-row:hover > td {
   background: none !important;
 }
+
+.ant-checkbox-group span {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+label.ant-checkbox-wrapper {
+  margin-bottom: 17px;
+}
