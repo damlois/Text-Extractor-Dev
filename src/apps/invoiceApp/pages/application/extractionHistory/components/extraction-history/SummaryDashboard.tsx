@@ -8,25 +8,22 @@ import {
   DuplicateInvoicesFileHashMap,
   DuplicateInvoicesResponse,
 } from "../../types";
-import { areRecordsEqual } from "../../../../../../../utils";
+import { manageSSE } from "../../../../../../../service/sseClient";
+import { showNotification } from "../../../../../../../utils/notification";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const {
     setDuplicatesMapById,
     setDuplicatesMapByFileHash,
-    setDuplicatesRefresh,
     duplicatesCount,
     setDuplicatesCount,
   } = useInvoiceProcessor();
 
   const metricsFetched = useRef(false);
-  const eventSourceRef = useRef<EventSource | null>(null);
-
-  const prevFileHashMap = useRef<DuplicateInvoicesFileHashMap>({});
 
   const fetchMetrics = async () => {
     if (metricsFetched.current) return;
@@ -41,79 +38,49 @@ const SummaryDashboard = () => {
     }
   };
 
-  const initializeSSE = () => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
+  const handleSSEMessage = (data: any) => {
+    if (data.error) {
+      showNotification("error", data.error);
+      return;
     }
 
-    eventSourceRef.current = new EventSource(
-      `${process.env.REACT_APP_INVOICE_API_URL}/invoices/duplicate-stream`
+    let count = 0;
+    let invoiceIdMap: Record<string, DuplicateInvoiceItemResponse> = {};
+
+    const fileHashMap = data.duplicates?.reduce(
+      (acc: DuplicateInvoicesFileHashMap, item: DuplicateInvoicesResponse) => {
+        acc[item.file_hash] = {
+          invoices: item.invoices,
+          visible: true,
+        };
+
+        item.invoices.forEach((invoice) => {
+          if (!invoiceIdMap[invoice.id] && invoice.id) {
+            invoiceIdMap[invoice.id] = invoice;
+          }
+        });
+
+        count += item.invoices.length;
+        return acc;
+      },
+      {}
     );
 
-    eventSourceRef.current.onmessage = (event) => {
-      try {
-        let message = event.data.trim();
+    setLoading(false);
 
-        if (message.includes("[DONE]")) {
-          message = message.replace("[DONE]", "").trim();
-        }
-
-        if (!message || !message.startsWith("data: ")) {
-          return;
-        }
-
-        const jsonString = message.replace(/^data: /, "").trim();
-        const data = JSON.parse(jsonString);
-
-        if (data?.duplicates) {
-          let count = 0;
-          let invoiceIdMap: Record<string, DuplicateInvoiceItemResponse> = {};
-
-          const fileHashMap = data.duplicates.reduce(
-            (
-              acc: DuplicateInvoicesFileHashMap,
-              item: DuplicateInvoicesResponse
-            ) => {
-              acc[item.file_hash] = {
-                invoices: item.invoices,
-                visible: true,
-              };
-
-              item.invoices.forEach((invoice) => {
-                if (!invoiceIdMap[invoice.id] && invoice.id) {
-                  invoiceIdMap[invoice.id] = invoice;
-                }
-              });
-
-              count += item.invoices.length;
-              return acc;
-            },
-            {}
-          );
-
-          if (!areRecordsEqual(prevFileHashMap.current, fileHashMap)) {
-            prevFileHashMap.current = fileHashMap;
-            setDuplicatesMapById(invoiceIdMap);
-            setDuplicatesMapByFileHash(fileHashMap);
-            setDuplicatesCount(count);
-            setDuplicatesRefresh(prev => !prev);
-          }
-        }
-      } catch (error) {
-        eventSourceRef.current?.close();
-      } finally {
-        setLoading(false);
-      }
-    };
+    setDuplicatesMapById(invoiceIdMap);
+    setDuplicatesMapByFileHash(fileHashMap);
+    setDuplicatesCount(count);
   };
 
   useEffect(() => {
     fetchMetrics();
-    initializeSSE();
+    const sseManager = manageSSE(
+      "/invoices/duplicate-stream",
+      handleSSEMessage
+    );
 
-    return () => {
-      eventSourceRef.current?.close();
-    };
+    return () => sseManager?.stop();
   }, []);
 
   return (
@@ -126,7 +93,7 @@ const SummaryDashboard = () => {
             status={"Duplicate Invoices"}
             count={String(duplicatesCount)}
             onClick={
-              metrics.duplicate_invoices > 0
+              duplicatesCount > 0
                 ? () => navigate("../extraction-history/duplicates")
                 : undefined
             }

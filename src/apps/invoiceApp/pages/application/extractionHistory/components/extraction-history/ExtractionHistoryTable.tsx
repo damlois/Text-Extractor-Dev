@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Alert, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../components/AppButton";
@@ -11,6 +11,8 @@ import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import { manageSSE } from "../../../../../../../service/sseClient";
+import { showNotification } from "../../../../../../../utils/notification";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -34,12 +36,49 @@ const ExtractionHistoryTable = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const {
-    duplicatesMapById,
-    setInvoicesMapById,
-    duplicatesCount,
-    duplicatesRefresh,
-  } = useInvoiceProcessor();
+  const { duplicatesMapById, setInvoicesMapById, duplicatesCount } =
+    useInvoiceProcessor();
+
+  const handleSSEMessage = (data: any) => {
+    if (data.error) {
+      showNotification("error", data.error);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      let invoicesMap: Record<string, ProcessedInvoice> = {};
+
+      const invoices = data.invoices.map((item: any) => {
+        if (!invoicesMap[item.id]) {
+          invoicesMap[item.id] = item;
+        }
+
+        return {
+          ...item,
+          sender: item.email_metadata.sender,
+          processing_status:
+            item.processing_status === "COMPLETED"
+              ? "Successful"
+              : item.processing_status,
+        };
+      });
+      setAllInvoices(invoices);
+      setInvoicesMapById(invoicesMap);
+      setInvoices(filterInvoices(invoices, filters));
+      setPagination({
+        current: data.page,
+        pageSize: data.size,
+        total: data.total,
+      });
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchInvoices = async (page: number, size: number) => {
     setLoading(true);
@@ -92,8 +131,13 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    fetchInvoices(1, 10);
-  }, [duplicatesRefresh]);
+    const sseManager = manageSSE(
+      `/invoices/processed-stream?page=1&size=10`,
+      handleSSEMessage
+    );
+
+    return () => sseManager?.stop();
+  }, []);
 
   useEffect(() => {
     if (allInvoices.length) {
@@ -103,7 +147,7 @@ const ExtractionHistoryTable = () => {
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
-      new Set(allInvoices.map((invoice) => invoice.email_metadata.sender))
+      new Set(allInvoices?.map((invoice) => invoice.email_metadata.sender))
     ).filter(Boolean);
   }, [allInvoices]);
 
