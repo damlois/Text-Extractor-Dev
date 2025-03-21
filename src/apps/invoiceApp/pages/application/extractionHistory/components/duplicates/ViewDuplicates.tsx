@@ -18,11 +18,14 @@ const ViewDuplicates = () => {
     Record<string, string[]>
   >({});
 
+  const { duplicateMapByFileHash, setDuplicatesMapByFileHash } =
+    useInvoiceProcessor();
+
   const navigate = useNavigate();
 
   const toggleActionModal = (type: ModalType) => {
     setActionModal((prev) => ({
-      open: !prev?.open || prev.type !== type,
+      open: !prev?.open,
       type,
     }));
   };
@@ -30,7 +33,41 @@ const ViewDuplicates = () => {
   const checkModalDisplay = (type: ModalType) =>
     actionModal?.open && actionModal.type === type;
 
-  const { duplicateMapByFileHash } = useInvoiceProcessor();
+  const checkFullySelectedGroups = () => {
+    for (const [hash, selectedIds] of Object.entries(selectedInvoiceIds)) {
+      const totalInvoices =
+        duplicateMapByFileHash?.[hash]?.invoices?.length || 0;
+
+      if (totalInvoices > 0 && selectedIds.length === totalInvoices) {
+        toggleActionModal("Not-Allowed");
+        return;
+      }
+    }
+
+    toggleActionModal("Archive");
+  };
+
+  const pageRefresh = () => {
+    setDuplicatesMapByFileHash((prev) => {
+      const updatedMap = { ...prev };
+
+      Object.keys(selectedInvoiceIds).forEach((hash) => {
+        if (updatedMap[hash]) {
+          updatedMap[hash].invoices = updatedMap[hash].invoices.filter(
+            (invoice) => !selectedInvoiceIds[hash].includes(invoice.id)
+          );
+
+          if (updatedMap[hash].invoices.length <= 1) {
+            delete updatedMap[hash];
+          }
+        }
+      });
+
+      return updatedMap;
+    });
+
+    setSelectedInvoiceIds({});
+  };
 
   return (
     <div>
@@ -64,11 +101,13 @@ const ViewDuplicates = () => {
                   variant="secondary"
                   className="!w-fit"
                   onClick={() => toggleActionModal("Ignore")}
+                  disabled={Object.keys(selectedInvoiceIds).length === 0}
                 />
                 <AppButton
                   children="Archive Duplicate"
                   className="!w-fit"
-                  onClick={() => toggleActionModal("Archive")}
+                  onClick={checkFullySelectedGroups}
+                  disabled={Object.keys(selectedInvoiceIds).length === 0}
                 />
               </div>
             </div>
@@ -79,7 +118,7 @@ const ViewDuplicates = () => {
             />
           </div>
         ) : (
-          <div className="w-full h-screen flex justify-center mt-80">
+          <div className="w-full h-screen flex justify-center mt-40">
             There are no duplicate invoices
           </div>
         )}
@@ -91,10 +130,14 @@ const ViewDuplicates = () => {
       <IgnoreDuplicatesModal
         open={checkModalDisplay("Ignore")}
         onCancel={() => toggleActionModal("Ignore")}
+        selectedInvoiceIds={selectedInvoiceIds}
+        pageRefresh={pageRefresh}
       />
       <ArchiveDuplicatesModal
         open={checkModalDisplay("Archive")}
         onCancel={() => toggleActionModal("Archive")}
+        selectedInvoiceIds={selectedInvoiceIds}
+        pageRefresh={pageRefresh}
       />
     </div>
   );

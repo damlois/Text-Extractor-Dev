@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { ProcessedInvoice, DynamicValue } from "../../../../../../../types";
+import { ProcessedInvoice } from "../../../../../../../types";
 
 interface InvoicePreviewModalProps {
   open: boolean;
@@ -13,58 +13,6 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
   invoiceDetails,
 }) => {
   if (!invoiceDetails) return null;
-
-  const renderDynamicValue = (
-    value: DynamicValue,
-    indent = 0
-  ): JSX.Element | string | null => {
-    if (value === null || value === undefined) return null;
-
-    if (Array.isArray(value)) {
-      const filteredValues = value
-        .map((item) => renderDynamicValue(item, indent + 1))
-        .filter(Boolean);
-      if (filteredValues.length === 0) return null;
-
-      return (
-        <ul className="list-disc ml-4">
-          {filteredValues.map((item, index) => (
-            <li key={index} className="mb-1">
-              {item}
-            </li>
-          ))}
-        </ul>
-      );
-    }
-
-    if (typeof value === "object") {
-      const entries = Object.entries(value)
-        .map(([key, val]) => {
-          const renderedValue = renderDynamicValue(val, indent + 1);
-          return renderedValue
-            ? ([key, renderedValue] as [string, JSX.Element | string])
-            : null;
-        })
-        .filter(
-          (entry): entry is [string, JSX.Element | string] => entry !== null
-        );
-
-      if (entries.length === 0) return null;
-
-      return (
-        <div className={`${indent > 0 ? "ml-4" : ""}`}>
-          {entries.map(([key, val]) => (
-            <div key={key} className="mb-2">
-              <span className="font-medium">{key.split("_").join(" ")}: </span>
-              {val}
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    return value.toString();
-  };
 
   return (
     <Modal

@@ -131,13 +131,17 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    const sseManager = manageSSE(
-      `/invoices/processed-stream?page=1&size=10`,
-      handleSSEMessage
-    );
-
-    return () => sseManager?.stop();
-  }, []);
+    let sseManager: { stop: () => void } | null = null;
+  
+    if (pagination.current === 1) {
+      sseManager = manageSSE(`/invoices/processed-stream`, handleSSEMessage);
+    }
+  
+    return () => {
+      sseManager?.stop();
+    };
+  }, [pagination.current]);
+  
 
   useEffect(() => {
     if (allInvoices.length) {

@@ -30,6 +30,9 @@ export const invoiceProcessorApi = {
       `/invoices/processed?page=${params.page}&size=${params.size}`
     ),
 
+  updateInvoiceStatus: (status: string, invoiceIds: string[]) =>
+    apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
+
   getDataSourceDetails: () =>
     apiClient.get<DataSourceResponse>(`/invoices/data-sources`),
 
