@@ -24,6 +24,7 @@ const SummaryDashboard = () => {
   } = useInvoiceProcessor();
 
   const metricsFetched = useRef(false);
+  const sseRef = useRef<{ stop: () => void } | null>(null);
 
   const fetchMetrics = async () => {
     if (metricsFetched.current) return;
@@ -75,12 +76,17 @@ const SummaryDashboard = () => {
 
   useEffect(() => {
     fetchMetrics();
-    const sseManager = manageSSE(
-      "/invoices/duplicate-stream",
-      handleSSEMessage
-    );
+    if (!sseRef.current) {
+      sseRef.current = manageSSE(
+        "/invoices/duplicate-stream",
+        handleSSEMessage
+      );
+    }
 
-    return () => sseManager?.stop();
+    return () => {
+      sseRef.current?.stop();
+      sseRef.current = null;
+    };
   }, []);
 
   return (
@@ -94,7 +100,10 @@ const SummaryDashboard = () => {
             count={String(duplicatesCount)}
             onClick={
               duplicatesCount > 0
-                ? () => navigate("../extraction-history/duplicates")
+                ? () =>
+                    navigate("../extraction-history/duplicates", {
+                      state: { duplicatesCheckDone: true },
+                    })
                 : undefined
             }
           />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Alert, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../components/AppButton";
@@ -36,7 +36,9 @@ const ExtractionHistoryTable = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { duplicatesMapById, setInvoicesMapById, duplicatesCount } =
+  const sseRef = useRef<{ stop: () => void } | null>(null);
+
+  const { duplicatesMapById, duplicatesCount } =
     useInvoiceProcessor();
 
   const handleSSEMessage = (data: any) => {
@@ -48,13 +50,7 @@ const ExtractionHistoryTable = () => {
 
     setLoading(true);
     try {
-      let invoicesMap: Record<string, ProcessedInvoice> = {};
-
       const invoices = data.invoices.map((item: any) => {
-        if (!invoicesMap[item.id]) {
-          invoicesMap[item.id] = item;
-        }
-
         return {
           ...item,
           sender: item.email_metadata.sender,
@@ -65,7 +61,6 @@ const ExtractionHistoryTable = () => {
         };
       });
       setAllInvoices(invoices);
-      setInvoicesMapById(invoicesMap);
       setInvoices(filterInvoices(invoices, filters));
       setPagination({
         current: data.page,
@@ -105,7 +100,6 @@ const ExtractionHistoryTable = () => {
         };
       });
       setAllInvoices(invoices);
-      setInvoicesMapById(invoicesMap);
       setInvoices(filterInvoices(invoices, filters));
       setPagination({
         current: response.data.data.page,
@@ -131,17 +125,24 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    let sseManager: { stop: () => void } | null = null;
-  
     if (pagination.current === 1) {
-      sseManager = manageSSE(`/invoices/processed-stream`, handleSSEMessage);
+      if (!sseRef.current) {
+        console.log("here");
+        sseRef.current = manageSSE(
+          `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
+          handleSSEMessage
+        );
+      }
+    } else {
+      sseRef.current?.stop();
+      sseRef.current = null;
     }
-  
+
     return () => {
-      sseManager?.stop();
+      sseRef.current?.stop();
+      sseRef.current = null;
     };
   }, [pagination.current]);
-  
 
   useEffect(() => {
     if (allInvoices.length) {
@@ -307,7 +308,11 @@ const ExtractionHistoryTable = () => {
               <p
                 style={{ marginTop: 8 }}
                 className="underline text-deep-blue cursor-pointer"
-                onClick={() => navigate("../extraction-history/duplicates")}
+                onClick={() =>
+                  navigate("../extraction-history/duplicates", {
+                    state: { duplicatesCheckDone: true },
+                  })
+                }
               >
                 View Duplicates
               </p>

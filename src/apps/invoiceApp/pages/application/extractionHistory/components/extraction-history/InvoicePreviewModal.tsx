@@ -1,10 +1,9 @@
 import { Modal } from "antd";
-import { ProcessedInvoice } from "../../../../../../../types";
 
 interface InvoicePreviewModalProps {
   open: boolean;
   onCancel: () => void;
-  invoiceDetails: ProcessedInvoice | null;
+  invoiceDetails: any;
 }
 
 const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
@@ -13,6 +12,8 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
   invoiceDetails,
 }) => {
   if (!invoiceDetails) return null;
+
+  const imageString = invoiceDetails.image_data || invoiceDetails.image;
 
   return (
     <Modal
@@ -27,10 +28,10 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
         Preview of {invoiceDetails.file_name}
       </div>
       <div className="p-6">
-        {invoiceDetails.image_data && (
+        {imageString && (
           <div>
             <img
-              src={`data:image/jpeg;base64,${invoiceDetails.image_data}`}
+              src={`data:image/jpeg;base64,${imageString}`}
               alt="Invoice Preview"
               className="w-full rounded"
             />

@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppButton from "../../../../../../../components/AppButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NotAllowedModal from "./NotAllowedModal";
 import IgnoreDuplicatesModal from "./IgnoreDuplicatesModal";
 import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
@@ -22,6 +22,15 @@ const ViewDuplicates = () => {
     useInvoiceProcessor();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location?.state?.duplicatesCheckDone) {
+      navigate("../extraction-history", {
+        state: { fromDuplicatesPage: true },
+      });
+    }
+  }, []);
 
   const toggleActionModal = (type: ModalType) => {
     setActionModal((prev) => ({

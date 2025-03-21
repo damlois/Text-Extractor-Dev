@@ -22,7 +22,6 @@ const DuplicatesTable = ({
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const {
-    invoicesMapById,
     duplicateMapByFileHash,
     setDuplicatesMapByFileHash,
   } = useInvoiceProcessor();
@@ -131,9 +130,7 @@ const DuplicatesTable = ({
         open={showPreviewModal}
         onCancel={() => togglePreviewModal()}
         invoiceDetails={
-          selectedInvoice && invoicesMapById
-            ? invoicesMapById[selectedInvoice?.id]
-            : null
+          selectedInvoice
         }
       />
     </>
