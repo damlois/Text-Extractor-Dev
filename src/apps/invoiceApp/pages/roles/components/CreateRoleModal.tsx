@@ -36,7 +36,7 @@ const CreateRoleModal = ({
       className="app-modal"
       style={{ minWidth: "30%" }}
     >
-      <div>
+      <div className="create-role">
         <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
           Add a Role
         </div>

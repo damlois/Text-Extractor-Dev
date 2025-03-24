@@ -480,6 +480,6 @@ td .failed, td .inactive{
   font-weight: 400;
 }
 
-label.ant-checkbox-wrapper {
+.create-role label.ant-checkbox-wrapper {
   margin-bottom: 17px;
 }

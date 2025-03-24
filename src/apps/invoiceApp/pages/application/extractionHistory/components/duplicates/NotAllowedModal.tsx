@@ -16,7 +16,7 @@ const NotAllowedModal = ({ open, onCancel }: NotAllowedModalProps) => {
         </div>
       }
       open={open}
-      onClose={onCancel}
+      onCancel={onCancel}
       footer={false}
       width={416}
       centered

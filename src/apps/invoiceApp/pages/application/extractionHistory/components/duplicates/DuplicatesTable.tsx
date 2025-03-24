@@ -22,7 +22,6 @@ const DuplicatesTable = ({
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const {
-    invoicesMapById,
     duplicateMapByFileHash,
     setDuplicatesMapByFileHash,
   } = useInvoiceProcessor();
@@ -88,7 +87,9 @@ const DuplicatesTable = ({
           <span
             className={`${text?.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
           >
-            {text?.toLowerCase()}
+            {text?.toLowerCase() === "completed"
+              ? "successful"
+              : text.toLowerCase()}
           </span>
         ),
       },
@@ -106,7 +107,7 @@ const DuplicatesTable = ({
               >
                 {visible ? <UpOutlined /> : <DownOutlined />}
                 <span className="ml-6 font-medium text-[16px]">
-                  Duplicates ({hash})
+                  Duplicates : {invoices.length}
                 </span>
               </div>
               {visible && (
@@ -116,7 +117,7 @@ const DuplicatesTable = ({
                     rowKey="id"
                     columns={duplicateInvoiceItemResponsesColumns}
                     dataSource={invoices}
-                    // pagination={invoices.length > 5 ? { pageSize: 5 } : false}
+                    pagination={{ pageSize: 5 }}
                     className="app-table extraction-history-table no-vertical-lines"
                   />
                 </div>
@@ -129,9 +130,7 @@ const DuplicatesTable = ({
         open={showPreviewModal}
         onCancel={() => togglePreviewModal()}
         invoiceDetails={
-          selectedInvoice && invoicesMapById
-            ? invoicesMapById[selectedInvoice?.id]
-            : null
+          selectedInvoice
         }
       />
     </>

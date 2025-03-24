@@ -1,10 +1,9 @@
 import { Modal } from "antd";
-import { ProcessedInvoice, DynamicValue } from "../../../../../../../types";
 
 interface InvoicePreviewModalProps {
   open: boolean;
   onCancel: () => void;
-  invoiceDetails: ProcessedInvoice | null;
+  invoiceDetails: any;
 }
 
 const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
@@ -14,57 +13,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
 }) => {
   if (!invoiceDetails) return null;
 
-  const renderDynamicValue = (
-    value: DynamicValue,
-    indent = 0
-  ): JSX.Element | string | null => {
-    if (value === null || value === undefined) return null;
-
-    if (Array.isArray(value)) {
-      const filteredValues = value
-        .map((item) => renderDynamicValue(item, indent + 1))
-        .filter(Boolean);
-      if (filteredValues.length === 0) return null;
-
-      return (
-        <ul className="list-disc ml-4">
-          {filteredValues.map((item, index) => (
-            <li key={index} className="mb-1">
-              {item}
-            </li>
-          ))}
-        </ul>
-      );
-    }
-
-    if (typeof value === "object") {
-      const entries = Object.entries(value)
-        .map(([key, val]) => {
-          const renderedValue = renderDynamicValue(val, indent + 1);
-          return renderedValue
-            ? ([key, renderedValue] as [string, JSX.Element | string])
-            : null;
-        })
-        .filter(
-          (entry): entry is [string, JSX.Element | string] => entry !== null
-        );
-
-      if (entries.length === 0) return null;
-
-      return (
-        <div className={`${indent > 0 ? "ml-4" : ""}`}>
-          {entries.map(([key, val]) => (
-            <div key={key} className="mb-2">
-              <span className="font-medium">{key.split("_").join(" ")}: </span>
-              {val}
-            </div>
-          ))}
-        </div>
-      );
-    }
-
-    return value.toString();
-  };
+  const imageString = invoiceDetails.image_data || invoiceDetails.image;
 
   return (
     <Modal
@@ -79,10 +28,10 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
         Preview of {invoiceDetails.file_name}
       </div>
       <div className="p-6">
-        {invoiceDetails.image_data && (
+        {imageString && (
           <div>
             <img
-              src={`data:image/jpeg;base64,${invoiceDetails.image_data}`}
+              src={`data:image/jpeg;base64,${imageString}`}
               alt="Invoice Preview"
               className="w-full rounded"
             />

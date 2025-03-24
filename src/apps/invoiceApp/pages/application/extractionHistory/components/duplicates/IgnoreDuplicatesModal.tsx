@@ -1,15 +1,48 @@
 import { Button, Modal } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import { showNotification } from "../../../../../../../utils/notification";
+import { useState } from "react";
 
 interface IgnoreDuplicatesModalProps {
   open?: boolean;
   onCancel: () => void;
+  selectedInvoiceIds: Record<string, string[]>;
+  pageRefresh: () => void;
 }
 
 const IgnoreDuplicatesModal = ({
   open,
   onCancel,
+  selectedInvoiceIds,
+  pageRefresh,
 }: IgnoreDuplicatesModalProps) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleIgnore = async () => {
+    try {
+      setLoading(true);
+      await invoiceProcessorApi.updateInvoiceStatus(
+        "archive",
+        Object.values(selectedInvoiceIds).flat()
+      );
+
+      onCancel();
+      pageRefresh();
+      showNotification(
+        "success",
+        "Selected invoices have been successfully ignored"
+      );
+    } catch {
+      showNotification(
+        "error",
+        "Something went wrong. Please check your internet connection and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Modal
       title={
@@ -32,6 +65,8 @@ const IgnoreDuplicatesModal = ({
           key="ignore-duplicates"
           type="primary"
           className="h-[32px] px-[15px] rounded-[2px]"
+          onClick={handleIgnore}
+          loading={loading}
         >
           Ignore Duplicate
         </Button>,
