@@ -38,8 +38,7 @@ const ExtractionHistoryTable = () => {
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
 
-  const { duplicatesMapById, duplicatesCount } =
-    useInvoiceProcessor();
+  const { duplicatesMapById, duplicatesCount } = useInvoiceProcessor();
 
   const handleSSEMessage = (data: any) => {
     if (data.error) {
@@ -116,7 +115,7 @@ const ExtractionHistoryTable = () => {
 
   useEffect(() => {
     if (
-      !location.state?.fromInsightsPage ||
+      !location.state?.fromInsightsPage &&
       !location.state?.fromDuplicatesPage
     ) {
       sessionStorage.removeItem("hideDuplicatesAlert");
@@ -127,7 +126,7 @@ const ExtractionHistoryTable = () => {
   useEffect(() => {
     if (pagination.current === 1) {
       if (!sseRef.current) {
-        sseRef.current = manageSSE(
+                sseRef.current = manageSSE(
           `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
           handleSSEMessage
         );
