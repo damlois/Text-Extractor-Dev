@@ -126,7 +126,7 @@ const ExtractionHistoryTable = () => {
   useEffect(() => {
     if (pagination.current === 1) {
       if (!sseRef.current) {
-                sseRef.current = manageSSE(
+        sseRef.current = manageSSE(
           `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
           handleSSEMessage
         );
