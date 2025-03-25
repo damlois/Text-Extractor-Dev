@@ -246,9 +246,18 @@ export interface UserResponse {
   status: string;
 }
 
+export interface Permission {
+  name: string;
+}
+
+export interface Role {
+  name: string;
+  permissions: Permission[];
+}
+
 export interface RoleResponse {
   id: string;
-  title: string;
-  created_by: string;
+  name: string;
+  permissions: Permission[];
   created_at: string;
 }

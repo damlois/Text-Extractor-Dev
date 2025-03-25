@@ -1,43 +1,52 @@
-import { Checkbox, Col, GetProp, Modal, Row } from "antd";
+import { Checkbox, Col, Divider, GetProp, Modal, Row } from "antd";
 import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { showNotification } from "../../../../../utils/notification";
+import { RoleResponse } from "../../../../../types";
 import { permissionOptions } from "../data";
 
-interface CreateRoleModalProps {
+interface EditRoleModalProps {
   open: boolean;
+  selectedRole: RoleResponse | undefined;
   onCancel: () => void;
   refreshPage: () => void;
 }
 
-const CreateRoleModal = ({
+const EditRoleModal = ({
   open,
+  selectedRole,
   onCancel,
   refreshPage,
-}: CreateRoleModalProps) => {
+}: EditRoleModalProps) => {
   const [loading, setLoading] = useState(false);
   const [roleTitle, setRoleTitle] = useState<string>("");
   const [permissions, setPermissions] = useState<string[]>([]);
 
+  console.log(selectedRole, "selected role in Edit");
+  useEffect(() => {
+    if (selectedRole) {
+      setRoleTitle(selectedRole.name);
+      setPermissions(selectedRole.permissions.map((p) => p.name.trim()));
+    }
+  }, [selectedRole]);
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await invoiceProcessorApi.addRole({
+      await invoiceProcessorApi.updateRole(String(selectedRole?.id), {
         name: roleTitle,
         permissions: permissions.map((name) => ({ name })),
       });
 
-      showNotification("success", "Role has been created successfully");
+      showNotification("success", "Role has been edited successfully");
       onCancel();
       refreshPage();
     } catch (error: any) {
       showNotification(
         "error",
-        error.response?.data?.detail?.startsWith("400:")
-          ? "Role with this name already exists"
-          : "Something went wrong. Please check your internet connection and try again."
+        "Something went wrong. Please check your internet connection and try again."
       );
     } finally {
       setLoading(false);
@@ -60,13 +69,14 @@ const CreateRoleModal = ({
     >
       <div className="create-role">
         <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
-          Add a Role
+          Edit Role
         </div>
         <div className="p-6">
           <AppInput
             name="role_title"
             type="text"
             label="Role Title"
+            value={roleTitle}
             placeholder="Enter a role e.g User"
             onChange={(e) => setRoleTitle(e.target.value)}
             required
@@ -77,7 +87,12 @@ const CreateRoleModal = ({
           <div className="mb-4 text-black text-[16px] font-medium">
             Permissions
           </div>
-          <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
+          <Checkbox.Group
+            style={{ width: "100%" }}
+            onChange={onChange}
+            defaultValue={[...permissions]}
+            key={permissions.join(",")}
+          >
             <Row>
               {permissionOptions.map((option) => {
                 return (
@@ -90,7 +105,7 @@ const CreateRoleModal = ({
           </Checkbox.Group>
 
           <AppButton
-            children={"Create Role"}
+            children={"Save"}
             className="mt-[5px]"
             onClick={handleSubmit}
             loading={loading}
@@ -102,4 +117,4 @@ const CreateRoleModal = ({
   );
 };
 
-export default CreateRoleModal;
+export default EditRoleModal;

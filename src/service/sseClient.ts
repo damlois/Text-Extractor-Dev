@@ -16,19 +16,17 @@ export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
       .filter((line: any) => line)
       .join("");
 
-    if (!cleanedData || cleanedData === "[DONE]") {
-      return;
-    }
-
-    try {
-      const jsonData = JSON.parse(cleanedData);
-      onMessage(jsonData);
-    } catch (error) {
-      console.error("Error parsing SSE data:", error);
+    if (cleanedData && cleanedData !== "[DONE]") {
+      try {
+        const jsonData = JSON.parse(cleanedData);
+        onMessage(jsonData);
+      } catch (error) {
+        console.error("Error parsing SSE data:", error);
+      }
     }
   };
 
-  eventSource.onerror = () => {
+  eventSource.onerror = (error) => {
     console.warn("SSE connection error. Closing Connection & Retrying...");
     eventSource.close();
     setTimeout(() => manageSSE(endpoint, onMessage), 2000);

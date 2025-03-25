@@ -13,6 +13,8 @@ import {
   ChatSessionsResponse,
   User,
   UserResponse,
+  RoleResponse,
+  Role,
 } from "../types";
 import apiClient from "../service/apiClient";
 
@@ -115,4 +117,10 @@ export const invoiceProcessorApi = {
   },
 
   getUsers: async () => await apiClient.get<{ data: UserResponse[] }>("/users"),
+
+  getRoles: async () => await apiClient.get<{ data: RoleResponse[] }>("/roles"),
+
+  addRole: async (data: Role) => await apiClient.post("/roles", data),
+
+  updateRole: async (roleId: string, data: Role) => await apiClient.put(`/roles/${roleId}`, data),
 };
