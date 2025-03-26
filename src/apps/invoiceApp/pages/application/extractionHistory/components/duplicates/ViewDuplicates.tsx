@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppButton from "../../../../../../../components/AppButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import NotAllowedModal from "./NotAllowedModal";
 import IgnoreDuplicatesModal from "./IgnoreDuplicatesModal";
 import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
@@ -31,6 +31,10 @@ const ViewDuplicates = () => {
       });
     }
   }, []);
+
+  const selectedCount = useMemo(() => {
+    return Object.values(selectedInvoiceIds).flat().length;
+  }, [selectedInvoiceIds]);
 
   const toggleActionModal = (type: ModalType) => {
     setActionModal((prev) => ({
@@ -110,13 +114,13 @@ const ViewDuplicates = () => {
                   variant="secondary"
                   className="!w-fit"
                   onClick={() => toggleActionModal("Ignore")}
-                  disabled={Object.keys(selectedInvoiceIds).length === 0}
+                  disabled={selectedCount === 0}
                 />
                 <AppButton
-                  children="Archive Duplicate"
+                  children={`Archive Duplicate${selectedCount > 1 ? "s" : ""}`}
                   className="!w-fit"
                   onClick={checkFullySelectedGroups}
-                  disabled={Object.keys(selectedInvoiceIds).length === 0}
+                  disabled={selectedCount === 0}
                 />
               </div>
             </div>
@@ -138,14 +142,16 @@ const ViewDuplicates = () => {
       />
       <IgnoreDuplicatesModal
         open={checkModalDisplay("Ignore")}
-        onCancel={() => toggleActionModal("Ignore")}
         selectedInvoiceIds={selectedInvoiceIds}
+        selectedCount={selectedCount}
+        onCancel={() => toggleActionModal("Ignore")}
         pageRefresh={pageRefresh}
       />
       <ArchiveDuplicatesModal
         open={checkModalDisplay("Archive")}
-        onCancel={() => toggleActionModal("Archive")}
         selectedInvoiceIds={selectedInvoiceIds}
+        selectedCount={selectedCount}
+        onCancel={() => toggleActionModal("Archive")}
         pageRefresh={pageRefresh}
       />
     </div>

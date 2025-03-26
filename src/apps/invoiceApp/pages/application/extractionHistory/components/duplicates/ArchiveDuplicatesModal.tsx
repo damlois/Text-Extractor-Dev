@@ -9,6 +9,7 @@ interface ArchiveDuplicatesModalProps {
   onCancel: () => void;
   selectedInvoiceIds: Record<string, string[]>;
   pageRefresh: () => void;
+  selectedCount: number;
 }
 
 const ArchiveDuplicatesModal = ({
@@ -16,6 +17,7 @@ const ArchiveDuplicatesModal = ({
   onCancel,
   selectedInvoiceIds,
   pageRefresh,
+  selectedCount
 }: ArchiveDuplicatesModalProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +33,9 @@ const ArchiveDuplicatesModal = ({
       pageRefresh();
       showNotification(
         "success",
-        "Selected invoices have been successfully archived"
+        `Selected invoice${
+          selectedCount > 1 ? "s" : ""
+        } have been successfully archived`
       );
     } catch {
       showNotification(
@@ -48,7 +52,8 @@ const ArchiveDuplicatesModal = ({
       title={
         <div className="flex items-center text-[16px] text-dark-gray font-medium">
           <InfoCircleOutlined className="text-deep-blue mr-4 text-[22px]" />
-          Are you sure you want to archive selected duplicate invoices?{" "}
+          Are you sure you want to archive selected duplicate invoice
+          {selectedCount > 1 ? "s" : ""}?
         </div>
       }
       open={open}
@@ -77,10 +82,17 @@ const ArchiveDuplicatesModal = ({
         content: { padding: "16px", borderRadius: "2px" },
       }}
     >
-      <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
-        This action will move the selected duplicate invoices to the archive.
-        You can restore them later if needed.
-      </p>
+      {selectedCount > 1 ? (
+        <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
+          This action will move the selected duplicate invoices to the archive.
+          You can restore them later if needed.
+        </p>
+      ) : (
+        <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
+          This action will move the selected duplicate invoice to the archive.
+          You can restore it later if needed.
+        </p>
+      )}
     </Modal>
   );
 };
