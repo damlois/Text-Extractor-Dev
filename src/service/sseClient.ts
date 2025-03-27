@@ -1,43 +1,55 @@
-const BASE_URL = process.env.REACT_APP_INVOICE_API_URL || "";
-
-/**
- * Starts an SSE connection using EventSource.
- * @param {string} endpoint - API endpoint (e.g., "/invoices/processed-stream")
- * @param {(data: any) => void} onMessage - Callback function for handling SSE messages
- * @returns {Object} - Object with a `stop` method to close the connection.
- */
 export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
-  const eventSource = new EventSource(`${BASE_URL}${endpoint}`);
+  const BASE_URL = process.env.REACT_APP_INVOICE_API_URL || "";
+  let isStopped = false;
+  let retryTimeout: NodeJS.Timeout | null = null;
+  let eventSource: EventSource | null = null;
 
-  eventSource.onmessage = ({ data }: MessageEvent) => {
-    const cleanedData = data
-      .split("\n")
-      .map((line: any) => line.replace(/^data:\s*/, "").trim())
-      .filter((line: any) => line)
-      .join("");
+  const startSSE = () => {
+    if (isStopped) return;
+    eventSource = new EventSource(`${BASE_URL}${endpoint}`);
 
-    if (!cleanedData || cleanedData === "[DONE]") {
-      return;
-    }
+    eventSource.onmessage = ({ data }: MessageEvent) => {
+      if (isStopped) {
+        eventSource?.close();
+        return;
+      }
 
-    try {
-      const jsonData = JSON.parse(cleanedData);
-      onMessage(jsonData);
-    } catch (error) {
-      console.error("Error parsing SSE data:", error);
-    }
+      const cleanedData = data
+        .split("\n")
+        .map((line: string) => line.replace(/^data:\s*/, "").trim())
+        .filter((line: any) => line)
+        .join("");
+
+      if (cleanedData && cleanedData !== "[DONE]") {
+        try {
+          const jsonData = JSON.parse(cleanedData);
+          onMessage(jsonData);
+        } catch (error) {
+          console.error("Error parsing SSE data:", error);
+        }
+      }
+    };
+
+    eventSource.onerror = () => {
+      if (isStopped) return;
+      console.warn("SSE connection error. Closing Connection & Retrying...");
+      eventSource?.close();
+
+      retryTimeout = setTimeout(startSSE, 3000);
+    };
   };
-
-  eventSource.onerror = () => {
-    console.warn("SSE connection error. Closing Connection & Retrying...");
-    eventSource.close();
-    setTimeout(() => manageSSE(endpoint, onMessage), 2000);
-  };
+  startSSE();
 
   return {
     stop: () => {
-      console.log("Closing SSE connection.");
-      eventSource.close();
+      isStopped = true;
+      if (eventSource) {
+        eventSource.close();
+      }
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+        retryTimeout = null;
+      }
     },
   };
 };
