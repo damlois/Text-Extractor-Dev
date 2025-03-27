@@ -11,8 +11,8 @@ import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { manageSSE } from "../../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../../utils/notification";
+import { manageSSE } from "../../../../../../../service/sseClient";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -28,7 +28,7 @@ const ExtractionHistoryTable = () => {
     total: 0,
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
-  const [allInvoices, setAllInvoices] = useState<ProcessedInvoice[]>([]);
+  const [pageInvoices, setPageInvoices] = useState<ProcessedInvoice[]>([]);
   const [showAlert, setShowAlert] = useState(
     !sessionStorage.getItem("hideDuplicatesAlert")
   );
@@ -49,23 +49,20 @@ const ExtractionHistoryTable = () => {
 
     setLoading(true);
     try {
-      const invoices = data.invoices.map((item: any) => {
-        return {
-          ...item,
-          sender: item.email_metadata.sender,
-          processing_status:
-            item.processing_status === "COMPLETED"
-              ? "Successful"
-              : item.processing_status,
-        };
-      });
-      setAllInvoices(invoices);
-      setInvoices(filterInvoices(invoices, filters));
-      setPagination({
-        current: data.page,
-        pageSize: data.size,
+      const newInvoices = data.invoices.map((item: any) => ({
+        ...item,
+        sender: item.email_metadata.sender,
+        processing_status:
+          item.processing_status === "COMPLETED"
+            ? "Successful"
+            : item.processing_status,
+      }));
+
+      setPageInvoices(newInvoices);
+      setPagination((prevPagination) => ({
+        ...prevPagination,
         total: data.total,
-      });
+      }));
     } catch (error) {
       console.error("Error fetching invoices:", error);
       setLoading(false);
@@ -82,24 +79,16 @@ const ExtractionHistoryTable = () => {
         size,
       });
 
-      let invoicesMap: Record<string, ProcessedInvoice> = {};
+      const fetchedInvoices = response.data.data.invoices.map((item: any) => ({
+        ...item,
+        sender: item.email_metadata.sender,
+        processing_status:
+          item.processing_status === "COMPLETED"
+            ? "Successful"
+            : item.processing_status,
+      }));
 
-      const invoices = response.data.data.invoices.map((item) => {
-        if (!invoicesMap[item.id]) {
-          invoicesMap[item.id] = item;
-        }
-
-        return {
-          ...item,
-          sender: item.email_metadata.sender,
-          processing_status:
-            item.processing_status === "COMPLETED"
-              ? "Successful"
-              : item.processing_status,
-        };
-      });
-      setAllInvoices(invoices);
-      setInvoices(filterInvoices(invoices, filters));
+      setPageInvoices(fetchedInvoices);
       setPagination({
         current: response.data.data.page,
         pageSize: response.data.data.size,
@@ -140,19 +129,19 @@ const ExtractionHistoryTable = () => {
       sseRef.current?.stop();
       sseRef.current = null;
     };
-  }, [pagination.current]);
+  }, [pagination.current, pagination.pageSize]);
 
   useEffect(() => {
-    if (allInvoices.length) {
-      setInvoices(filterInvoices(allInvoices, filters));
+    if (pageInvoices.length) {
+      setInvoices(filterInvoices(pageInvoices, filters));
     }
-  }, [filters, allInvoices]);
+  }, [filters, pageInvoices]);
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
-      new Set(allInvoices?.map((invoice) => invoice.email_metadata.sender))
+      new Set(pageInvoices?.map((invoice) => invoice.email_metadata.sender))
     ).filter(Boolean);
-  }, [allInvoices]);
+  }, [pageInvoices]);
 
   const togglePreviewModal = (invoice?: ProcessedInvoice) => {
     setSelectedInvoice(invoice || null);
@@ -225,8 +214,9 @@ const ExtractionHistoryTable = () => {
     },
   ];
 
-  const handleTableChange = (pagination: any) => {
-    fetchInvoices(pagination.current, pagination.pageSize);
+  const handleTableChange = (newPagination: any) => {
+    setPagination(newPagination);
+    fetchInvoices(newPagination.current, newPagination.pageSize);
   };
 
   const handleAlertClose = () => {
