@@ -24,7 +24,6 @@ const EditRoleModal = ({
   const [roleTitle, setRoleTitle] = useState<string>("");
   const [permissions, setPermissions] = useState<string[]>([]);
 
-  console.log(selectedRole, "selected role in Edit");
   useEffect(() => {
     if (selectedRole) {
       setRoleTitle(selectedRole.name);
