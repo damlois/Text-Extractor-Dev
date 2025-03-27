@@ -12,7 +12,11 @@ interface UpdateLabelSetupProps {
   refreshPage: () => void;
 }
 
-const UpdateLabelSetup = ({ open, onCancel, refreshPage }: UpdateLabelSetupProps) => {
+const UpdateLabelSetup = ({
+  open,
+  onCancel,
+  refreshPage,
+}: UpdateLabelSetupProps) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const { saveTemplate } = useTemplate();

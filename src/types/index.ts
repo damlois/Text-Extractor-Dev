@@ -36,7 +36,7 @@ export interface DataSourceInfo {
 }
 
 export interface DataSourceDetails {
-  data_source_id: string;
+  id: string;
   source_type: string;
   username: string;
   password: string;

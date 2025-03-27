@@ -20,10 +20,20 @@ export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
     apiClient.post("/invoices/data-sources", data),
 
-  getTemplate: () => apiClient.get<TemplateResponse>("/invoices/template"),
+  getTemplate: (dataSourceId?: string) =>
+    apiClient.get<TemplateResponse>(
+      `/invoices/template${
+        dataSourceId ? `?data_source_id=${dataSourceId}` : ""
+      }`
+    ),
 
-  updateTemplate: (items: TemplateItem[]) =>
-    apiClient.put("/invoices/template", { items }),
+  updateTemplate: (dataSourceId: string | undefined, items: TemplateItem[]) =>
+    apiClient.put(
+      `/invoices/template${
+        dataSourceId ? `?data_source_id=${dataSourceId}` : ""
+      }`,
+      { items }
+    ),
 
   getProcessedInvoices: (params: ProcessedInvoicesParams) =>
     apiClient.get<ProcessedInvoicesResponse>(

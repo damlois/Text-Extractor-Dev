@@ -24,14 +24,14 @@ const DeactivateRow = ({
   };
 
   const handleToggleStatus = async () => {
-    if (!dataSourceDetails?.data_source_id) return;
+    if (!dataSourceDetails?.id) return;
 
     setLoading(true);
     try {
       const newStatus =
         dataSourceDetails.status === "active" ? "inactive" : "active";
       await invoiceProcessorApi.toggleDataSourceStatus(
-        dataSourceDetails.data_source_id,
+        dataSourceDetails.id,
         newStatus
       );
     } catch (error) {

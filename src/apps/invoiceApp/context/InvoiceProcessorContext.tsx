@@ -13,8 +13,8 @@ import {
 } from "../pages/application/extractionHistory/types";
 
 interface InvoiceProcessorContextProps {
-  currentDataSource: DataSourceDetails | null;
-  setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | null>>;
+  currentDataSource: DataSourceDetails | undefined;
+  setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | undefined>>;
   duplicatesMapById: Record<string, DuplicateInvoiceItemResponse> | null;
   setDuplicatesMapById: Dispatch<
     SetStateAction<Record<string, DuplicateInvoiceItemResponse>>
@@ -41,7 +41,7 @@ export const InvoiceProcessorProvider: React.FC<
   InvoiceProcessorProviderProps
 > = ({ children }) => {
   const [currentDataSource, setCurrentDataSource] =
-    useState<DataSourceDetails | null>(null);
+    useState<DataSourceDetails | undefined>(undefined);
   const [duplicatesMapById, setDuplicatesMapById] = useState<
     Record<string, DuplicateInvoiceItemResponse>
   >({});
