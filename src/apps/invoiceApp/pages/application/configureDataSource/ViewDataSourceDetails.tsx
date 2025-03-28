@@ -18,7 +18,9 @@ const ViewDataSourceDetails = ({
         dataSourceDetails={dataSourceDetails}
         refreshPage={refreshPage}
       />
-      <LabelSetupRow refreshPage={refreshPage} />
+      <LabelSetupRow
+        refreshPage={refreshPage}
+      />
       <DeactivateRow
         dataSourceDetails={dataSourceDetails}
         refreshPage={refreshPage}

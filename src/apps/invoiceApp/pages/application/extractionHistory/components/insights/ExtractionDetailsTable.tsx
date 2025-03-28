@@ -4,10 +4,11 @@ import CustomTable from "../../../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../../../types";
-import { Spin, Modal } from "antd";
+import { Modal } from "antd";
 import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
 import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
+import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -20,6 +21,7 @@ const ExtractionDetailsTable = () => {
   );
 
   const { labels, setLabels } = useFileProcessor();
+  const { currentDataSource } = useInvoiceProcessor();
 
   const standardizeInvoice = (
     invoice: Record<string, any>
@@ -42,7 +44,9 @@ const ExtractionDetailsTable = () => {
   };
 
   const fetchLabels = async () => {
-    const response = await invoiceProcessorApi.getTemplate();
+    const response = await invoiceProcessorApi.getTemplate(
+      currentDataSource?.id
+    );
     setLabels(response.data.data.items);
   };
 

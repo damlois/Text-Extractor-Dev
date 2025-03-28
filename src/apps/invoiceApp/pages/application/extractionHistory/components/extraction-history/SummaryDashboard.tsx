@@ -43,7 +43,8 @@ const SummaryDashboard = () => {
   };
 
   const handleSSEMessage = (data: any) => {
-    setDuplicatesLoading(true);
+    setDuplicatesLoading(false);
+
     if (data.error) {
       showNotification("error", data.error);
       return;
@@ -70,8 +71,6 @@ const SummaryDashboard = () => {
       },
       {}
     );
-
-    setDuplicatesLoading(false);
 
     setDuplicatesMapById(invoiceIdMap);
     setDuplicatesMapByFileHash(fileHashMap);

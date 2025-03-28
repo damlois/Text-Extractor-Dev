@@ -41,34 +41,27 @@ const ExtractionHistoryTable = () => {
   const { duplicatesMapById, duplicatesCount } = useInvoiceProcessor();
 
   const handleSSEMessage = (data: any) => {
+    setLoading(false);
+
     if (data.error) {
       showNotification("error", data.error);
-      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    try {
-      const newInvoices = data.invoices.map((item: any) => ({
-        ...item,
-        sender: item.email_metadata.sender,
-        processing_status:
-          item.processing_status === "COMPLETED"
-            ? "Successful"
-            : item.processing_status,
-      }));
+    const newInvoices = data.invoices.map((item: any) => ({
+      ...item,
+      sender: item.email_metadata.sender,
+      processing_status:
+        item.processing_status === "COMPLETED"
+          ? "Successful"
+          : item.processing_status,
+    }));
 
-      setPageInvoices(newInvoices);
-      setPagination((prevPagination) => ({
-        ...prevPagination,
-        total: data.total,
-      }));
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-      setLoading(false);
-    } finally {
-      setLoading(false);
-    }
+    setPageInvoices(newInvoices);
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      total: data.total,
+    }));
   };
 
   const fetchInvoices = async (page: number, size: number) => {

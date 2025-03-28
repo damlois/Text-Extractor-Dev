@@ -5,6 +5,7 @@ import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { Spin } from "antd";
 import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
+import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 
 interface LabelSetupRowProps {
   refreshPage: () => void;
@@ -14,13 +15,16 @@ const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const {labels, setLabels} = useFileProcessor();
+  const { labels, setLabels } = useFileProcessor();
+  const { currentDataSource } = useInvoiceProcessor();
 
   useEffect(() => {
     const fetchTemplate = async () => {
       setLoading(true);
       try {
-        const response = await invoiceProcessorApi.getTemplate();
+        const response = await invoiceProcessorApi.getTemplate(
+          currentDataSource?.id
+        );
         setLabels(response.data.data.items);
       } catch (error) {
         console.error("Error fetching template:", error);
