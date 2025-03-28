@@ -13,7 +13,8 @@ import { showNotification } from "../../../../../../../utils/notification";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(true);
+  const [duplicatesLoading, setDuplicatesLoading] = useState(true);
+  const [metricsLoading, setMetricsLoading] = useState(true);
 
   const navigate = useNavigate();
   const {
@@ -30,16 +31,20 @@ const SummaryDashboard = () => {
     if (metricsFetched.current) return;
     metricsFetched.current = true;
 
-    setLoading(true);
+    setMetricsLoading(true);
     try {
       const response = await invoiceProcessorApi.getInvoiceMetrics();
       setMetrics(response.data.data);
     } catch (error) {
       console.error("Error fetching metrics:", error);
+    } finally {
+      setMetricsLoading(false);
     }
   };
 
   const handleSSEMessage = (data: any) => {
+    setDuplicatesLoading(false);
+
     if (data.error) {
       showNotification("error", data.error);
       return;
@@ -67,8 +72,6 @@ const SummaryDashboard = () => {
       {}
     );
 
-    setLoading(false);
-
     setDuplicatesMapById(invoiceIdMap);
     setDuplicatesMapByFileHash(fileHashMap);
     setDuplicatesCount(count);
@@ -91,7 +94,7 @@ const SummaryDashboard = () => {
 
   return (
     <>
-      {!loading && (
+      {!(metricsLoading || duplicatesLoading) && (
         <div className="grid gap-4 space-between flex-wrap lg:grid-cols-4 sm:grid-cols-1">
           <MetricCard
             key={"duplicate"}
