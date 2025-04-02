@@ -6,6 +6,8 @@ import { FaEllipsisVertical } from "react-icons/fa6";
 import { showNotification } from "../../../../utils/notification";
 import { RoleModalConfig, RoleModalType } from "./types";
 import CreateRoleModal from "./components/CreateRoleModal";
+import { invoiceProcessorApi } from "../../../../api/invoice-api";
+import EditRoleModal from "./components/EditRoleModal";
 
 const RolesList = () => {
   const [roles, setRoles] = useState<RoleResponse[]>([]);
@@ -21,14 +23,8 @@ const RolesList = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        setRoles([
-          {
-            id: "1",
-            title: "Admin",
-            created_at: "09:00AM, 12/17/2024",
-            created_by: "Lois Adex",
-          },
-        ]);
+        const response = await invoiceProcessorApi.getRoles();
+        setRoles(response.data.data);
       } catch (e) {
         showNotification(
           "error",
@@ -49,15 +45,28 @@ const RolesList = () => {
   const shouldOpenModal = (type: RoleModalType) =>
     modal.type === type && modal.open;
 
-  //   const handleUpdate = (record: RoleResponse) => {
-  //     setSelectedUser(record);
-  //     toggleModal("update_status");
-  //   };
+  const handleUpdate = (record: RoleResponse) => {
+    setSelectedRole(record);
+    toggleModal("edit_role");
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+    return formatter.format(date);
+  };
 
   const rolesListColumns: TableColumnsType<RoleResponse> = [
     {
       title: "Role Title",
-      dataIndex: "title",
+      dataIndex: "name",
       render: (text: string) => (
         <span className="text-dark-gray text-[14px] font-bold">{text}</span>
       ),
@@ -66,7 +75,9 @@ const RolesList = () => {
       title: "Created On",
       dataIndex: "created_at",
       render: (text: string) => (
-        <span className="text-dark-gray text-[14px] font-normal">{text}</span>
+        <span className="text-dark-gray text-[14px] font-normal">
+          {formatDate(text)}
+        </span>
       ),
     },
     {
@@ -89,7 +100,7 @@ const RolesList = () => {
                 label: (
                   <button
                     className="w-full text-left text-dark-gray"
-                    // onClick={() => handleUpdate(record)}
+                    onClick={() => handleUpdate(record)}
                   >
                     Edit
                   </button>
@@ -98,10 +109,7 @@ const RolesList = () => {
               {
                 key: "2",
                 label: (
-                  <button
-                    className="w-full text-left text-[#FF4D4F]"
-                    // onClick={() => handleUpdate(record)}
-                  >
+                  <button className="w-full text-left text-[#FF4D4F]">
                     Delete
                   </button>
                 ),
@@ -142,6 +150,12 @@ const RolesList = () => {
         open={shouldOpenModal("create_role")}
         onCancel={() => toggleModal("create_role")}
         refreshPage={() => setRefresh(!refresh)}
+      />
+      <EditRoleModal
+        open={shouldOpenModal("edit_role")}
+        onCancel={() => toggleModal("edit_role")}
+        refreshPage={() => setRefresh(!refresh)}
+        selectedRole={selectedRole}
       />
     </>
   );

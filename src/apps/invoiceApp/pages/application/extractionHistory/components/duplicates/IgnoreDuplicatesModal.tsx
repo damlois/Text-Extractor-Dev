@@ -9,6 +9,7 @@ interface IgnoreDuplicatesModalProps {
   onCancel: () => void;
   selectedInvoiceIds: Record<string, string[]>;
   pageRefresh: () => void;
+  selectedCount: number;
 }
 
 const IgnoreDuplicatesModal = ({
@@ -16,6 +17,7 @@ const IgnoreDuplicatesModal = ({
   onCancel,
   selectedInvoiceIds,
   pageRefresh,
+  selectedCount,
 }: IgnoreDuplicatesModalProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +25,7 @@ const IgnoreDuplicatesModal = ({
     try {
       setLoading(true);
       await invoiceProcessorApi.updateInvoiceStatus(
-        "archive",
+        "ignore",
         Object.values(selectedInvoiceIds).flat()
       );
 
@@ -31,7 +33,9 @@ const IgnoreDuplicatesModal = ({
       pageRefresh();
       showNotification(
         "success",
-        "Selected invoices have been successfully ignored"
+        `Selected invoice${
+          selectedCount > 1 ? "s" : ""
+        } have been successfully ignored`
       );
     } catch {
       showNotification(
@@ -48,7 +52,9 @@ const IgnoreDuplicatesModal = ({
       title={
         <div className="flex items-center text-[16px] text-dark-gray font-medium">
           <InfoCircleOutlined className="text-deep-blue mr-4 text-[22px]" />
-          Ignore This Duplicate?
+          {selectedCount > 1
+            ? "Ignore these duplicates?"
+            : "Ignore this duplicate?"}
         </div>
       }
       open={open}
@@ -68,7 +74,7 @@ const IgnoreDuplicatesModal = ({
           onClick={handleIgnore}
           loading={loading}
         >
-          Ignore Duplicate
+          {`Ignore Duplicate${selectedCount > 1 ? "s" : ""}`}
         </Button>,
       ]}
       width={471}
@@ -77,10 +83,17 @@ const IgnoreDuplicatesModal = ({
         content: { padding: "16px", borderRadius: "2px" },
       }}
     >
-      <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
-        If you ignore this duplicate, it will remain in the invoice list and
-        won’t be flagged again.
-      </p>
+      {selectedCount > 1 ? (
+        <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
+          If you ignore these duplicates, they will remain in the invoice list
+          and won’t be flagged again.
+        </p>
+      ) : (
+        <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
+          If you ignore this duplicate, it will remain in the invoice list and
+          won’t be flagged again.
+        </p>
+      )}
     </Modal>
   );
 };

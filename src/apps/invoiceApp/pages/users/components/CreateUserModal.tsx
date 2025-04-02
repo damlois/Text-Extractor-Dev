@@ -35,7 +35,6 @@ const CreateUserModal = ({
     email,
     role,
   }: typeof initialValues) => {
-    console.log("here");
     const data: User = {
       first_name,
       last_name,
