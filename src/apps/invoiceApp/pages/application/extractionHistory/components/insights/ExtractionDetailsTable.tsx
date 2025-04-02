@@ -9,9 +9,11 @@ import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
 import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import AppButton from "../../../../../../../components/AppButton";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
+  const [originalData, setOriginalData] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<any>();
   const location = useLocation();
@@ -23,6 +25,30 @@ const ExtractionDetailsTable = () => {
   const { labels, setLabels } = useFileProcessor();
   const { currentDataSource } = useInvoiceProcessor();
 
+  const removeFields = (obj: unknown): unknown => {
+    const fieldsToRemove = new Set([
+      "image_data",
+      "email_metadata",
+      "created_at",
+      "file_name",
+      "id",
+      "processing_status",
+      "status",
+    ]);
+
+    if (Array.isArray(obj)) {
+      return obj.map(removeFields);
+    } else if (typeof obj === "object" && obj !== null) {
+      let newObj: Record<string, unknown> = {};
+      for (const key in obj) {
+        if (!fieldsToRemove.has(key)) {
+          newObj[key] = removeFields(obj[key as keyof typeof obj]);
+        }
+      }
+      return newObj;
+    }
+    return obj;
+  };
   const standardizeInvoice = (
     invoice: Record<string, any>
   ): Record<string, any> => {
@@ -60,6 +86,7 @@ const ExtractionDetailsTable = () => {
           selectedInvoiceIds
         );
         const invoices = response.data.data;
+        setOriginalData(removeFields(invoices));
         setSelectedInvoices(formatInvoiceData(invoices));
       } catch (error) {
         console.error("Error fetching selected invoices:", error);
@@ -122,6 +149,17 @@ const ExtractionDetailsTable = () => {
     );
   }, [labels]);
 
+  const downloadOriginalData = () => {
+    const jsonString = JSON.stringify(originalData, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `extraction-history.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="flex gap-4 justify-start items-start w-full">
       <img src="/assets/icons/blue-circle-icon.svg" alt="InterprAIs Logo" />
@@ -143,22 +181,32 @@ const ExtractionDetailsTable = () => {
         </div>
 
         {!loading && (
-          <DownloadResults
-            result={selectedInvoices.map((invoice) => {
-              const { rawData, ...filteredData } = invoice;
-              const filteredResult = labels?.reduce<Record<string, any>>(
-                (acc, { label }) => {
-                  const key = camelCase(label);
-                  if (filteredData[key]) {
-                    acc[key] = filteredData[key];
-                  }
-                  return acc;
-                },
-                {}
-              );
-              return filteredResult;
-            })}
-          />
+          <div className="flex gap-4 w-full justify-between items-center">
+            <DownloadResults
+              result={selectedInvoices.map((invoice) => {
+                const { rawData, ...filteredData } = invoice;
+                const filteredResult = labels?.reduce<Record<string, any>>(
+                  (acc, { label }) => {
+                    const key = camelCase(label);
+                    if (filteredData[key]) {
+                      acc[key] = filteredData[key];
+                    }
+                    return acc;
+                  },
+                  {}
+                );
+                return filteredResult;
+              })}
+            />
+            <div className="mr-10">
+              <AppButton
+                onClick={downloadOriginalData}
+                children=""
+                width="fit-content"
+                variant="secondary"
+              />
+            </div>
+          </div>
         )}
 
         <Modal
