@@ -160,6 +160,9 @@ const ExtractionHistoryTable = () => {
       setSelectedInvoiceIds(selectedRowKeys as string[]);
     },
     selectedRowKeys: selectedInvoiceIds,
+    getCheckboxProps: (record: ProcessedInvoice) => ({
+      disabled: record.processing_status.toLowerCase() === "processing",
+    }),
   };
 
   const extractionHistoryColumns: TableColumnsType<ProcessedInvoice> = [
@@ -250,14 +253,19 @@ const ExtractionHistoryTable = () => {
           columns={extractionHistoryColumns}
           dataSource={invoices}
           className="app-table extraction-history-table no-vertical-lines"
-          rowClassName={(record) =>
-            duplicatesMapById && duplicatesMapById[record.id]
-              ? "duplicate-row"
-              : ""
-          }
           loading={loading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
           onChange={handleTableChange}
+          rowClassName={(record) => {
+            const rowClasses = [];
+            if (duplicatesMapById && duplicatesMapById[record.id]) {
+              rowClasses.push("duplicate-row");
+            }
+            if (record.processing_status.toLowerCase() === "processing") {
+              rowClasses.push("disabled-row");
+            }
+            return rowClasses.join(" ");
+          }}
         />
       </div>
       <InvoicePreviewModal

@@ -418,6 +418,13 @@ td .failed, td .inactive{
   text-transform: capitalize;
 }
 
+td .processing {
+  background-color: #F0E68C;
+  color: #333;
+  border: 1px solid #D2B48C;
+  text-transform: capitalize;
+}
+
 .ant-select-selector {
   min-height:39px;
 }
@@ -450,6 +457,11 @@ td .failed, td .inactive{
 
 .duplicate-row {
   background-color: #fff5f5 !important;
+}
+
+.disabled-row {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .duplicate-row:hover, .duplicate-row:focus,
