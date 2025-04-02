@@ -30,7 +30,6 @@ const ExtractionDetailsTable = () => {
       "image_data",
       "email_metadata",
       "created_at",
-      "file_name",
       "id",
       "processing_status",
       "status",
