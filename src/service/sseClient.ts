@@ -32,10 +32,10 @@ export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
 
     eventSource.onerror = () => {
       if (isStopped) return;
-      console.warn("SSE connection error. Closing Connection & Retrying...");
+      console.warn("SSE connection error. Closing Connection...");
       eventSource?.close();
 
-      retryTimeout = setTimeout(startSSE, 3000);
+      // retryTimeout = setTimeout(startSSE, 3000);
     };
   };
   startSSE();
