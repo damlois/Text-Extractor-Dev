@@ -10,6 +10,7 @@ import { camelCase } from "lodash";
 import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import AppButton from "../../../../../../../components/AppButton";
+import InvoicePreviewModal from "../extraction-history/InvoicePreviewModal";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -59,11 +60,11 @@ const ExtractionDetailsTable = () => {
   };
 
   const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
-    return invoices.map(({ file_name, image_data, extracted_content }) => {
+    return invoices.map(({ id, file_name, extracted_content }) => {
       return standardizeInvoice({
         file_name,
         ...extracted_content,
-        raw_data: { file_name, image_data },
+        raw_data: { file_name, id },
       });
     });
   };
@@ -78,19 +79,19 @@ const ExtractionDetailsTable = () => {
   };
 
   useEffect(() => {
-    const fetchSelectedInvoices = async () => {
-      if (selectedInvoiceIds.length === 0) return;
-
-      const selectedInvoices = selectedInvoiceIds.map(
-        (id: string) => invoicesMapById[id]
-      );
-
-      setOriginalData(removeFields(selectedInvoices));
-      setSelectedInvoices(formatInvoiceData(selectedInvoices));
-    };
+    if (selectedInvoiceIds.length === 0) return;
 
     !labels && fetchLabels();
-    fetchSelectedInvoices();
+
+    setLoading(true);
+    const selectedInvoices = selectedInvoiceIds.map(
+      (id: string) => invoicesMapById[id]
+    );
+
+    setOriginalData(removeFields(selectedInvoices));
+    setSelectedInvoices(formatInvoiceData(selectedInvoices));
+
+    setLoading(false);
   }, [selectedInvoiceIds]);
 
   const handleFileClick = (raw_data: any) => {
@@ -203,23 +204,11 @@ const ExtractionDetailsTable = () => {
           </div>
         )}
 
-        <Modal
-          title={selectedFile?.file_name}
+        <InvoicePreviewModal
           open={!!selectedFile}
           onCancel={closeModal}
-          footer={null}
-          width={700}
-        >
-          <div className="p-6">
-            <div>
-              <img
-                src={`data:image/jpeg;base64,${selectedFile?.image_data}`}
-                alt="Invoice Preview"
-                className="w-full rounded"
-              />
-            </div>
-          </div>
-        </Modal>
+          invoiceDetails={selectedFile}
+        />
       </div>
     </div>
   );
