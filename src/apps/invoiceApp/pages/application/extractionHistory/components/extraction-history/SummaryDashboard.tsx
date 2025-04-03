@@ -10,6 +10,7 @@ import {
 } from "../../types";
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../../utils/notification";
+import { Spin } from "antd";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
@@ -94,34 +95,40 @@ const SummaryDashboard = () => {
 
   return (
     <>
-      {!(metricsLoading || duplicatesLoading) && (
-        <div className="grid gap-4 space-between flex-wrap lg:grid-cols-4 sm:grid-cols-1">
-          <MetricCard
-            key={"duplicate"}
-            iconUrl={"/assets/icons/dashboard-failed-icon.svg"}
-            status={"Duplicate Invoices"}
-            count={String(duplicatesCount)}
-            onClick={
-              duplicatesCount > 0
-                ? () =>
-                    navigate("../extraction-history/duplicates", {
-                      state: { duplicatesCheckDone: true },
-                    })
-                : undefined
-            }
-          />
-          {Object.entries(metrics).map(([key, value]) => (
+      {!(metricsLoading || duplicatesLoading) ? (
+        <>
+          <div className="grid gap-4 space-between flex-wrap lg:grid-cols-4 sm:grid-cols-1">
             <MetricCard
-              key={key}
-              iconUrl={`/assets/icons/dashboard-${
-                key.includes("fail") ? "failed" : "success"
-              }-icon.svg`}
-              status={
-                key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")
+              key={"duplicate"}
+              iconUrl={"/assets/icons/dashboard-failed-icon.svg"}
+              status={"Duplicate Invoices"}
+              count={String(duplicatesCount)}
+              onClick={
+                duplicatesCount > 0
+                  ? () =>
+                      navigate("../extraction-history/duplicates", {
+                        state: { duplicatesCheckDone: true },
+                      })
+                  : undefined
               }
-              count={value.toString()}
             />
-          ))}
+            {Object.entries(metrics).map(([key, value]) => (
+              <MetricCard
+                key={key}
+                iconUrl={`/assets/icons/dashboard-${
+                  key.includes("fail") ? "failed" : "success"
+                }-icon.svg`}
+                status={
+                  key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")
+                }
+                count={value.toString()}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="h-[68px] flex justify-center items-center w-full">
+          <Spin size="default"></Spin>
         </div>
       )}
     </>

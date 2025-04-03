@@ -15,6 +15,10 @@ import {
 interface InvoiceProcessorContextProps {
   currentDataSource: DataSourceDetails | undefined;
   setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | undefined>>;
+  invoicesMapById: Record<string, ProcessedInvoice>;
+  setInvoicesMapById: Dispatch<
+    SetStateAction<Record<string, ProcessedInvoice>>
+  >;
   duplicatesMapById: Record<string, DuplicateInvoiceItemResponse> | null;
   setDuplicatesMapById: Dispatch<
     SetStateAction<Record<string, DuplicateInvoiceItemResponse>>
@@ -40,15 +44,18 @@ const InvoiceProcessorContext = createContext<
 export const InvoiceProcessorProvider: React.FC<
   InvoiceProcessorProviderProps
 > = ({ children }) => {
-  const [currentDataSource, setCurrentDataSource] =
-    useState<DataSourceDetails | undefined>(undefined);
+  const [currentDataSource, setCurrentDataSource] = useState<
+    DataSourceDetails | undefined
+  >(undefined);
+  const [invoicesMapById, setInvoicesMapById] = useState<
+    Record<string, ProcessedInvoice>
+  >({});
   const [duplicatesMapById, setDuplicatesMapById] = useState<
     Record<string, DuplicateInvoiceItemResponse>
   >({});
   const [duplicateMapByFileHash, setDuplicatesMapByFileHash] =
     useState<DuplicateInvoicesFileHashMap>({});
-  const [duplicatesRefresh, setDuplicatesRefresh] =
-    useState<boolean>(false);
+  const [duplicatesRefresh, setDuplicatesRefresh] = useState<boolean>(false);
   const [duplicatesCount, setDuplicatesCount] = useState(0);
 
   return (
@@ -56,6 +63,8 @@ export const InvoiceProcessorProvider: React.FC<
       value={{
         currentDataSource,
         setCurrentDataSource,
+        invoicesMapById,
+        setInvoicesMapById,
         duplicatesMapById,
         setDuplicatesMapById,
         duplicateMapByFileHash,

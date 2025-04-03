@@ -23,7 +23,7 @@ const ExtractionDetailsTable = () => {
   );
 
   const { labels, setLabels } = useFileProcessor();
-  const { currentDataSource } = useInvoiceProcessor();
+  const { currentDataSource, invoicesMapById } = useInvoiceProcessor();
 
   const removeFields = (obj: unknown): unknown => {
     const fieldsToRemove = new Set([
@@ -69,9 +69,11 @@ const ExtractionDetailsTable = () => {
   };
 
   const fetchLabels = async () => {
+    setLoading(true);
     const response = await invoiceProcessorApi.getTemplate(
       currentDataSource?.id
     );
+    setLoading(false);
     setLabels(response.data.data.items);
   };
 
@@ -79,19 +81,12 @@ const ExtractionDetailsTable = () => {
     const fetchSelectedInvoices = async () => {
       if (selectedInvoiceIds.length === 0) return;
 
-      setLoading(true);
-      try {
-        const response = await invoiceProcessorApi.getBatchInvoiceDetails(
-          selectedInvoiceIds
-        );
-        const invoices = response.data.data;
-        setOriginalData(removeFields(invoices));
-        setSelectedInvoices(formatInvoiceData(invoices));
-      } catch (error) {
-        console.error("Error fetching selected invoices:", error);
-      } finally {
-        setLoading(false);
-      }
+      const selectedInvoices = selectedInvoiceIds.map(
+        (id: string) => invoicesMapById[id]
+      );
+
+      setOriginalData(removeFields(selectedInvoices));
+      setSelectedInvoices(formatInvoiceData(selectedInvoices));
     };
 
     !labels && fetchLabels();

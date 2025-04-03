@@ -13,6 +13,7 @@ import { WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import { showNotification } from "../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../service/sseClient";
+import { formatInvoiceAndCreateMap } from "./utils";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -38,7 +39,8 @@ const ExtractionHistoryTable = () => {
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
 
-  const { duplicatesMapById, duplicatesCount } = useInvoiceProcessor();
+  const { setInvoicesMapById, duplicatesMapById, duplicatesCount } =
+    useInvoiceProcessor();
 
   const handleSSEMessage = (data: any) => {
     setLoading(false);
@@ -48,16 +50,12 @@ const ExtractionHistoryTable = () => {
       return;
     }
 
-    const newInvoices = data.invoices.map((item: any) => ({
-      ...item,
-      sender: item.email_metadata.sender,
-      processing_status:
-        item.processing_status === "COMPLETED"
-          ? "Successful"
-          : item.processing_status,
-    }));
+    const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
+      data.invoices
+    );
 
-    setPageInvoices(newInvoices);
+    setPageInvoices(formattedInvoices);
+    setInvoicesMapById(invoiceMapById);
     setPagination((prevPagination) => ({
       ...prevPagination,
       total: data.total,
@@ -72,16 +70,12 @@ const ExtractionHistoryTable = () => {
         size,
       });
 
-      const fetchedInvoices = response.data.data.invoices.map((item: any) => ({
-        ...item,
-        sender: item.email_metadata.sender,
-        processing_status:
-          item.processing_status === "COMPLETED"
-            ? "Successful"
-            : item.processing_status,
-      }));
+      const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
+        response.data.data.invoices
+      );
 
-      setPageInvoices(fetchedInvoices);
+      setPageInvoices(formattedInvoices);
+      setInvoicesMapById(invoiceMapById);
       setPagination({
         current: response.data.data.page,
         pageSize: response.data.data.size,
@@ -160,8 +154,12 @@ const ExtractionHistoryTable = () => {
       setSelectedInvoiceIds(selectedRowKeys as string[]);
     },
     selectedRowKeys: selectedInvoiceIds,
-    getCheckboxProps: (record: ProcessedInvoice) => ({
-      disabled: record.processing_status.toLowerCase() === "processing",
+    getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
+      disabled: processing_status.toLowerCase() === "processing",
+      title:
+        processing_status.toLowerCase() === "processing"
+          ? "Invoice is still being processed"
+          : undefined,
     }),
   };
 
