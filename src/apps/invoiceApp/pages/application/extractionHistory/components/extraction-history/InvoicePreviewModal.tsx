@@ -1,4 +1,7 @@
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
+import { useEffect, useState } from "react";
+import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import { showNotification } from "../../../../../../../utils/notification";
 
 interface InvoicePreviewModalProps {
   open: boolean;
@@ -11,9 +14,34 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
   onCancel,
   invoiceDetails,
 }) => {
-  if (!invoiceDetails) return null;
+  const [loading, setLoading] = useState(false);
+  const [imageString, setImageString] = useState<string | undefined>();
 
-  const imageString = invoiceDetails.image_data || invoiceDetails.image;
+  useEffect(() => {
+    if (invoiceDetails) {
+      const fetchInvoiceImageData = async () => {
+        try {
+          setLoading(true);
+
+          const response = await invoiceProcessorApi.getInvoiceImage(
+            invoiceDetails.id
+          );
+          setImageString(response.data.data.image_data);
+        } catch {
+          showNotification(
+            "error",
+            "Something went wrong while trying to fetch image"
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchInvoiceImageData();
+    }
+  }, [invoiceDetails?.id]);
+
+  if (!invoiceDetails) return null;
 
   return (
     <Modal
@@ -27,17 +55,23 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
       <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
         Preview of {invoiceDetails.file_name}
       </div>
-      <div className="p-6">
-        {imageString && (
-          <div>
-            <img
-              src={`data:image/jpeg;base64,${imageString}`}
-              alt="Invoice Preview"
-              className="w-full rounded"
-            />
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <div className="w-full h-[80vh] flex justify-center items-center">
+          <Spin></Spin>
+        </div>
+      ) : (
+        <div className="p-6">
+          {imageString && (
+            <div>
+              <img
+                src={`data:image/jpeg;base64,${imageString}`}
+                alt="Invoice Preview"
+                className="w-full rounded"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </Modal>
   );
 };

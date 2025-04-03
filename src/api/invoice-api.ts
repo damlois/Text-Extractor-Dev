@@ -132,5 +132,11 @@ export const invoiceProcessorApi = {
 
   addRole: async (data: Role) => await apiClient.post("/roles", data),
 
-  updateRole: async (roleId: string, data: Role) => await apiClient.put(`/roles/${roleId}`, data),
+  updateRole: async (roleId: string, data: Role) =>
+    await apiClient.put(`/roles/${roleId}`, data),
+
+  getInvoiceImage: async (invoiceId: string) =>
+    await apiClient.get<{ data: { image_data: string } }>(
+      `/invoices/${invoiceId}/image`
+    ),
 };
