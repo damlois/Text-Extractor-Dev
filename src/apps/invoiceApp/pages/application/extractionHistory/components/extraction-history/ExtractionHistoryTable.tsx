@@ -156,10 +156,6 @@ const ExtractionHistoryTable = () => {
     selectedRowKeys: selectedInvoiceIds,
     getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
       disabled: processing_status.toLowerCase() === "processing",
-      title:
-        processing_status.toLowerCase() === "processing"
-          ? "Invoice is still being processed"
-          : undefined,
     }),
   };
 
