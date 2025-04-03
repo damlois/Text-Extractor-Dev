@@ -25,7 +25,7 @@ const CreateRoleModal = ({
     try {
       setLoading(true);
       await invoiceProcessorApi.addRole({
-        name: roleTitle,
+        name: roleTitle.toUpperCase(),
         permissions: permissions.map((name) => ({ name })),
       });
 
