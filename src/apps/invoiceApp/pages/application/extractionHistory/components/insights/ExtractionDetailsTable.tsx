@@ -2,15 +2,13 @@ import { useLocation } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
 import CustomTable from "../../../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
-import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../../../types";
-import { Modal } from "antd";
 import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
-import { useFileProcessor } from "../../../../../../../context/FileProcessorContext";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import AppButton from "../../../../../../../components/AppButton";
 import InvoicePreviewModal from "../extraction-history/InvoicePreviewModal";
+import { useTemplate } from "../../../../../context/TemplateContext";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -23,8 +21,9 @@ const ExtractionDetailsTable = () => {
     [location.state?.selectedInvoiceIds]
   );
 
-  const { labels, setLabels } = useFileProcessor();
-  const { currentDataSource, invoicesMapById } = useInvoiceProcessor();
+  const { templateItems, fetchTemplate } = useTemplate();
+  const { currentDataSource, fetchDataSource, invoicesMapById } =
+    useInvoiceProcessor();
 
   const removeFields = (obj: unknown): unknown => {
     const fieldsToRemove = new Set([
@@ -68,31 +67,32 @@ const ExtractionDetailsTable = () => {
       });
     });
   };
-
-  const fetchLabels = async () => {
-    setLoading(true);
-    const response = await invoiceProcessorApi.getTemplate(
-      currentDataSource?.id
-    );
-    setLoading(false);
-    setLabels(response.data.data.items);
-  };
-
+  console.log(templateItems, "tem");
   useEffect(() => {
-    if (selectedInvoiceIds.length === 0) return;
+    const fetchData = async () => {
+      setLoading(true);
 
-    !labels && fetchLabels();
+      if (selectedInvoiceIds.length === 0) return;
 
-    setLoading(true);
-    const selectedInvoices = selectedInvoiceIds.map(
-      (id: string) => invoicesMapById[id]
-    );
+      if (!currentDataSource) {
+        await fetchDataSource();
+      }
 
-    setOriginalData(removeFields(selectedInvoices));
-    setSelectedInvoices(formatInvoiceData(selectedInvoices));
+      if (currentDataSource && (!templateItems || templateItems.length === 0)) {
+        await fetchTemplate();
+      }
 
-    setLoading(false);
-  }, [selectedInvoiceIds]);
+      const selectedInvoicesData = selectedInvoiceIds.map(
+        (id: string) => invoicesMapById[id]
+      );
+
+      setOriginalData(removeFields(selectedInvoicesData));
+      setSelectedInvoices(formatInvoiceData(selectedInvoicesData));
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [selectedInvoiceIds, currentDataSource, , invoicesMapById]);
 
   const handleFileClick = (raw_data: any) => {
     setSelectedFile(raw_data);
@@ -103,7 +103,7 @@ const ExtractionDetailsTable = () => {
   };
 
   const tableColumns = useMemo(() => {
-    if (labels?.length === 0) return [];
+    if (templateItems?.length === 0) return [];
 
     const commonStyle = {
       whiteSpace: "nowrap",
@@ -113,7 +113,7 @@ const ExtractionDetailsTable = () => {
       display: "inline-block",
     };
 
-    return [{ label: "FILE NAME" }, ...(labels ?? [])]?.map(
+    return [{ label: "FILE NAME" }, ...(templateItems ?? [])]?.map(
       ({ label }: { label: string }) => {
         const key = camelCase(label);
 
@@ -142,7 +142,7 @@ const ExtractionDetailsTable = () => {
         };
       }
     );
-  }, [labels]);
+  }, [templateItems]);
 
   const downloadOriginalData = () => {
     const jsonString = JSON.stringify(originalData, null, 2);
@@ -180,16 +180,15 @@ const ExtractionDetailsTable = () => {
             <DownloadResults
               result={selectedInvoices.map((invoice) => {
                 const { rawData, ...filteredData } = invoice;
-                const filteredResult = labels?.reduce<Record<string, any>>(
-                  (acc, { label }) => {
-                    const key = camelCase(label);
-                    if (filteredData[key]) {
-                      acc[key] = filteredData[key];
-                    }
-                    return acc;
-                  },
-                  {}
-                );
+                const filteredResult = templateItems?.reduce<
+                  Record<string, any>
+                >((acc, { label }) => {
+                  const key = camelCase(label);
+                  if (filteredData[key]) {
+                    acc[key] = filteredData[key];
+                  }
+                  return acc;
+                }, {});
                 return filteredResult;
               })}
             />
