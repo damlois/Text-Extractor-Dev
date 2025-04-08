@@ -15,27 +15,23 @@ import {
   UserResponse,
   RoleResponse,
   Role,
+  DataSourceDetails,
 } from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
-    apiClient.post("/invoices/data-sources", data),
+    apiClient.post<{ data: DataSourceDetails }>("/invoices/data-sources", data),
 
   getTemplate: (dataSourceId?: string) =>
     apiClient.get<TemplateResponse>(
-      `/invoices/template${
-        dataSourceId ? `?data_source_id=${dataSourceId}` : ""
-      }`
+      `/invoices/template?data_source_id=${dataSourceId}`
     ),
 
   updateTemplate: (dataSourceId: string | undefined, items: TemplateItem[]) =>
-    apiClient.put(
-      `/invoices/template${
-        dataSourceId ? `?data_source_id=${dataSourceId}` : ""
-      }`,
-      { items }
-    ),
+    apiClient.put(`/invoices/template?data_source_id=${dataSourceId}`, {
+      items,
+    }),
 
   getProcessedInvoices: (params: ProcessedInvoicesParams) =>
     apiClient.get<ProcessedInvoicesResponse>(

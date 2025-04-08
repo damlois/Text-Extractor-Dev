@@ -6,6 +6,7 @@ import { showNotification } from "../utils/notification";
 import React from "react";
 import { invoiceProcessorApi } from "../api/invoice-api";
 import { DataSourceDetails } from "../types";
+import { useInvoiceProcessor } from "../apps/invoiceApp/context/InvoiceProcessorContext";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -23,13 +24,17 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
+  const { setCurrentDataSource } = useInvoiceProcessor();
+
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      await invoiceProcessorApi.configureDataSource({
+      const response = await invoiceProcessorApi.configureDataSource({
         source_type: "email",
         ...values,
       });
+
+      setCurrentDataSource(response.data.data);
 
       if (onSuccessCallback) {
         onSuccessCallback(values);

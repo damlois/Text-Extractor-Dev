@@ -2,15 +2,15 @@ import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useTemplate } from "../../apps/invoiceApp/context/TemplateContext";
+import { useInvoiceProcessor } from "../../apps/invoiceApp/context/InvoiceProcessorContext";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
 
-  const { fetchTemplate } = useTemplate();
+  const { fetchDataSource } = useInvoiceProcessor();
 
   useEffect(() => {
-    fetchTemplate();
+    fetchDataSource();
   }, []);
 
   return (
