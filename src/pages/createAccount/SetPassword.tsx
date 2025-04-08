@@ -73,7 +73,7 @@ const SetPassword = () => {
       password,
       is_invited: false,
       username: email,
-      role: "admin",
+      role: "ADMIN",
     };
 
     try {

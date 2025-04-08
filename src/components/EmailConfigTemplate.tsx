@@ -34,8 +34,6 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
         ...values,
       });
 
-      console.log(response);
-
       setCurrentDataSource(response.data.data);
 
       if (onSuccessCallback) {

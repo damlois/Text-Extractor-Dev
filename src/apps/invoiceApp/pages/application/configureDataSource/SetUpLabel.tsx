@@ -11,6 +11,7 @@ const SetupLabel: React.FC = () => {
   const { saveTemplate } = useTemplate();
 
   const handleContinue = async () => {
+    
     try {
       await saveTemplate();
       showNotification("success", "Template saved successfully");
