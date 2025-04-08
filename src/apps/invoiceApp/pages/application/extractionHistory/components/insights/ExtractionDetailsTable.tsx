@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
 import CustomTable from "../../../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
@@ -13,11 +13,14 @@ import { useTemplate } from "../../../../../context/TemplateContext";
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
   const [originalData, setOriginalData] = useState<any>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState<any>();
+
   const location = useLocation();
+  const navigate = useNavigate();
+
   const selectedInvoiceIds = useMemo(
-    () => location.state?.selectedInvoiceIds || [],
+    () => location.state?.selectedInvoiceIds,
     [location.state?.selectedInvoiceIds]
   );
 
@@ -70,9 +73,14 @@ const ExtractionDetailsTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-
-      if (selectedInvoiceIds.length === 0) return;
+      if (
+        selectedInvoiceIds?.length === 0 ||
+        !invoicesMapById ||
+        (Object.keys(invoicesMapById)).length === 0
+      ) {
+        navigate("../extraction-history");
+        return;
+      }
 
       if (!currentDataSource) {
         await fetchDataSource();
@@ -162,16 +170,17 @@ const ExtractionDetailsTable = () => {
         <p className="text-[13px] font-normal text-dark-gray mb-4">
           Review the details of your extraction below
         </p>
+        
         <div className="w-full monospace-table">
           <CustomTable
             dataSource={selectedInvoices}
-            columns={tableColumns || []}
+            columns={tableColumns}
             rowKey="id"
             pagination={selectedInvoices.length > 6 ? { pageSize: 6 } : false}
             bordered
             striped
             className="overflow-x-auto mr-[48px]"
-            loading={loading}
+            loading={loading || tableColumns.length === 0}
           />
         </div>
 
