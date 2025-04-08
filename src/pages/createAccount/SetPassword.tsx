@@ -122,7 +122,8 @@ const SetPassword = () => {
                 Welcome to InterprAIs
               </p>
               <p className="text-gray mb-6">
-                Complete your setup by filling in your details.
+                Provide your personal details and create a secure password to
+                complete your account setup.
               </p>
 
               <Formik
