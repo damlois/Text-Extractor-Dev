@@ -67,7 +67,7 @@ const ExtractionDetailsTable = () => {
       });
     });
   };
-  console.log(templateItems, "tem");
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
