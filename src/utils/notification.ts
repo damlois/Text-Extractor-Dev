@@ -45,9 +45,7 @@ const parseDetail = (detail: string, resource: string): string => {
 
   switch (code) {
     case "400":
-      return "Validation error";
-    case "409":
-      return `${resource} already exists`;
+      return message;
     case "401":
       return "You are unauthorized to perform this action. Please log in again.";
     case "403":

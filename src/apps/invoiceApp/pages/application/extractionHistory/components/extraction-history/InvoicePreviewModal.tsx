@@ -2,7 +2,6 @@ import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { handleError } from "../../../../../../../utils/notification";
-import { error } from "console";
 
 interface InvoicePreviewModalProps {
   open: boolean;
@@ -28,7 +27,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
             invoiceDetails.id
           );
           setImageString(response.data.data.image_data);
-        } catch {
+        } catch(error) {
           handleError(error)
         } finally {
           setLoading(false);
