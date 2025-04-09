@@ -6,6 +6,7 @@ import PrmoptSuggestionRow from "../../../../../../../components/PromptSuggestio
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ChatSession, chatHistoryRecord } from "../../../../../../../types";
 import ChatHistorySection from "./ChatHistorySection";
+import { handleError } from "../../../../../../../utils/notification";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");
@@ -35,7 +36,7 @@ const InsightsSection = () => {
         const response = await invoiceProcessorApi.getChatSession(sessionId);
         setChatSession(response.data.data);
       } catch (error) {
-        console.error("Error loading chat session:", error);
+        handleError(error);
       } finally {
         setResponseLoading(false);
       }
@@ -55,7 +56,7 @@ const InsightsSection = () => {
       const promptValues = Object.values(response.data.data.prompts || {});
       setSuggestedPrompts(promptValues);
     } catch (error) {
-      console.error("Error fetching suggested prompts:", error);
+      handleError(error);
       setSuggestedPrompts([]);
     } finally {
       setLoadingSuggestions(false);
@@ -97,7 +98,7 @@ const InsightsSection = () => {
       // Fetch new suggestions after each message
       await fetchSuggestedPrompts();
     } catch (error) {
-      console.error("Failed to send message:", error);
+      handleError(error);
     } finally {
       setResponseLoading(false);
     }

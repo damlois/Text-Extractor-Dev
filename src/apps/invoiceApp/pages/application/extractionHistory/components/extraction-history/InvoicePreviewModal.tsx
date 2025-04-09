@@ -1,7 +1,8 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { showNotification } from "../../../../../../../utils/notification";
+import { handleError } from "../../../../../../../utils/notification";
+import { error } from "console";
 
 interface InvoicePreviewModalProps {
   open: boolean;
@@ -28,10 +29,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
           );
           setImageString(response.data.data.image_data);
         } catch {
-          showNotification(
-            "error",
-            "Something went wrong while trying to fetch image"
-          );
+          handleError(error)
         } finally {
           setLoading(false);
         }

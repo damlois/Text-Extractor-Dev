@@ -189,4 +189,13 @@ export const areRecordsEqual = (obj1: Record<any, any>, obj2: Record<any, any>) 
   return _.isEqual(obj1, obj2);
 };
 
+export const formatDate = (isoDateString: string): string => {
+  const date = new Date(isoDateString);
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
+  return date.toLocaleDateString("en-GB", options);
+};
 

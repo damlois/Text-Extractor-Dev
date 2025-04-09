@@ -3,7 +3,7 @@ import AppInput from "../../components/AppInput";
 import AppButton from "../../components/AppButton";
 import { setPasswordSchema } from "./validation";
 import { useEffect, useState } from "react";
-import { showNotification } from "../../utils/notification";
+import { handleError, showNotification } from "../../utils/notification";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { User } from "../../types";
 import keycloakService from "../../service/keycloakService";
@@ -44,11 +44,8 @@ const SetPassword = () => {
           navigate("/home");
         });
       }
-    } catch (e) {
-      showNotification(
-        "error",
-        "Something went wrong. Please check your internet connection and try again."
-      );
+    } catch (error: any) {
+      handleError(error);
     } finally {
       setPageLoading(false);
     }
@@ -89,12 +86,7 @@ const SetPassword = () => {
         navigate("/home");
       });
     } catch (error: any) {
-      showNotification(
-        "error",
-        error.response?.data?.detail?.startsWith("400:")
-          ? "User already exists with the same email address"
-          : "Something went wrong. Please check your internet connection and try again."
-      );
+      handleError(error, 'User')
     } finally {
       setSubmitLoading(false);
     }

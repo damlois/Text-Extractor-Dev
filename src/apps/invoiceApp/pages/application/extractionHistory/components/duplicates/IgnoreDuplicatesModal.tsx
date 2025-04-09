@@ -1,7 +1,7 @@
 import { Button, Modal } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { showNotification } from "../../../../../../../utils/notification";
+import { handleError, showNotification } from "../../../../../../../utils/notification";
 import { useState } from "react";
 
 interface IgnoreDuplicatesModalProps {
@@ -37,11 +37,8 @@ const IgnoreDuplicatesModal = ({
           selectedCount > 1 ? "s" : ""
         } have been successfully ignored`
       );
-    } catch {
-      showNotification(
-        "error",
-        "Something went wrong. Please check your internet connection and try again."
-      );
+    } catch(error) {
+      handleError(error)
     } finally {
       setLoading(false);
     }

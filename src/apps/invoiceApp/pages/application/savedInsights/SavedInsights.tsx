@@ -6,6 +6,7 @@ import FilterInsightsModal from "./components/FilterInsightsModal";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
 import { ChatSessionSummary } from "../../../../../types";
 import { useNavigate } from "react-router-dom";
+import { handleError } from "../../../../../utils/notification";
 
 const SavedInsights = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const SavedInsights = () => {
       const response = await invoiceProcessorApi.getChatSessions();
       setAllInsights(response.data.data);
     } catch (error) {
-      console.error("Error fetching saved insights:", error);
+      handleError(error);
     } finally {
       setLoading(false);
     }

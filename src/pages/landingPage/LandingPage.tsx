@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import keycloakService from "../../service/keycloakService";
 import { invoiceProcessorApi } from "../../api/invoice-api";
-import { showNotification } from "../../utils/notification";
+import { handleError } from "../../utils/notification";
 import { Spin } from "antd";
-import { useTemplate } from "../../apps/invoiceApp/context/TemplateContext";
 
 const LandingPage = () => {
   const [loading, setLoading] = useState(true);
@@ -23,11 +22,8 @@ const LandingPage = () => {
             navigate("/home");
           });
         }
-      } catch (e) {
-        showNotification(
-          "error",
-          "Something went wrong. Please check your internet connection and try again."
-        );
+      } catch (error: any) {
+        handleError(error)
       } finally {
         setLoading(false);
       }
