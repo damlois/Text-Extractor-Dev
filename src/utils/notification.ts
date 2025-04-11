@@ -1,13 +1,6 @@
 import { notification } from "antd";
 import axios, { AxiosError } from "axios";
-import {
-  NETWORK_ERROR_MESSAGE,
-  TIMEOUT_ERROR_MESSAGE,
-  DEFAULT_ERROR_MESSAGE,
-  AUTH_IFRAME_TIMEOUT_MESSAGE,
-  UNAUTHORIZED_MESSAGE,
-  FORBIDDEN_MESSAGE,
-} from "../apps/invoiceApp/constants";
+import { NETWORK_ERROR_MESSAGE, TIMEOUT_ERROR_MESSAGE, DEFAULT_ERROR_MESSAGE, AUTH_IFRAME_TIMEOUT_MESSAGE, UNAUTHORIZED_MESSAGE, FORBIDDEN_MESSAGE } from "../apps/invoiceApp/constants/messages";
 
 interface BackendErrorResponse {
   detail?: string;
