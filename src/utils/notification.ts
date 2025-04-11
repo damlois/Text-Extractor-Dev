@@ -1,10 +1,23 @@
 import { notification } from "antd";
 import axios, { AxiosError } from "axios";
-import { BackendErrorResponse } from "./notificationTypes.";
+import {
+  NETWORK_ERROR_MESSAGE,
+  TIMEOUT_ERROR_MESSAGE,
+  DEFAULT_ERROR_MESSAGE,
+  AUTH_IFRAME_TIMEOUT_MESSAGE,
+  UNAUTHORIZED_MESSAGE,
+  FORBIDDEN_MESSAGE,
+} from "../apps/invoiceApp/constants";
 
-notification.config({
-  placement: "top",
-});
+interface BackendErrorResponse {
+  detail?: string;
+  error?: {
+    code?: string;
+    message?: string;
+  };
+}
+
+notification.config({ placement: "top" });
 
 export const showNotification = (
   type: "success" | "error" | "info" | "warning",
@@ -20,19 +33,42 @@ export const showNotification = (
   });
 };
 
+const handleAxiosError = (error: any, resource?: string): string => {
+  if (error.code === "ERR_NETWORK") return NETWORK_ERROR_MESSAGE;
+  if (error.code === "ECONNABORTED") return TIMEOUT_ERROR_MESSAGE;
+
+  const backendError = (error as AxiosError<BackendErrorResponse>).response
+    ?.data;
+
+  return (
+    backendError?.error?.message ||
+    (backendError?.detail
+      ? parseDetail(backendError.detail, resource || "Resource")
+      : DEFAULT_ERROR_MESSAGE)
+  );
+};
+
+const handleThirdPartyError = (error: any): string => {
+  const errorMsg = (error as { error: string }).error;
+
+  if (
+    typeof errorMsg === "string" &&
+    errorMsg.toLowerCase().includes("iframe") &&
+    errorMsg.toLowerCase().includes("timeout")
+  ) {
+    return AUTH_IFRAME_TIMEOUT_MESSAGE;
+  }
+
+  return errorMsg || DEFAULT_ERROR_MESSAGE;
+};
+
 export const handleError = (error: any, resource?: string): string | null => {
-  const defaultMessage = "Something went wrong. Please try again.";
-  let message = defaultMessage;
+  let message = DEFAULT_ERROR_MESSAGE;
 
   if (axios.isAxiosError(error)) {
-    const backendError = (error as AxiosError<BackendErrorResponse>).response
-      ?.data;
-
-    message =
-      backendError?.error?.message ||
-      (backendError?.detail
-        ? parseDetail(backendError.detail, resource || "Resource")
-        : defaultMessage);
+    message = handleAxiosError(error, resource);
+  } else if (typeof error === "object" && error !== null && "error" in error) {
+    message = handleThirdPartyError(error);
   }
 
   showNotification("error", message);
@@ -40,19 +76,18 @@ export const handleError = (error: any, resource?: string): string | null => {
 };
 
 const parseDetail = (detail: string, resource: string): string => {
-  const trimmedDetail = detail.trim();
-  const [code, message] = trimmedDetail.split(":");
+  const [code, message] = detail.trim().split(":");
 
   switch (code) {
     case "400":
       return message;
     case "401":
-      return "You are unauthorized to perform this action. Please log in again.";
+      return UNAUTHORIZED_MESSAGE;
     case "403":
-      return "You do not have permission to perform this action.";
+      return FORBIDDEN_MESSAGE;
     case "404":
       return `${resource} does not exist.`;
     default:
-      return message || trimmedDetail;
+      return message || detail;
   }
 };
