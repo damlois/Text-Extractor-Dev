@@ -8,6 +8,7 @@ import { invoiceProcessorApi } from "../../api/invoice-api";
 import { User } from "../../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spin } from "antd";
+import keycloakService from "../../service/keycloakService";
 
 const SetPassword = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -39,7 +40,14 @@ const SetPassword = () => {
       if (!hasAdmin) {
         setIsRedirecting(false);
       } else {
-        navigate("/home");
+        keycloakService.initKeycloak(() => {
+          const isLoggedIn = keycloakService.isLoggedIn();
+          if (isLoggedIn) {
+            navigate("/home");
+          } else {
+            keycloakService.doLogin();
+          }
+        });
       }
     } catch (error: any) {
       handleError(error);

@@ -13,11 +13,14 @@ const theme = {
   },
 };
 
+const publicRoutes = ["/", "/create-account"];
+const currentPath = window.location.pathname;
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-keycloakService.initKeycloak(() => {
+if (publicRoutes.includes(currentPath)) {
   root.render(
     <React.StrictMode>
       <ConfigProvider theme={theme}>
@@ -25,4 +28,14 @@ keycloakService.initKeycloak(() => {
       </ConfigProvider>
     </React.StrictMode>
   );
-});
+} else {
+  keycloakService.initKeycloak(() => {
+    root.render(
+      <React.StrictMode>
+        <ConfigProvider theme={theme}>
+          <App />
+        </ConfigProvider>
+      </React.StrictMode>
+    );
+  });
+}
