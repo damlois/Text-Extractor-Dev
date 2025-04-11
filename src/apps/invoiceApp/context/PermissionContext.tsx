@@ -1,20 +1,13 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { invoiceProcessorApi } from "../../../api/invoice-api";
 import { handleError } from "../../../utils/notification";
-import { PERMISSIONS } from "../constants";
 
 interface PermissionContextProps {
   permissionOptions: string[];
   loadingPermissionOptions: boolean;
-  userPermissions: string[];
+  userPermissions: string[] | undefined;
   loadingUserPermissions: boolean;
-  setUserPermissions: (permissions: string[]) => void;
+  setUserPermissions: (permissions: string[] | undefined) => void;
   fetchPermissionOptions: () => Promise<void>;
   fetchUserPermissions: () => Promise<void>;
   userHasPermission: (permission: string) => boolean;
@@ -27,29 +20,25 @@ const PermissionContext = createContext<PermissionContextProps | undefined>(
 export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [userPermissions, setUserPermissions] = useState<string[]>([]);
+  const [userPermissions, setUserPermissions] = useState<
+    string[] | undefined
+  >();
   const [permissionOptions, setPermissionOptions] = useState<string[]>([]);
   const [loadingPermissionOptions, setLoadingPermissionOptions] =
     useState(false);
   const [loadingUserPermissions, setLoadingUserPermissions] = useState(false);
 
   const fetchUserPermissions = async () => {
-    setUserPermissions(Object.values(PERMISSIONS));
-
     try {
       setLoadingUserPermissions(true);
-      // const response = await invoiceProcessorApi.getUserPermissions();
-      // setUserPermissions(response.data.data.permissions);
+      const response = await invoiceProcessorApi.getUserPermissions();
+      setUserPermissions(response.data.data.permissions);
     } catch (error) {
       handleError(error);
     } finally {
       setLoadingUserPermissions(false);
     }
   };
-
-  useEffect(() => {
-    fetchUserPermissions();
-  }, []);
 
   const fetchPermissionOptions = async () => {
     try {
@@ -69,7 +58,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const userHasPermission = (permission: string) => {
-    return userPermissions.includes(permission);
+    return (userPermissions || []).includes(permission);
   };
 
   return (

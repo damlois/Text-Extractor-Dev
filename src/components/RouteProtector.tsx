@@ -1,28 +1,39 @@
-import { Navigate, Outlet } from "react-router-dom";
-import keycloakService from "../service/keycloakService";
-import { useState, useEffect } from "react";
 import { Spin } from "antd";
+import { useState, useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
+import keycloakService from "../service/keycloakService";
 
 const RouteProtector = ({
   requiredPermission,
 }: {
   requiredPermission?: string;
 }) => {
-  const [authCheckDone, setAuthCheckDone] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const { loadingUserPermissions, userHasPermission } = usePermission();
+  const {
+    loadingUserPermissions,
+    userHasPermission,
+    userPermissions,
+    fetchUserPermissions,
+  } = usePermission();
+
   const hasPermission = userHasPermission(requiredPermission || "");
 
   useEffect(() => {
     keycloakService.initKeycloak(() => {
-      setIsAuthenticated(keycloakService.isLoggedIn());
-      setAuthCheckDone(true);
+      const loggedIn = keycloakService.isLoggedIn();
+      setIsAuthenticated(loggedIn);
+      setAuthChecked(true);
+
+      if (loggedIn && userPermissions === undefined) {
+        fetchUserPermissions();
+      }
     });
   }, []);
 
-  if (!authCheckDone || loadingUserPermissions) {
+  if (!authChecked || loadingUserPermissions) {
     return (
       <div className="flex w-full mt-20 items-center justify-center">
         <Spin size="large" />
