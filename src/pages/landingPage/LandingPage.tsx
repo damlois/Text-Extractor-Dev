@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import keycloakService from "../../service/keycloakService";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { handleError } from "../../utils/notification";
 import { Spin } from "antd";
@@ -18,12 +17,10 @@ const LandingPage = () => {
         if (!hasAdmin) {
           navigate("/create-account", { state: { fromLandingPage: true } });
         } else {
-          keycloakService.initKeycloak(() => {
-            navigate("/home");
-          });
+          navigate("/home");
         }
       } catch (error: any) {
-        handleError(error)
+        handleError(error);
       } finally {
         setLoading(false);
       }

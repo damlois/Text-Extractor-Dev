@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { handleError, showNotification } from "../../utils/notification";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { User } from "../../types";
-import keycloakService from "../../service/keycloakService";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spin } from "antd";
 
@@ -40,9 +39,7 @@ const SetPassword = () => {
       if (!hasAdmin) {
         setIsRedirecting(false);
       } else {
-        keycloakService.initKeycloak(() => {
-          navigate("/home");
-        });
+        navigate("/home");
       }
     } catch (error: any) {
       handleError(error);
@@ -82,11 +79,9 @@ const SetPassword = () => {
         2
       );
       setIsRedirecting(true);
-      keycloakService.initKeycloak(() => {
-        navigate("/home");
-      });
+      navigate("/home");
     } catch (error: any) {
-      handleError(error, 'User')
+      handleError(error, "User");
     } finally {
       setSubmitLoading(false);
     }
