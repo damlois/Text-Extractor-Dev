@@ -8,6 +8,8 @@ import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
 import { ModalType } from "../../types";
 import DuplicatesTable from "./DuplicatesTable";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import { PERMISSIONS } from "../../../../../constants";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const ViewDuplicates = () => {
   const [actionModal, setActionModal] = useState<
@@ -23,6 +25,9 @@ const ViewDuplicates = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { userHasPermission } = usePermission();
+
+  const hasArchivePermission = userHasPermission(PERMISSIONS.ARCHIVE_DUPLICATE);
 
   useEffect(() => {
     if (!location?.state?.duplicatesCheckDone) {
@@ -116,12 +121,16 @@ const ViewDuplicates = () => {
                   onClick={() => toggleActionModal("Ignore")}
                   disabled={selectedCount === 0}
                 />
-                <AppButton
-                  children={`Archive Duplicate${selectedCount > 1 ? "s" : ""}`}
-                  className="!w-fit"
-                  onClick={checkFullySelectedGroups}
-                  disabled={selectedCount === 0}
-                />
+                {hasArchivePermission && (
+                  <AppButton
+                    children={`Archive Duplicate${
+                      selectedCount > 1 ? "s" : ""
+                    }`}
+                    className="!w-fit"
+                    onClick={checkFullySelectedGroups}
+                    disabled={selectedCount === 0}
+                  />
+                )}
               </div>
             </div>
 

@@ -3,8 +3,11 @@ import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { useState } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { handleError, showNotification } from "../../../../../utils/notification";
-import { permissionOptions } from "../data";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../utils/notification";
+import { usePermission } from "../../../context/PermissionContext";
 
 interface CreateRoleModalProps {
   open: boolean;
@@ -19,21 +22,23 @@ const CreateRoleModal = ({
 }: CreateRoleModalProps) => {
   const [loading, setLoading] = useState(false);
   const [roleTitle, setRoleTitle] = useState<string>("");
-  const [permissions, setPermissions] = useState<string[]>([]);
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
+
+  const { permissionOptions } = usePermission();
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
       await invoiceProcessorApi.addRole({
         name: roleTitle.toUpperCase(),
-        permissions: permissions.map((name) => ({ name })),
+        permissions: selectedPermissions.map((name) => ({ name })),
       });
 
       showNotification("success", "Role has been created successfully");
       onCancel();
       refreshPage();
     } catch (error: any) {
-      handleError(error, 'Role')
+      handleError(error, "Role");
     } finally {
       setLoading(false);
     }
@@ -42,7 +47,7 @@ const CreateRoleModal = ({
   const onChange: GetProp<typeof Checkbox.Group, "onChange"> = (
     checkedValues
   ) => {
-    setPermissions(checkedValues as string[]);
+    setSelectedPermissions(checkedValues as string[]);
   };
 
   return (
@@ -51,7 +56,7 @@ const CreateRoleModal = ({
       onCancel={onCancel}
       footer={null}
       className="app-modal"
-      style={{ minWidth: "30%" }}
+      style={{ minWidth: "45%" }}
     >
       <div className="create-role">
         <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
@@ -89,7 +94,7 @@ const CreateRoleModal = ({
             className="mt-[5px]"
             onClick={handleSubmit}
             loading={loading}
-            disabled={roleTitle.length <= 0 || permissions.length === 0}
+            disabled={roleTitle.length <= 0 || selectedPermissions.length === 0}
           />
         </div>
       </div>

@@ -2,6 +2,8 @@ import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import UpdateEmailConfig from "../updateConfigurationModals/UpdateEmailConfig";
 import { DataSourceDetails } from "../../../../../../../types";
+import { PERMISSIONS } from "../../../../../constants";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 interface EmailConfigRowProps {
   dataSourceDetails: DataSourceDetails | null;
@@ -13,6 +15,8 @@ const EmailConfigRow = ({
   refreshPage,
 }: EmailConfigRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  const { userHasPermission } = usePermission();
 
   const toggleModal = () => {
     setShowUpdateModal(!showUpdateModal);
@@ -30,13 +34,15 @@ const EmailConfigRow = ({
             extraction.
           </p>
         </div>
-        <div
-          className="edit-config-btn ml-auto text-[14px] text-deep-blue py-1 px-[15px] rounded-sm cursor-pointer"
-          onClick={() => toggleModal()}
-        >
-          <EditOutlined className="pr-[10px]" />
-          Edit
-        </div>
+        {userHasPermission(PERMISSIONS.EDIT_DATASOURCE) && (
+          <div
+            className="edit-config-btn ml-auto text-[14px] text-deep-blue py-1 px-[15px] rounded-sm cursor-pointer"
+            onClick={() => toggleModal()}
+          >
+            <EditOutlined className="pr-[10px]" />
+            Edit
+          </div>
+        )}
       </div>
       <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr] text-dark-gray text-[16px]">
         <p className="w-[160px] font-medium">Email Address</p>

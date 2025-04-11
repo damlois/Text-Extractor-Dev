@@ -248,6 +248,12 @@ export interface UserResponse {
 
 export interface Permission {
   name: string;
+  description?: string;
+}
+
+export interface PermissionGroup {
+  group_name: "string";
+  permissions: Permission[];
 }
 
 export interface Role {

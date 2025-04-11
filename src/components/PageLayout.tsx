@@ -12,6 +12,8 @@ import {
 import keycloakService from "../service/keycloakService";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SignOutModal from "./SignOutModal";
+import { PERMISSIONS } from "../apps/invoiceApp/constants";
+import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
 
 const { Sider, Content } = Layout;
 
@@ -22,8 +24,14 @@ interface PageLayoutProps {
 const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [showSignOutModal, setShowSignOutModal] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { userHasPermission } = usePermission();
+
+  const canViewUsers = userHasPermission(PERMISSIONS.VIEW_USER);
+  const canViewRoles = userHasPermission(PERMISSIONS.VIEW_ROLE);
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
   const toggleSignOutModal = () => setShowSignOutModal(!showSignOutModal);
@@ -35,18 +43,26 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
       label: "Home",
       onClick: () => navigate("/home"),
     },
-    {
-      key: "users",
-      icon: <TeamOutlined />,
-      label: "User",
-      onClick: () => navigate("/users"),
-    },
-    {
-      key: "roles",
-      icon: <UserOutlined />,
-      label: "Role & Permission",
-      onClick: () => navigate("/roles"),
-    },
+    ...(canViewUsers
+      ? [
+          {
+            key: "users",
+            icon: <TeamOutlined />,
+            label: "User",
+            onClick: () => navigate("/users"),
+          },
+        ]
+      : []),
+    ...(canViewRoles
+      ? [
+          {
+            key: "roles",
+            icon: <UserOutlined />,
+            label: "Role & Permission",
+            onClick: () => navigate("/roles"),
+          },
+        ]
+      : []),
   ];
 
   const toolbarDropdownMenu = {

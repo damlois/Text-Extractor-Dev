@@ -32,6 +32,7 @@ interface InvoiceProcessorContextProps {
   setDuplicatesRefresh: Dispatch<SetStateAction<boolean>>;
   duplicatesCount: number;
   setDuplicatesCount: Dispatch<SetStateAction<number>>;
+  loadingDataSource: boolean;
   fetchDataSource: () => Promise<void>;
 }
 
@@ -59,14 +60,18 @@ export const InvoiceProcessorProvider: React.FC<
     useState<DuplicateInvoicesFileHashMap>({});
   const [duplicatesRefresh, setDuplicatesRefresh] = useState<boolean>(false);
   const [duplicatesCount, setDuplicatesCount] = useState(0);
+  const [loadingDataSource, setLoadingDataSource] = useState(true);
 
   const fetchDataSource = async () => {
     try {
+      setLoadingDataSource(true);
       const response = await invoiceProcessorApi.getDataSourceDetails();
       const data = response.data.data;
       setCurrentDataSource(data[data.length - 1]);
     } catch (error) {
       console.error("Error fetching data source details:", error);
+    } finally {
+      setLoadingDataSource(false);
     }
   };
 
@@ -85,6 +90,7 @@ export const InvoiceProcessorProvider: React.FC<
         setDuplicatesRefresh,
         duplicatesCount,
         setDuplicatesCount,
+        loadingDataSource,
         fetchDataSource,
       }}
     >

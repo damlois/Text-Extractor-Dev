@@ -1,12 +1,15 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { Tabs } from "antd";
 import PageHeader from "../../../../components/PageHeader";
-import { routeConfig } from "../../constants";
 import { useInvoiceProcessor } from "../../context/InvoiceProcessorContext";
+import { useRouteConfig } from "../../../../hooks/useRouteConfig";
 
 const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
-  const { currentDataSource } = useInvoiceProcessor();
+
+  const { currentDataSource, loadingDataSource } = useInvoiceProcessor();
+  
+  const routeConfig = useRouteConfig();
 
   const handleTabChange = (key: string) => {
     navigate(`/home/invoice-processing/${key}`);
@@ -38,7 +41,8 @@ const InvoiceAppTabSelector = () => {
         action={
           activeTabKey === "data-source" &&
           !activeNestedRouteKey &&
-          !currentDataSource
+          !currentDataSource &&
+          !loadingDataSource
             ? "+ New Data Source"
             : undefined
         }

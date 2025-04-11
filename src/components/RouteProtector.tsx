@@ -2,21 +2,29 @@ import { Navigate, Outlet } from "react-router-dom";
 import keycloakService from "../service/keycloakService";
 import { useState, useEffect } from "react";
 import { Spin } from "antd";
+import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
 
-const RouteProtector = ({ allowedRoles }: { allowedRoles?: string[] }) => {
-  const [loading, setLoading] = useState(true);
+const RouteProtector = ({
+  requiredPermission,
+}: {
+  requiredPermission?: string;
+}) => {
+  const [authCheckDone, setAuthCheckDone] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const { loadingUserPermissions, userHasPermission } = usePermission();
+  const hasPermission = userHasPermission(requiredPermission || "");
 
   useEffect(() => {
     keycloakService.initKeycloak(() => {
       setIsAuthenticated(keycloakService.isLoggedIn());
-      setLoading(false);
+      setAuthCheckDone(true);
     });
   }, []);
 
-  if (loading) {
+  if (!authCheckDone || loadingUserPermissions) {
     return (
-      <div className="flex w-full h-screen items-center justify-center">
+      <div className="flex w-full mt-20 items-center justify-center">
         <Spin size="large" />
       </div>
     );
@@ -26,8 +34,8 @@ const RouteProtector = ({ allowedRoles }: { allowedRoles?: string[] }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (allowedRoles && !keycloakService.hasRole(allowedRoles)) {
-    return <Navigate to="/" replace />;
+  if (requiredPermission && !hasPermission) {
+    return <Navigate to="/403" replace />;
   }
 
   return <Outlet />;

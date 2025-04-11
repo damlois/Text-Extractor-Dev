@@ -1,7 +1,10 @@
 import { Button, Modal } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { handleError, showNotification } from "../../../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../../../utils/notification";
 import { useState } from "react";
 
 interface IgnoreDuplicatesModalProps {
@@ -33,12 +36,12 @@ const IgnoreDuplicatesModal = ({
       pageRefresh();
       showNotification(
         "success",
-        `Selected invoice${
-          selectedCount > 1 ? "s" : ""
-        } have been successfully ignored`
+        selectedCount > 1
+          ? "Selected invoices have been successfully ignored"
+          : "Selected invoice has been successfully ignored"
       );
-    } catch(error) {
-      handleError(error)
+    } catch (error) {
+      handleError(error);
     } finally {
       setLoading(false);
     }

@@ -165,11 +165,12 @@ export const formatExtractionValue = (value: any): string => {
       // Check if array contains objects
       if (value.every((item) => typeof item === "object" && item !== null)) {
         return value
-          .map((obj, index) => 
-            `{${index + 1}} ` + 
-            Object.entries(obj)
-              .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
-              .join(", ")
+          .map(
+            (obj, index) =>
+              `{${index + 1}} ` +
+              Object.entries(obj)
+                .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+                .join(", ")
           )
           .join(" | ");
       }
@@ -185,7 +186,10 @@ export const formatExtractionValue = (value: any): string => {
   return value.toString();
 };
 
-export const areRecordsEqual = (obj1: Record<any, any>, obj2: Record<any, any>) => {
+export const areRecordsEqual = (
+  obj1: Record<any, any>,
+  obj2: Record<any, any>
+) => {
   return _.isEqual(obj1, obj2);
 };
 
@@ -198,4 +202,3 @@ export const formatDate = (isoDateString: string): string => {
   };
   return date.toLocaleDateString("en-GB", options);
 };
-

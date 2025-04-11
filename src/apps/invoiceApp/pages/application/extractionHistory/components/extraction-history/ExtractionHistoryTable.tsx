@@ -11,9 +11,14 @@ import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { handleError, showNotification } from "../../../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { formatInvoiceAndCreateMap } from "./utils";
+import { PERMISSIONS } from "../../../../../constants";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -36,6 +41,10 @@ const ExtractionHistoryTable = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { userHasPermission } = usePermission();
+
+  const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
+  const canGenerateInsights = userHasPermission(PERMISSIONS.VIEW_INSIGHTS);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
 
@@ -82,7 +91,7 @@ const ExtractionHistoryTable = () => {
         total: response.data.data.total,
       });
     } catch (error) {
-      handleError(error)
+      handleError(error);
     } finally {
       setLoading(false);
     }
@@ -227,17 +236,19 @@ const ExtractionHistoryTable = () => {
             onClick={toggleFilterModal}
           />
         )}
-        <AppButton
-          children="View and Generate Insight"
-          width="fit-content"
-          className="mr-0 ml-0"
-          onClick={() =>
-            navigate("../extraction-history/generate-insights", {
-              state: { selectedInvoiceIds },
-            })
-          }
-          disabled={selectedInvoiceIds.length === 0}
-        />
+        {canGenerateInsights && (
+          <AppButton
+            children="View and Generate Insight"
+            width="fit-content"
+            className="mr-0 ml-0"
+            onClick={() =>
+              navigate("../extraction-history/generate-insights", {
+                state: { selectedInvoiceIds },
+              })
+            }
+            disabled={selectedInvoiceIds.length === 0}
+          />
+        )}
       </div>
       <div className="overflow-x-auto">
         <Table<ProcessedInvoice>
@@ -251,10 +262,15 @@ const ExtractionHistoryTable = () => {
           onChange={handleTableChange}
           rowClassName={(record) => {
             const rowClasses = [];
-            if (duplicatesMapById && duplicatesMapById[record.id]) {
+            const { id, processing_status } = record;
+
+            if (duplicatesMapById && duplicatesMapById[id]) {
               rowClasses.push("duplicate-row");
             }
-            if (record.processing_status.toLowerCase() === "processing") {
+            if (
+              processing_status.toLowerCase() === "processing" ||
+              processing_status.toLowerCase() === "failed"
+            ) {
               rowClasses.push("disabled-row");
             }
             return rowClasses.join(" ");
@@ -274,7 +290,7 @@ const ExtractionHistoryTable = () => {
         initialFilters={filters}
         senders={uniqueSenders}
       />
-      {!loading && showAlert && duplicatesCount > 0 && (
+      {canViewDuplicates && !loading && showAlert && duplicatesCount > 0 && (
         <Alert
           className="duplicate-alert lg:w-[646px] md:w-auto"
           message={

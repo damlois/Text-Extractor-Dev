@@ -11,11 +11,16 @@ import {
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../../utils/notification";
 import { Spin } from "antd";
+import { PERMISSIONS } from "../../../../../constants";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
   const [duplicatesLoading, setDuplicatesLoading] = useState(true);
   const [metricsLoading, setMetricsLoading] = useState(true);
+
+  const {userHasPermission} = usePermission();
+  const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
 
   const navigate = useNavigate();
   const {
@@ -97,21 +102,27 @@ const SummaryDashboard = () => {
     <>
       {!(metricsLoading || duplicatesLoading) ? (
         <>
-          <div className="grid gap-4 space-between flex-wrap lg:grid-cols-4 sm:grid-cols-1">
-            <MetricCard
-              key={"duplicate"}
-              iconUrl={"/assets/icons/dashboard-failed-icon.svg"}
-              status={"Duplicate Invoices"}
-              count={String(duplicatesCount)}
-              onClick={
-                duplicatesCount > 0
-                  ? () =>
-                      navigate("../extraction-history/duplicates", {
-                        state: { duplicatesCheckDone: true },
-                      })
-                  : undefined
-              }
-            />
+          <div
+            className={`grid space-between flex-wrap sm:grid-cols-1 gap-4 ${
+              canViewDuplicates ? "lg:grid-cols-4" : "lg:grid-cols-3"
+            } `}
+          >
+            {canViewDuplicates && (
+              <MetricCard
+                key={"duplicate"}
+                iconUrl={"/assets/icons/dashboard-failed-icon.svg"}
+                status={"Duplicate Invoices"}
+                count={String(duplicatesCount)}
+                onClick={
+                  duplicatesCount > 0
+                    ? () =>
+                        navigate("../extraction-history/duplicates", {
+                          state: { duplicatesCheckDone: true },
+                        })
+                    : undefined
+                }
+              />
+            )}
             {Object.entries(metrics).map(([key, value]) => (
               <MetricCard
                 key={key}
