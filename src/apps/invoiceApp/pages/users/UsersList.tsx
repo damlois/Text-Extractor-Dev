@@ -8,7 +8,7 @@ import UpdateStatusModal from "./components/UpdateStatusModal";
 import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
-import { showNotification } from "../../../../utils/notification";
+import { handleError } from "../../../../utils/notification";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -26,11 +26,8 @@ const UsersList = () => {
         setLoading(true);
         const response = await invoiceProcessorApi.getUsers();
         setUsers(response.data.data);
-      } catch (e) {
-        showNotification(
-          "error",
-          "Something went wrong. Please check your internet connection and try again."
-        );
+      } catch (error: any) {
+        handleError(error)
       } finally {
         setLoading(false);
       }

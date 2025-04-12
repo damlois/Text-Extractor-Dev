@@ -4,7 +4,7 @@ import { Modal } from "antd";
 import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../../../components/AppButton";
 import { useTemplate } from "../../../../../context/TemplateContext";
-import { showNotification } from "../../../../../../../utils/notification";
+import { handleError } from "../../../../../../../utils/notification";
 
 interface UpdateLabelSetupProps {
   open: boolean;
@@ -31,8 +31,7 @@ const UpdateLabelSetup = ({
       onCancel();
       toggleSuccessModal();
     } catch (error) {
-      showNotification("error", "Failed to save template");
-    }
+handleError(error, 'Template')    }
   };
 
   return (

@@ -1,7 +1,10 @@
 import { Button, Modal } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { showNotification } from "../../../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../../../utils/notification";
 import { useState } from "react";
 
 interface ArchiveDuplicatesModalProps {
@@ -17,7 +20,7 @@ const ArchiveDuplicatesModal = ({
   onCancel,
   selectedInvoiceIds,
   pageRefresh,
-  selectedCount
+  selectedCount,
 }: ArchiveDuplicatesModalProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -37,11 +40,8 @@ const ArchiveDuplicatesModal = ({
           selectedCount > 1 ? "s" : ""
         } have been successfully archived`
       );
-    } catch {
-      showNotification(
-        "error",
-        "Something went wrong. Please check your internet connection and try again."
-      );
+    } catch(error) {
+      handleError(error);
     } finally {
       setLoading(false);
     }

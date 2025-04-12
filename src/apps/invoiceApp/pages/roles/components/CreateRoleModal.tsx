@@ -3,7 +3,7 @@ import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { useState } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { showNotification } from "../../../../../utils/notification";
+import { handleError, showNotification } from "../../../../../utils/notification";
 import { permissionOptions } from "../data";
 
 interface CreateRoleModalProps {
@@ -33,12 +33,7 @@ const CreateRoleModal = ({
       onCancel();
       refreshPage();
     } catch (error: any) {
-      showNotification(
-        "error",
-        error.response?.data?.detail?.startsWith("400:")
-          ? "Role with this name already exists"
-          : "Something went wrong. Please check your internet connection and try again."
-      );
+      handleError(error, 'Role')
     } finally {
       setLoading(false);
     }

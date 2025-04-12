@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DataSourceDetails } from "../../../../../../../types";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import SuccessModal from "../../../../../../../components/SuccessModal";
+import { handleError } from "../../../../../../../utils/notification";
 
 interface DeactivateRowProps {
   dataSourceDetails: DataSourceDetails | null;
@@ -35,7 +36,7 @@ const DeactivateRow = ({
         newStatus
       );
     } catch (error) {
-      console.error("Error toggling data source status:", error);
+      handleError(error)
     } finally {
       setLoading(false);
       toggleModal();

@@ -3,7 +3,7 @@ import { RoleResponse } from "../../../../types";
 import { Button, Dropdown, Table, TableColumnsType } from "antd";
 import { useEffect, useState } from "react";
 import { FaEllipsisVertical } from "react-icons/fa6";
-import { showNotification } from "../../../../utils/notification";
+import { handleError } from "../../../../utils/notification";
 import { RoleModalConfig, RoleModalType } from "./types";
 import CreateRoleModal from "./components/CreateRoleModal";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
@@ -25,11 +25,8 @@ const RolesList = () => {
         setLoading(true);
         const response = await invoiceProcessorApi.getRoles();
         setRoles(response.data.data);
-      } catch (e) {
-        showNotification(
-          "error",
-          "Something went wrong. Please check your internet connection and try again."
-        );
+      } catch (error) {
+        handleError(error)
       } finally {
         setLoading(false);
       }

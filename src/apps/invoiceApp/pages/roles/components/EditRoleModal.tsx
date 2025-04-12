@@ -3,7 +3,7 @@ import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { showNotification } from "../../../../../utils/notification";
+import { handleError, showNotification } from "../../../../../utils/notification";
 import { RoleResponse } from "../../../../../types";
 import { permissionOptions } from "../data";
 
@@ -43,10 +43,7 @@ const EditRoleModal = ({
       onCancel();
       refreshPage();
     } catch (error: any) {
-      showNotification(
-        "error",
-        "Something went wrong. Please check your internet connection and try again."
-      );
+      handleError(error, 'Role')
     } finally {
       setLoading(false);
     }

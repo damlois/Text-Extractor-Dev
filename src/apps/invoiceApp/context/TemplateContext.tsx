@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { invoiceProcessorApi } from "../../../api/invoice-api";
 import { TemplateItem } from "../../../types";
-import { showNotification } from "../../../utils/notification";
+import { handleError } from "../../../utils/notification";
 import { useInvoiceProcessor } from "./InvoiceProcessorContext";
 
 interface TemplateContextProps {
@@ -27,10 +27,12 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
   const fetchTemplate = async () => {
     try {
       setLoading(true);
-      const response = await invoiceProcessorApi.getTemplate(currentDataSource?.id);
+      const response = await invoiceProcessorApi.getTemplate(
+        currentDataSource?.id
+      );
       setTemplateItems(response.data.data.items);
-    } catch {
-      showNotification("error", "Failed to load template");
+    } catch (error) {
+      handleError(error, "Template");
     } finally {
       setLoading(false);
     }
@@ -43,8 +45,8 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         currentDataSource?.id,
         templateItems
       );
-    } catch {
-      showNotification("error", "Failed to save template");
+    } catch (error) {
+      handleError("error", "Template");
     } finally {
       setLoading(false);
     }

@@ -11,7 +11,7 @@ import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { showNotification } from "../../../../../../../utils/notification";
+import { handleError, showNotification } from "../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { formatInvoiceAndCreateMap } from "./utils";
 
@@ -82,8 +82,7 @@ const ExtractionHistoryTable = () => {
         total: response.data.data.total,
       });
     } catch (error) {
-      console.error("Error fetching invoices:", error);
-      setLoading(false);
+      handleError(error)
     } finally {
       setLoading(false);
     }

@@ -4,20 +4,22 @@ import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../../../components/AppButton";
 import { useTemplate } from "../../../context/TemplateContext";
-import { showNotification } from "../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../utils/notification";
 
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
   const { saveTemplate } = useTemplate();
 
   const handleContinue = async () => {
-    
     try {
       await saveTemplate();
       showNotification("success", "Template saved successfully");
       navigate("../data-source");
     } catch (error) {
-      showNotification("error", "Failed to save template");
+      handleError("error", "Template");
     }
   };
 

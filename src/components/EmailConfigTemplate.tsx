@@ -2,7 +2,7 @@ import { Form } from "antd";
 import AppInput from "./AppInput";
 import { requiredRule } from "../utils";
 import { useState } from "react";
-import { showNotification } from "../utils/notification";
+import { handleError } from "../utils/notification";
 import React from "react";
 import { invoiceProcessorApi } from "../api/invoice-api";
 import { DataSourceDetails } from "../types";
@@ -42,12 +42,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
 
       form.resetFields();
     } catch (error: any) {
-      showNotification(
-        "error",
-        error.response?.data?.detail?.startsWith("400:")
-          ? "Incorrect email credentials. Please check and try again"
-          : "There was an issue connecting your email. Please try again."
-      );
+      handleError(error, "Data Source");
     } finally {
       setLoading(false);
     }
