@@ -74,7 +74,7 @@ const SetPassword = () => {
     };
 
     try {
-      await invoiceProcessorApi.createUser(data);
+      await invoiceProcessorApi.registerAdmin(data);
       showNotification(
         "success",
         "Registration done successfully, Proceed to log in",

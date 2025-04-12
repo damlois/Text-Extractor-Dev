@@ -66,7 +66,7 @@ const CreateUserModal = ({
 
     try {
       setSubmitLoading(true);
-      await invoiceProcessorApi.createUser(data);
+      await invoiceProcessorApi.inviteUser(data);
 
       showNotification("success", "An invite has been sent to the user");
       refreshPage();

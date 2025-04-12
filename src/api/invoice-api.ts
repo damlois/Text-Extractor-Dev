@@ -115,10 +115,18 @@ export const invoiceProcessorApi = {
     }
   },
 
-  createUser: async (UserResponse: User) => {
+  registerAdmin: async (UserResponse: User) => {
     const response = await apiClient.post<{
       data: UserResponse;
-    }>("/users", UserResponse);
+    }>("/users/admin/register", UserResponse);
+
+    return response;
+  },
+
+  inviteUser: async (UserResponse: User) => {
+    const response = await apiClient.post<{
+      data: UserResponse;
+    }>("/users/invite", UserResponse);
 
     return response;
   },
