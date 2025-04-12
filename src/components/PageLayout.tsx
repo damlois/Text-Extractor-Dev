@@ -12,7 +12,7 @@ import {
 import keycloakService from "../service/keycloakService";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SignOutModal from "./SignOutModal";
-import { PERMISSIONS } from "../apps/invoiceApp/constants";
+import { PERMISSIONS } from "../apps/invoiceApp/constants/permissions";
 import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
 
 const { Sider, Content } = Layout;

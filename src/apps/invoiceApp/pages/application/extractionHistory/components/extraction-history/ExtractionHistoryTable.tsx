@@ -17,7 +17,7 @@ import {
 } from "../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { formatInvoiceAndCreateMap } from "./utils";
-import { PERMISSIONS } from "../../../../../constants";
+import { PERMISSIONS } from "../../../../../constants/permissions";
 import { usePermission } from "../../../../../context/PermissionContext";
 
 const ExtractionHistoryTable = () => {

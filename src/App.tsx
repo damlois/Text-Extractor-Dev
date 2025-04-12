@@ -16,7 +16,7 @@ import UsersList from "./apps/invoiceApp/pages/users";
 import RouteProtector from "./components/RouteProtector";
 import RolesList from "./apps/invoiceApp/pages/roles";
 import ViewDuplicates from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/ViewDuplicates";
-import { PERMISSIONS } from "./apps/invoiceApp/constants";
+import { PERMISSIONS } from "./apps/invoiceApp/constants/permissions";
 import ForbiddenPage from "./apps/invoiceApp/pages/ForbiddenPage";
 
 const App = () => {

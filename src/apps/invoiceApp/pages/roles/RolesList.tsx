@@ -9,7 +9,7 @@ import CreateRoleModal from "./components/CreateRoleModal";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
 import EditRoleModal from "./components/EditRoleModal";
 import { usePermission } from "../../context/PermissionContext";
-import { PERMISSIONS } from "../../constants";
+import { PERMISSIONS } from "../../constants/permissions";
 
 const RolesList = () => {
   const [roles, setRoles] = useState<RoleResponse[]>([]);

@@ -8,7 +8,7 @@ import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
 import { ModalType } from "../../types";
 import DuplicatesTable from "./DuplicatesTable";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { PERMISSIONS } from "../../../../../constants";
+import { PERMISSIONS } from "../../../../../constants/permissions";
 import { usePermission } from "../../../../../context/PermissionContext";
 
 const ViewDuplicates = () => {
