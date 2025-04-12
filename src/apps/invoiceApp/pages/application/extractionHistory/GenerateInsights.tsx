@@ -11,7 +11,9 @@ const GenerateInsights = () => {
       <div
         className="mt-2 text-deep-blue px-[0] cursor-pointer mb-8"
         onClick={() =>
-          navigate("../extraction-history", { state: { fromInsightsPage: true } })
+          navigate("../extraction-history", {
+            state: { fromInsightsPage: true },
+          })
         }
       >
         <ArrowLeftOutlined className="mr-6" /> Back

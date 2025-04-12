@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import keycloakService from "../../service/keycloakService";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { handleError } from "../../utils/notification";
 import { Spin } from "antd";
+import keycloakService from "../../service/keycloakService";
 
 const LandingPage = () => {
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const LandingPage = () => {
           });
         }
       } catch (error: any) {
-        handleError(error)
+        handleError(error);
       } finally {
         setLoading(false);
       }

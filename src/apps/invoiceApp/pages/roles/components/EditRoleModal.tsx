@@ -3,9 +3,12 @@ import AppInput from "../../../../../components/AppInput";
 import AppButton from "../../../../../components/AppButton";
 import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { handleError, showNotification } from "../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../utils/notification";
 import { RoleResponse } from "../../../../../types";
-import { permissionOptions } from "../data";
+import { usePermission } from "../../../context/PermissionContext";
 
 interface EditRoleModalProps {
   open: boolean;
@@ -23,6 +26,8 @@ const EditRoleModal = ({
   const [loading, setLoading] = useState(false);
   const [roleTitle, setRoleTitle] = useState<string>("");
   const [permissions, setPermissions] = useState<string[]>([]);
+
+  const { permissionOptions } = usePermission();
 
   useEffect(() => {
     if (selectedRole) {
@@ -43,7 +48,7 @@ const EditRoleModal = ({
       onCancel();
       refreshPage();
     } catch (error: any) {
-      handleError(error, 'Role')
+      handleError(error, "Role");
     } finally {
       setLoading(false);
     }
@@ -61,7 +66,7 @@ const EditRoleModal = ({
       onCancel={onCancel}
       footer={null}
       className="app-modal"
-      style={{ minWidth: "30%" }}
+      style={{ minWidth: "45%" }}
     >
       <div className="create-role">
         <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">

@@ -9,6 +9,8 @@ import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
 import { handleError } from "../../../../utils/notification";
+import { PERMISSIONS } from "../../constants/permissions";
+import { usePermission } from "../../context/PermissionContext";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -20,6 +22,8 @@ const UsersList = () => {
     open: false,
   });
 
+  const { userHasPermission } = usePermission();
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -27,7 +31,7 @@ const UsersList = () => {
         const response = await invoiceProcessorApi.getUsers();
         setUsers(response.data.data);
       } catch (error: any) {
-        handleError(error)
+        handleError(error);
       } finally {
         setLoading(false);
       }
@@ -74,45 +78,49 @@ const UsersList = () => {
         </span>
       ),
     },
-    {
-      title: "",
-      key: "actions",
-      align: "center" as const,
-      render: (_: any, record: UserResponse) => (
-        <Dropdown
-          menu={{
-            items:
-              record.status.toLowerCase() === "pending"
-                ? []
-                : [
-                    {
-                      key: "1",
-                      label: (
-                        <button
-                          className={`w-full text-left ${
-                            record.status.toLowerCase() === "active"
-                              ? "text-[#FF4D4F]"
-                              : "text-dark-gray"
-                          }`}
-                          onClick={() => handleUpdate(record)}
-                        >
-                          {record.status.toLowerCase() === "active"
-                            ? "Deactivate"
-                            : "Activate"}
-                        </button>
-                      ),
-                    },
-                  ],
-          }}
-        >
-          <Button
-            icon={<FaEllipsisVertical className="text-black" />}
-            type="link"
-            className="py-2 px-3 border border-[#E4E7EC] rounded-lg"
-          />
-        </Dropdown>
-      ),
-    },
+    ...(userHasPermission(PERMISSIONS.EDIT_USER)
+      ? [
+          {
+            title: "",
+            key: "actions",
+            align: "center" as const,
+            render: (_: any, record: UserResponse) => (
+              <Dropdown
+                menu={{
+                  items:
+                    record.status.toLowerCase() === "pending"
+                      ? []
+                      : [
+                          {
+                            key: "1",
+                            label: (
+                              <button
+                                className={`w-full text-left ${
+                                  record.status.toLowerCase() === "active"
+                                    ? "text-[#FF4D4F]"
+                                    : "text-dark-gray"
+                                }`}
+                                onClick={() => handleUpdate(record)}
+                              >
+                                {record.status.toLowerCase() === "active"
+                                  ? "Deactivate"
+                                  : "Activate"}
+                              </button>
+                            ),
+                          },
+                        ],
+                }}
+              >
+                <Button
+                  icon={<FaEllipsisVertical className="text-black" />}
+                  type="link"
+                  className="py-2 px-3 border border-[#E4E7EC] rounded-lg"
+                />
+              </Dropdown>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const toggleModal = (type: ModalType) => {
@@ -132,7 +140,9 @@ const UsersList = () => {
       <PageHeader
         breadcrumbs={[{ label: "User" }]}
         pageTitle={"User"}
-        action={"+ Add User"}
+        action={
+          userHasPermission(PERMISSIONS.ADD_USER) ? "+ Add User" : undefined
+        }
         onActionClick={() => toggleModal("create_user")}
         noBorder
       />

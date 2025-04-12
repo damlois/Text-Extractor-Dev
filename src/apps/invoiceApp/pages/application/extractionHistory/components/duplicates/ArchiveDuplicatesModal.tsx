@@ -36,11 +36,11 @@ const ArchiveDuplicatesModal = ({
       pageRefresh();
       showNotification(
         "success",
-        `Selected invoice${
-          selectedCount > 1 ? "s" : ""
-        } have been successfully archived`
+        selectedCount > 1
+          ? "Selected invoices have been successfully archived"
+          : "Selected invoice has been successfully archived"
       );
-    } catch(error) {
+    } catch (error) {
       handleError(error);
     } finally {
       setLoading(false);

@@ -29,12 +29,20 @@ const initKeycloak = (onAuthenticatedCallback) => {
       if (authenticated) {
         onAuthenticatedCallback();
         scheduleTokenRefresh();
+
+        // Clean URL hash (prevents blinking effect)
+        if (
+          window.location.hash.includes("code=") ||
+          window.location.hash.includes("session_state=")
+        ) {
+          window.history.replaceState(null, "", window.location.pathname);
+        }
       } else {
         if (!_kc.authenticated) {
           doLogin();
         }
       }
-    })
+    });
 };
 
 const doLogin = _kc.login;

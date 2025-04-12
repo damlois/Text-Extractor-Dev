@@ -1,33 +1,36 @@
-import { Navigate, Outlet } from "react-router-dom";
-import keycloakService from "../service/keycloakService";
-import { useState, useEffect } from "react";
 import { Spin } from "antd";
+import { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
 
-const RouteProtector = ({ allowedRoles }: { allowedRoles?: string[] }) => {
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const RouteProtector = ({
+  requiredPermission,
+}: {
+  requiredPermission?: string;
+}) => {
+  const {
+    loadingUserPermissions,
+    userHasPermission,
+    userPermissions,
+    fetchUserPermissions,
+  } = usePermission();
 
   useEffect(() => {
-    keycloakService.initKeycloak(() => {
-      setIsAuthenticated(keycloakService.isLoggedIn());
-      setLoading(false);
-    });
-  }, []);
+    if (userPermissions === undefined) {
+      fetchUserPermissions();
+    }
+  }, [userPermissions, fetchUserPermissions]);
 
-  if (loading) {
+  if (loadingUserPermissions) {
     return (
-      <div className="flex w-full h-screen items-center justify-center">
+      <div className="flex w-full mt-20 items-center justify-center">
         <Spin size="large" />
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  if (allowedRoles && !keycloakService.hasRole(allowedRoles)) {
-    return <Navigate to="/" replace />;
+  if (requiredPermission && !userHasPermission(requiredPermission)) {
+    return <Navigate to="/403" replace />;
   }
 
   return <Outlet />;

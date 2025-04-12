@@ -16,6 +16,7 @@ import {
   RoleResponse,
   Role,
   DataSourceDetails,
+  PermissionGroup,
 } from "../types";
 import apiClient from "../service/apiClient";
 
@@ -125,6 +126,13 @@ export const invoiceProcessorApi = {
   getUsers: async () => await apiClient.get<{ data: UserResponse[] }>("/users"),
 
   getRoles: async () => await apiClient.get<{ data: RoleResponse[] }>("/roles"),
+
+  getAllPermissions: async () =>
+    await apiClient.get<{ data: { permissions: PermissionGroup[] } }>(
+      "/roles/permissions"
+    ),
+
+  getUserPermissions: async () => await apiClient.get("/users/me/role"),
 
   addRole: async (data: Role) => await apiClient.post("/roles", data),
 

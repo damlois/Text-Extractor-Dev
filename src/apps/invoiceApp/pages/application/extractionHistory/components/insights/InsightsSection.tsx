@@ -7,6 +7,8 @@ import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ChatSession, chatHistoryRecord } from "../../../../../../../types";
 import ChatHistorySection from "./ChatHistorySection";
 import { handleError } from "../../../../../../../utils/notification";
+import { PERMISSIONS } from "../../../../../constants/permissions";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");
@@ -14,7 +16,12 @@ const InsightsSection = () => {
   const [chatSession, setChatSession] = useState<ChatSession | null>(null);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+
   const location = useLocation();
+  const { userHasPermission } = usePermission();
+  const canUpdateInsights = userHasPermission(
+    PERMISSIONS.UPDATE_SAVED_INSIGHTS
+  );
 
   const selectedInvoiceIds = useMemo(
     () => location.state?.selectedInvoiceIds || [],
@@ -111,51 +118,56 @@ const InsightsSection = () => {
         handleSendMessage={handleSendMessage}
       />
 
-      <div
-        className={`${
-          loadingSuggestions || suggestedPrompts.length > 0
-            ? "border-t border-[#0000000F] "
-            : ""
-        } px-6 py-5 ${loadingSuggestions ? "mt-9" : ""}`}
-      >
-        {loadingSuggestions ? (
-          <Spin spinning={loadingSuggestions} className="w-full mx-auto"></Spin>
-        ) : (
-          <PrmoptSuggestionRow
-            promptSuggestions={suggestedPrompts}
-            setPrompt={setPrompt}
-          />
-        )}
+      {(!sessionId || (sessionId && canUpdateInsights)) && (
+        <div
+          className={`${
+            loadingSuggestions || suggestedPrompts.length > 0
+              ? "border-t border-[#0000000F] "
+              : ""
+          } px-6 py-5 ${loadingSuggestions ? "mt-9" : ""}`}
+        >
+          {loadingSuggestions ? (
+            <Spin
+              spinning={loadingSuggestions}
+              className="w-full mx-auto"
+            ></Spin>
+          ) : (
+            <PrmoptSuggestionRow
+              promptSuggestions={suggestedPrompts}
+              setPrompt={setPrompt}
+            />
+          )}
 
-        <div className="w-full text-center">
-          <div className="flex items-center border border-[#D9D9D9] rounded-full px-4 py-2 shadow-sm mt-5">
-            <Input
-              placeholder="Ask interprAIs"
-              variant="borderless"
-              className="flex-1 text-base outline-none focus:ring-0 focus:border-none border-none"
-              value={prompt}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPrompt(e.target.value)
-              }
-              onPressEnter={() => handleSendMessage()}
-              disabled={selectedInvoiceIds.length === 0}
-            />
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<ArrowRightOutlined />}
-              className="bg-gradient-to-b from-deep-blue to-[#F25325]"
-              onClick={() => handleSendMessage()}
-              loading={responseLoading}
-              disabled={responseLoading || selectedInvoiceIds.length === 0}
-            />
+          <div className="w-full text-center">
+            <div className="flex items-center border border-[#D9D9D9] rounded-full px-4 py-2 shadow-sm mt-5">
+              <Input
+                placeholder="Ask interprAIs"
+                variant="borderless"
+                className="flex-1 text-base outline-none focus:ring-0 focus:border-none border-none"
+                value={prompt}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPrompt(e.target.value)
+                }
+                onPressEnter={() => handleSendMessage()}
+                disabled={selectedInvoiceIds.length === 0}
+              />
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<ArrowRightOutlined />}
+                className="bg-gradient-to-b from-deep-blue to-[#F25325]"
+                onClick={() => handleSendMessage()}
+                loading={responseLoading}
+                disabled={responseLoading || selectedInvoiceIds.length === 0}
+              />
+            </div>
+
+            <p className="text-[12px] text-dark-gray font-normal mt-2">
+              InterprAIs can make mistakes. Check important info
+            </p>
           </div>
-
-          <p className="text-[12px] text-dark-gray font-normal mt-2">
-            InterprAIs can make mistakes. Check important info
-          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { handleError, showNotification } from "../../utils/notification";
 import { invoiceProcessorApi } from "../../api/invoice-api";
 import { User } from "../../types";
-import keycloakService from "../../service/keycloakService";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spin } from "antd";
+import keycloakService from "../../service/keycloakService";
 
 const SetPassword = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -86,7 +86,7 @@ const SetPassword = () => {
         navigate("/home");
       });
     } catch (error: any) {
-      handleError(error, 'User')
+      handleError(error, "User");
     } finally {
       setSubmitLoading(false);
     }
