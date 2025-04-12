@@ -23,6 +23,9 @@ const UsersList = () => {
   });
 
   const { userHasPermission } = usePermission();
+  const canAddUser =
+    userHasPermission(PERMISSIONS.ADD_USER) &&
+    userHasPermission(PERMISSIONS.VIEW_ROLE);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -140,9 +143,7 @@ const UsersList = () => {
       <PageHeader
         breadcrumbs={[{ label: "User" }]}
         pageTitle={"User"}
-        action={
-          userHasPermission(PERMISSIONS.ADD_USER) ? "+ Add User" : undefined
-        }
+        action={canAddUser ? "+ Add User" : undefined}
         onActionClick={() => toggleModal("create_user")}
         noBorder
       />
@@ -156,11 +157,13 @@ const UsersList = () => {
           loading={loading}
         />
       </div>
-      <CreateUserModal
-        open={shouldOpenModal("create_user")}
-        onCancel={() => toggleModal("create_user")}
-        refreshPage={() => setRefresh(!refresh)}
-      />
+      {canAddUser && (
+        <CreateUserModal
+          open={shouldOpenModal("create_user")}
+          onCancel={() => toggleModal("create_user")}
+          refreshPage={() => setRefresh(!refresh)}
+        />
+      )}
       <UpdateStatusModal
         user={selectedUser}
         open={shouldOpenModal("update_status")}

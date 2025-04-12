@@ -21,15 +21,13 @@ const RouteProtector = ({
     }
   }, [userPermissions, fetchUserPermissions]);
 
-  if (loadingUserPermissions) {
+  if (loadingUserPermissions || userPermissions === undefined) {
     return (
       <div className="flex w-full mt-20 items-center justify-center">
         <Spin size="large" />
       </div>
     );
-  }
-
-  if (requiredPermission && !userHasPermission(requiredPermission)) {
+  } else if (requiredPermission && !userHasPermission(requiredPermission)) {
     return <Navigate to="/403" replace />;
   }
 

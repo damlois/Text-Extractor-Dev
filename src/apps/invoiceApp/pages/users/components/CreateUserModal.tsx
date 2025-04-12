@@ -7,7 +7,10 @@ import AppSelect from "../../../../../components/AppSelect";
 import { useEffect, useState } from "react";
 import { User } from "../../../../../types";
 import { invoiceProcessorApi } from "../../../../../api/invoice-api";
-import { handleError, showNotification } from "../../../../../utils/notification";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../utils/notification";
 
 interface CreateUserModalProps {
   open: boolean;
@@ -39,13 +42,15 @@ const CreateUserModal = ({
         const mappedRoles = response.data.data.map((role) => role.name);
         setRoleOptions(mappedRoles);
       } catch (error: any) {
-        handleError(error, 'User')
+        handleError(error, "User");
       } finally {
         setRolesLoading(false);
       }
     };
 
-    fetchRoles();
+    {
+      fetchRoles();
+    }
   }, []);
 
   const handleSubmit = async ({
@@ -72,7 +77,7 @@ const CreateUserModal = ({
       refreshPage();
       onCancel();
     } catch (error: any) {
-      handleError(error, 'User')
+      handleError(error, "User");
     } finally {
       setSubmitLoading(false);
     }
