@@ -7,7 +7,7 @@ import {
   AUTH_IFRAME_TIMEOUT_MESSAGE,
   UNAUTHORIZED_MESSAGE,
   FORBIDDEN_MESSAGE,
-} from "../apps/invoiceApp/constants";
+} from "../apps/invoiceApp/constants/messages";
 
 interface BackendErrorResponse {
   detail?: string;

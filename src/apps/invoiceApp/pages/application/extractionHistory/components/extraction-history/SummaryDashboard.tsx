@@ -11,7 +11,7 @@ import {
 import { manageSSE } from "../../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../../utils/notification";
 import { Spin } from "antd";
-import { PERMISSIONS } from "../../../../../constants";
+import { PERMISSIONS } from "../../../../../constants/permissions";
 import { usePermission } from "../../../../../context/PermissionContext";
 
 const SummaryDashboard = () => {

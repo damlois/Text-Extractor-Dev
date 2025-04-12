@@ -7,7 +7,7 @@ import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
 import { ChatSession, chatHistoryRecord } from "../../../../../../../types";
 import ChatHistorySection from "./ChatHistorySection";
 import { handleError } from "../../../../../../../utils/notification";
-import { PERMISSIONS } from "../../../../../constants";
+import { PERMISSIONS } from "../../../../../constants/permissions";
 import { usePermission } from "../../../../../context/PermissionContext";
 
 const InsightsSection = () => {

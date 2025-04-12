@@ -41,12 +41,7 @@ const SetPassword = () => {
         setIsRedirecting(false);
       } else {
         keycloakService.initKeycloak(() => {
-          const isLoggedIn = keycloakService.isLoggedIn();
-          if (isLoggedIn) {
-            navigate("/home");
-          } else {
-            keycloakService.doLogin();
-          }
+          navigate("/home");
         });
       }
     } catch (error: any) {
@@ -87,7 +82,9 @@ const SetPassword = () => {
         2
       );
       setIsRedirecting(true);
-      navigate("/home");
+      keycloakService.initKeycloak(() => {
+        navigate("/home");
+      });
     } catch (error: any) {
       handleError(error, "User");
     } finally {

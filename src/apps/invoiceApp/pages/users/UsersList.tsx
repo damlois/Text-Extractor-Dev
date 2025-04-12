@@ -9,7 +9,7 @@ import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
 import { handleError } from "../../../../utils/notification";
-import { PERMISSIONS } from "../../constants";
+import { PERMISSIONS } from "../../constants/permissions";
 import { usePermission } from "../../context/PermissionContext";
 
 const UsersList = () => {

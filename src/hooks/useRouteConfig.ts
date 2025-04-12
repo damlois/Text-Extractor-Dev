@@ -1,4 +1,4 @@
-import { PERMISSIONS } from "../apps/invoiceApp/constants";
+import { PERMISSIONS } from "../apps/invoiceApp/constants/permissions";
 import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
 
 export const useRouteConfig = () => {

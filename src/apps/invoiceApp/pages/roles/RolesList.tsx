@@ -9,7 +9,7 @@ import CreateRoleModal from "./components/CreateRoleModal";
 import { invoiceProcessorApi } from "../../../../api/invoice-api";
 import EditRoleModal from "./components/EditRoleModal";
 import { usePermission } from "../../context/PermissionContext";
-import { PERMISSIONS } from "../../constants";
+import { PERMISSIONS } from "../../constants/permissions";
 
 const RolesList = () => {
   const [roles, setRoles] = useState<RoleResponse[]>([]);
@@ -28,7 +28,7 @@ const RolesList = () => {
   } = usePermission();
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchRoles = async () => {
       try {
         setLoadingRoles(true);
         const response = await invoiceProcessorApi.getRoles();
@@ -40,7 +40,7 @@ const RolesList = () => {
       }
     };
 
-    fetchUsers();
+    fetchRoles();
     fetchPermissionOptions();
   }, [refresh]);
 

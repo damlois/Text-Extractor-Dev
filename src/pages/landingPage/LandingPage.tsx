@@ -19,12 +19,7 @@ const LandingPage = () => {
           navigate("/create-account", { state: { fromLandingPage: true } });
         } else {
           keycloakService.initKeycloak(() => {
-            const isLoggedIn = keycloakService.isLoggedIn();
-            if (isLoggedIn) {
-              navigate("/home");
-            } else {
-              keycloakService.doLogin();
-            }
+            navigate("/home");
           });
         }
       } catch (error: any) {

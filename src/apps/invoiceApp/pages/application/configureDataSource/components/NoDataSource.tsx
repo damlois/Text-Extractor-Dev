@@ -1,7 +1,7 @@
 import { Image } from "antd";
 import { useNavigate } from "react-router-dom";
 import AppButton from "../../../../../../components/AppButton";
-import { PERMISSIONS } from "../../../../constants";
+import { PERMISSIONS } from "../../../../constants/permissions";
 import { usePermission } from "../../../../context/PermissionContext";
 
 const NoDataSource = () => {
