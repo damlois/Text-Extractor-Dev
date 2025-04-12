@@ -44,7 +44,7 @@ const ExtractionHistoryTable = () => {
   const { userHasPermission } = usePermission();
 
   const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
-  const canGenerateInsights = userHasPermission(PERMISSIONS.VIEW_INSIGHTS);
+  const canGenerateInsights = userHasPermission(PERMISSIONS.GENERATE_INSIGHT);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
 
@@ -157,15 +157,17 @@ const ExtractionHistoryTable = () => {
     setShowFilterModal(false);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedInvoiceIds(selectedRowKeys as string[]);
-    },
-    selectedRowKeys: selectedInvoiceIds,
-    getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
-      disabled: processing_status.toLowerCase() === "processing",
-    }),
-  };
+  const rowSelection = canGenerateInsights
+    ? {
+        onChange: (selectedRowKeys: React.Key[]) => {
+          setSelectedInvoiceIds(selectedRowKeys as string[]);
+        },
+        selectedRowKeys: selectedInvoiceIds,
+        getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
+          disabled: processing_status.toLowerCase() === "processing",
+        }),
+      }
+    : undefined;
 
   const extractionHistoryColumns: TableColumnsType<ProcessedInvoice> = [
     {
