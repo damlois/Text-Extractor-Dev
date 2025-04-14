@@ -37,13 +37,14 @@ const handleAxiosError = (error: any, resource?: string): string => {
   if (error.code === "ERR_NETWORK") return NETWORK_ERROR_MESSAGE;
   if (error.code === "ECONNABORTED") return TIMEOUT_ERROR_MESSAGE;
 
-  const backendError = (error as AxiosError<BackendErrorResponse>).response
-    ?.data;
+  const axiosError = error as AxiosError<BackendErrorResponse>;
+  const statusCode = axiosError.response?.status;
+  const backendError = axiosError.response?.data;
 
   return (
     backendError?.error?.message ||
     (backendError?.detail
-      ? parseDetail(backendError.detail, resource || "Resource")
+      ? parseDetail(backendError.detail, resource || "Resource", statusCode)
       : DEFAULT_ERROR_MESSAGE)
   );
 };
@@ -75,19 +76,23 @@ export const handleError = (error: any, resource?: string): string | null => {
   return message;
 };
 
-const parseDetail = (detail: string, resource: string): string => {
-  const [code, message] = detail.trim().split(":");
+const parseDetail = (
+  detail: string,
+  resource: string,
+  statusCode?: number
+): string => {
+  const cleanedDetail = detail.trim().replace(/^(\d{3}):\s*/, "");
 
-  switch (code) {
-    case "400":
-      return message;
-    case "401":
+  switch (statusCode) {
+    case 400:
+      return cleanedDetail;
+    case 401:
       return UNAUTHORIZED_MESSAGE;
-    case "403":
+    case 403:
       return FORBIDDEN_MESSAGE;
-    case "404":
+    case 404:
       return `${resource} does not exist.`;
     default:
-      return message || detail;
+      return detail || DEFAULT_ERROR_MESSAGE;
   }
 };
