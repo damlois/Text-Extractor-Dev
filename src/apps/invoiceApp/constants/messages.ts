@@ -1,6 +1,6 @@
 export const DEFAULT_ERROR_MESSAGE = "Something went wrong. Please try again.";
 export const NETWORK_ERROR_MESSAGE =
-  "Please check your internet connection and try again.";
+  "Something blocked the request. Please check your internet or try again shortly.";
 export const TIMEOUT_ERROR_MESSAGE = "The request timed out. Please try again.";
 export const AUTH_IFRAME_TIMEOUT_MESSAGE =
   "Session has expired. Please log in again.";

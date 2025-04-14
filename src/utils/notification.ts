@@ -9,7 +9,6 @@ import {
   FORBIDDEN_MESSAGE,
 } from "../apps/invoiceApp/constants/messages";
 
-
 interface BackendErrorResponse {
   detail?: string;
   error?: {
