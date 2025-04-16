@@ -59,6 +59,10 @@ const ExtractionHistoryTable = () => {
       return;
     }
 
+    if (data.length === 0) {
+      return;
+    }
+
     const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
       data.invoices
     );

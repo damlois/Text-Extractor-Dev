@@ -91,7 +91,7 @@ const parseDetail = (
     case 403:
       return FORBIDDEN_MESSAGE;
     case 404:
-      return `${resource} does not exist.`;
+      return cleanedDetail;
     default:
       return detail || DEFAULT_ERROR_MESSAGE;
   }

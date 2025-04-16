@@ -15,7 +15,16 @@ export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
       if (cleanedData && cleanedData !== "[DONE]") {
         try {
           const jsonData = JSON.parse(cleanedData);
-          onMessage(jsonData);
+          const isEmptyObject =
+            typeof jsonData === "object" &&
+            jsonData !== null &&
+            Object.keys(jsonData).length === 0;
+
+          if (isEmptyObject) {
+            onMessage([]);
+          } else {
+            onMessage(jsonData);
+          }
         } catch (error) {
           console.error("Error parsing SSE data:", error);
         }
@@ -31,7 +40,7 @@ export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
       eventSource?.close();
     });
   };
-  
+
   startSSE();
 
   return {
