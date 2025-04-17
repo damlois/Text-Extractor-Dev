@@ -1,5 +1,5 @@
 export const manageSSE = (endpoint: string, onMessage: (data: any) => void) => {
-  const BASE_URL = process.env.REACT_APP_INVOICE_API_URL || "";
+  const BASE_URL = process.env.REACT_APP_DEMO_API_URL || "";
   let eventSource: EventSource | null = null;
 
   const startSSE = () => {
