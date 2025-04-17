@@ -1,20 +1,15 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { invoiceProcessorApi } from "../../../api/invoice-api";
 import { TemplateItem } from "../../../types";
-import { showNotification } from "../../../utils/notification";
+import { handleError } from "../../../utils/notification";
+import { useInvoiceProcessor } from "./InvoiceProcessorContext";
 
 interface TemplateContextProps {
   templateItems: TemplateItem[];
   setTemplateItems: (items: TemplateItem[]) => void;
   loading: boolean;
-  error: string | null;
-  saveTemplate: () => Promise<void>;
+  fetchTemplate: () => Promise<void>;
+  saveTemplate: (dataSourceId?: string) => Promise<void>;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -26,30 +21,32 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [templateItems, setTemplateItems] = useState<TemplateItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTemplate = async () => {
-      try {
-        setLoading(true);
-        const response = await invoiceProcessorApi.getTemplate();
-        setTemplateItems(response.data.data.items);
-      } catch {
-        showNotification("error", "Failed to load template");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { currentDataSource } = useInvoiceProcessor();
 
-    fetchTemplate();
-  }, []);
+  const fetchTemplate = async () => {
+    try {
+      setLoading(true);
+      const response = await invoiceProcessorApi.getTemplate(
+        currentDataSource?.id
+      );
+      setTemplateItems(response.data.data.items);
+    } catch (error) {
+      handleError(error, "Template");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const saveTemplate = async () => {
     try {
       setLoading(true);
-      await invoiceProcessorApi.updateTemplate(templateItems);
-    } catch {
-      showNotification("error", "Failed to save template");
+      await invoiceProcessorApi.updateTemplate(
+        currentDataSource?.id,
+        templateItems
+      );
+    } catch (error) {
+      handleError("error", "Template");
     } finally {
       setLoading(false);
     }
@@ -61,7 +58,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         templateItems,
         setTemplateItems,
         loading,
-        error,
+        fetchTemplate,
         saveTemplate,
       }}
     >

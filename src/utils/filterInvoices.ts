@@ -8,7 +8,7 @@ export const filterInvoices = (
 
   return invoices.filter((invoice) => {
     // Filter by senders
-    if (filters.senders?.length && !filters.senders.includes(invoice.sender)) {
+    if (filters.senders?.length && !filters.senders.includes(invoice.email_metadata.sender)) {
       return false;
     }
 

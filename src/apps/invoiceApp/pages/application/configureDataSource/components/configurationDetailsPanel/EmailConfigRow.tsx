@@ -1,0 +1,63 @@
+import { EditOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import UpdateEmailConfig from "../updateConfigurationModals/UpdateEmailConfig";
+import { DataSourceDetails } from "../../../../../../../types";
+import { PERMISSIONS } from "../../../../../constants/permissions";
+import { usePermission } from "../../../../../context/PermissionContext";
+
+interface EmailConfigRowProps {
+  dataSourceDetails: DataSourceDetails | null;
+  refreshPage: () => void;
+}
+
+const EmailConfigRow = ({
+  dataSourceDetails,
+  refreshPage,
+}: EmailConfigRowProps) => {
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  const { userHasPermission } = usePermission();
+
+  const toggleModal = () => {
+    setShowUpdateModal(!showUpdateModal);
+  };
+
+  return (
+    <div className="flex flex-col gap-6 pt-4 pb-6 mb-2 border-b border-[#DBDFEA]">
+      <div className="flex flex-wrap gap-x-50 gap-y-4 justify-between items-center">
+        <div>
+          <h2 className="text-dark-gray font-bold text-[16px]">
+            Email Configuration
+          </h2>
+          <p className="text-gray font-normal text-[14px] w-[90%]">
+            Email Address used to configure the data source for invoice
+            extraction.
+          </p>
+        </div>
+        {userHasPermission(PERMISSIONS.EDIT_DATASOURCE) && (
+          <div
+            className="edit-config-btn ml-auto text-[14px] text-deep-blue py-1 px-[15px] rounded-sm cursor-pointer"
+            onClick={() => toggleModal()}
+          >
+            <EditOutlined className="pr-[10px]" />
+            Edit
+          </div>
+        )}
+      </div>
+      <div className="grid gap-y-2 lg:pr-8 sm:grid-cols-1 lg:grid-cols-[180px_1fr] text-dark-gray text-[16px]">
+        <p className="w-[160px] font-medium">Email Address</p>
+        <p className="font-normal">
+          {dataSourceDetails?.username || "Not configured"}
+        </p>
+      </div>
+      <UpdateEmailConfig
+        onCancel={() => toggleModal()}
+        open={showUpdateModal}
+        dataSourceDetails={dataSourceDetails}
+        refreshPage={refreshPage}
+      />
+    </div>
+  );
+};
+
+export default EmailConfigRow;

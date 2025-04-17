@@ -1,57 +1,148 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
 import ApplicationList from "./pages/home/ApplicationList";
-import InvoiceAppTabSelector from "./apps/invoiceApp/pages/InvoiceAppTabSelector";
-import ConfigureDataSource from "./apps/invoiceApp/pages/configureDataSource";
-import ExtractionHistory from "./apps/invoiceApp/pages/extractionHistory";
-import SavedInsights from "./apps/invoiceApp/pages/savedInsights";
-import CreateDataSource from "./apps/invoiceApp/pages/configureDataSource/CreateDataSource";
-import LandingPage from "./pages/landingPage";
-import ConnectEmail from "./apps/invoiceApp/pages/configureDataSource/ConnectEmail";
+import InvoiceAppTabSelector from "./apps/invoiceApp/pages/application/InvoiceAppTabSelector";
+import ConfigureDataSource from "./apps/invoiceApp/pages/application/configureDataSource";
+import ExtractionHistory from "./apps/invoiceApp/pages/application/extractionHistory";
+import SavedInsights from "./apps/invoiceApp/pages/application/savedInsights";
+import CreateDataSource from "./apps/invoiceApp/pages/application/configureDataSource/CreateDataSource";
+import ConnectEmail from "./apps/invoiceApp/pages/application/configureDataSource/ConnectEmail";
+import SetupLabel from "./apps/invoiceApp/pages/application/configureDataSource/SetUpLabel";
+import GenerateInsights from "./apps/invoiceApp/pages/application/extractionHistory/GenerateInsights";
 import { CombinedProviders } from "./context/CombinedProviders";
-import SetupLabel from "./apps/invoiceApp/pages/configureDataSource/SetUpLabel";
-import GenerateInsights from "./apps/invoiceApp/pages/extractionHistory/GenerateInsights";
+import LandingPage from "./pages/landingPage";
+import SetPassword from "./pages/createAccount/SetPassword";
+import UsersList from "./apps/invoiceApp/pages/users";
+import RouteProtector from "./components/RouteProtector";
+import RolesList from "./apps/invoiceApp/pages/roles";
+import ViewDuplicates from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/ViewDuplicates";
+import { PERMISSIONS } from "./apps/invoiceApp/constants/permissions";
+import ForbiddenPage from "./apps/invoiceApp/pages/ForbiddenPage";
 
 const App = () => {
   return (
     <CombinedProviders>
-      <div className="flex flex-col items-center justify-center w-full min-h-screen m-0 p-0">
-        <Router>
-          <PageLayout>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/home" element={<ApplicationList />} />
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/create-account" element={<SetPassword />} />
+
+          <Route element={<PageLayout />}>
+            <Route path="/home" element={<RouteProtector />}>
+              <Route index element={<ApplicationList />} />
+            </Route>
+
+            <Route
+              path="/users"
+              element={
+                <RouteProtector requiredPermission={PERMISSIONS.VIEW_USER} />
+              }
+            >
+              <Route index element={<UsersList />} />
+            </Route>
+
+            <Route
+              path="/roles"
+              element={
+                <RouteProtector requiredPermission={PERMISSIONS.VIEW_ROLE} />
+              }
+            >
+              <Route index element={<RolesList />} />
+            </Route>
+
+            <Route
+              path="/home/invoice-processing"
+              element={<InvoiceAppTabSelector />}
+            >
               <Route
-                path="/invoice-processing"
-                element={<InvoiceAppTabSelector />}
+                path="data-source"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.VIEW_DATASOURCE}
+                  />
+                }
               >
-                <Route path="data-source" element={<ConfigureDataSource />} />
-                <Route
-                  path="data-source/create"
-                  element={<CreateDataSource />}
-                />
-                <Route
-                  path="data-source/connect-email"
-                  element={<ConnectEmail />}
-                />
-                <Route
-                  path="data-source/field-extraction-setup"
-                  element={<SetupLabel />}
-                />
-                <Route
-                  path="extraction-history"
-                  element={<ExtractionHistory />}
-                />
-                <Route
-                  path="extraction-history/generate-insights"
-                  element={<GenerateInsights />}
-                />
-                <Route path="saved-insights" element={<SavedInsights />} />
+                <Route index element={<ConfigureDataSource />} />
               </Route>
-            </Routes>
-          </PageLayout>
-        </Router>
-      </div>
+
+              <Route
+                path="data-source/create"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.ADD_DATASOURCE}
+                  />
+                }
+              >
+                <Route index element={<CreateDataSource />} />
+              </Route>
+
+              <Route
+                path="data-source/connect-email"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.ADD_DATASOURCE}
+                  />
+                }
+              >
+                <Route index element={<ConnectEmail />} />
+              </Route>
+
+              <Route
+                path="data-source/field-extraction-setup"
+                element={<RouteProtector />}
+              >
+                <Route index element={<SetupLabel />} />
+              </Route>
+
+              <Route
+                path="extraction-history"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.VIEW_EXTRACTION_HISTORY}
+                  />
+                }
+              >
+                <Route index element={<ExtractionHistory />} />
+              </Route>
+
+              <Route
+                path="extraction-history/duplicates"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.VIEW_DUPLICATE}
+                  />
+                }
+              >
+                <Route index element={<ViewDuplicates />} />
+              </Route>
+
+              <Route
+                path="extraction-history/generate-insights"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.GENERATE_INSIGHT}
+                  />
+                }
+              >
+                <Route index element={<GenerateInsights />} />
+              </Route>
+
+              <Route
+                path="saved-insights"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.VIEW_INSIGHTS}
+                  />
+                }
+              >
+                <Route index element={<SavedInsights />} />
+              </Route>
+            </Route>
+          </Route>
+
+          <Route path="/403" element={<ForbiddenPage />} />
+        </Routes>
+      </Router>
     </CombinedProviders>
   );
 };

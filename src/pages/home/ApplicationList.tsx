@@ -1,9 +1,18 @@
 import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useInvoiceProcessor } from "../../apps/invoiceApp/context/InvoiceProcessorContext";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
+
+  const { fetchDataSource } = useInvoiceProcessor();
+
+  useEffect(() => {
+    fetchDataSource();
+  }, []);
+
   return (
     <div className="flex flex-col items-start font-inter">
       <div className="flex flex-col items-center w-full p-6">
@@ -28,7 +37,7 @@ const ApplicationList = () => {
             <ApplicationCard
               title="Invoice Processing Application"
               description="Process invoice here"
-              onClick={() => navigate("/invoice-processing/data-source")}
+              onClick={() => navigate("/home/invoice-processing/data-source")}
             />
           </div>
         </>

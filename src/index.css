@@ -400,15 +400,29 @@ input {
   border-bottom: 1px solid #E4E7EC;
 }
 
-td .successful, td .completed {
+td .successful, td .completed, td .active {
   color: #006A94;
   background: #CCE1EA;
   text-transform: capitalize;
 }
 
-td .failed {
+td .pending {
+color: #FAAD14;
+background: #FFFBE6;
+text-transform: capitalize;
+}
+
+td .failed, td .inactive{
   color: #CF1322;
   background: #FFA39E;
+  text-transform: capitalize;
+}
+
+td .processing {
+  background-color: #F0E68C;
+  color: #333;
+  border: 1px solid #D2B48C;
+  text-transform: capitalize;
 }
 
 .ant-select-selector {
@@ -437,3 +451,47 @@ td .failed {
   margin-top: -6px;
 }
 
+.ant-form-item .ant-form-item-explain-error {
+  text-align: left !important;
+}
+
+.duplicate-row {
+  background-color: #fff5f5 !important;
+}
+
+.disabled-row {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.duplicate-row:hover, .duplicate-row:focus,
+.duplicate-row.ant-table-row-selected  {
+  background-color: #ffecec !important;
+}
+
+.ant-alert.duplicate-alert {
+  border: 1px solid  #FFCCC7;
+  background: #FFF1F0;
+  font-weight: bold;
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 2px;
+  padding: 8px 16px;
+  box-shadow: 0px 3px 6px -4px rgba(0, 0, 0, 0.12), 0px 6px 16px 0px rgba(0, 0, 0, 0.08), 0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ant-table-tbody > .duplicate-row:hover > td {
+  background: none !important;
+}
+
+.ant-checkbox-group span {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.create-role label.ant-checkbox-wrapper {
+  margin-bottom: 17px;
+}

@@ -6,11 +6,34 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceDetails, User } from "../../../types";
+import { DataSourceDetails, ProcessedInvoice } from "../../../types";
+import {
+  DuplicateInvoiceItemResponse,
+  DuplicateInvoicesFileHashMap,
+} from "../pages/application/extractionHistory/types";
+import { invoiceProcessorApi } from "../../../api/invoice-api";
 
 interface InvoiceProcessorContextProps {
-  currentDataSource: DataSourceDetails | null;
-  setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | null>>;
+  currentDataSource: DataSourceDetails | undefined;
+  setCurrentDataSource: Dispatch<SetStateAction<DataSourceDetails | undefined>>;
+  invoicesMapById: Record<string, ProcessedInvoice>;
+  setInvoicesMapById: Dispatch<
+    SetStateAction<Record<string, ProcessedInvoice>>
+  >;
+  duplicatesMapById: Record<string, DuplicateInvoiceItemResponse> | null;
+  setDuplicatesMapById: Dispatch<
+    SetStateAction<Record<string, DuplicateInvoiceItemResponse>>
+  >;
+  duplicateMapByFileHash: DuplicateInvoicesFileHashMap;
+  setDuplicatesMapByFileHash: Dispatch<
+    SetStateAction<DuplicateInvoicesFileHashMap>
+  >;
+  duplicatesRefresh: boolean | null;
+  setDuplicatesRefresh: Dispatch<SetStateAction<boolean>>;
+  duplicatesCount: number;
+  setDuplicatesCount: Dispatch<SetStateAction<number>>;
+  loadingDataSource: boolean;
+  fetchDataSource: () => Promise<void>;
 }
 
 interface InvoiceProcessorProviderProps {
@@ -24,13 +47,51 @@ const InvoiceProcessorContext = createContext<
 export const InvoiceProcessorProvider: React.FC<
   InvoiceProcessorProviderProps
 > = ({ children }) => {
-  const [currentDataSource, setCurrentDataSource] =
-    useState<DataSourceDetails | null>(null);
+  const [currentDataSource, setCurrentDataSource] = useState<
+    DataSourceDetails | undefined
+  >(undefined);
+  const [invoicesMapById, setInvoicesMapById] = useState<
+    Record<string, ProcessedInvoice>
+  >({});
+  const [duplicatesMapById, setDuplicatesMapById] = useState<
+    Record<string, DuplicateInvoiceItemResponse>
+  >({});
+  const [duplicateMapByFileHash, setDuplicatesMapByFileHash] =
+    useState<DuplicateInvoicesFileHashMap>({});
+  const [duplicatesRefresh, setDuplicatesRefresh] = useState<boolean>(false);
+  const [duplicatesCount, setDuplicatesCount] = useState(0);
+  const [loadingDataSource, setLoadingDataSource] = useState(true);
+
+  const fetchDataSource = async () => {
+    try {
+      setLoadingDataSource(true);
+      const response = await invoiceProcessorApi.getDataSourceDetails();
+      const data = response.data.data;
+      setCurrentDataSource(data[data.length - 1]);
+    } catch (error) {
+      console.error("Error fetching data source details:", error);
+    } finally {
+      setLoadingDataSource(false);
+    }
+  };
+
   return (
     <InvoiceProcessorContext.Provider
       value={{
         currentDataSource,
         setCurrentDataSource,
+        invoicesMapById,
+        setInvoicesMapById,
+        duplicatesMapById,
+        setDuplicatesMapById,
+        duplicateMapByFileHash,
+        setDuplicatesMapByFileHash,
+        duplicatesRefresh,
+        setDuplicatesRefresh,
+        duplicatesCount,
+        setDuplicatesCount,
+        loadingDataSource,
+        fetchDataSource,
       }}
     >
       {children}

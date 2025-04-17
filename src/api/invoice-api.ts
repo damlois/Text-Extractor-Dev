@@ -1,24 +1,58 @@
-import { DataSourceInfo, ProcessedInvoicesResponse, ProcessedInvoicesParams, TemplateItem, TemplateResponse, DataSourceResponse, ToggleStatusResponse, ChatResponse, ChatRequest, InvoiceMetricsResponse, SuggestedPromptsResponse, ChatSessionsResponse } from "../types";
+import {
+  DataSourceInfo,
+  ProcessedInvoicesResponse,
+  ProcessedInvoicesParams,
+  TemplateItem,
+  TemplateResponse,
+  DataSourceResponse,
+  ToggleStatusResponse,
+  ChatResponse,
+  ChatRequest,
+  InvoiceMetricsResponse,
+  SuggestedPromptsResponse,
+  ChatSessionsResponse,
+  User,
+  UserResponse,
+  RoleResponse,
+  Role,
+  DataSourceDetails,
+  PermissionGroup,
+} from "../types";
 import apiClient from "../service/apiClient";
 
 export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
-    apiClient.post("/invoices/data-sources", data),
+    apiClient.post<{ data: DataSourceDetails }>("/invoices/data-sources", data),
 
-  getTemplate: () =>
-    apiClient.get<TemplateResponse>("/invoices/template"),
+  getTemplate: (dataSourceId?: string) =>
+    apiClient.get<TemplateResponse>(
+      `/invoices/template?data_source_id=${dataSourceId}`
+    ),
 
-  updateTemplate: (items: TemplateItem[]) =>
-    apiClient.put("/invoices/template", { items }),
+  updateTemplate: (dataSourceId: string | undefined, items: TemplateItem[]) =>
+    apiClient.put(`/invoices/template?data_source_id=${dataSourceId}`, {
+      items,
+    }),
 
   getProcessedInvoices: (params: ProcessedInvoicesParams) =>
-    apiClient.get<ProcessedInvoicesResponse>(`/invoices/processed?page=${params.page}&size=${params.size}`),
+    apiClient.get<ProcessedInvoicesResponse>(
+      `/invoices/processed?page=${params.page}&size=${params.size}`
+    ),
+
+  updateInvoiceStatus: (status: string, invoiceIds: string[]) =>
+    apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
 
   getDataSourceDetails: () =>
     apiClient.get<DataSourceResponse>(`/invoices/data-sources`),
 
-  toggleDataSourceStatus: (dataSourceId: string, status: "active" | "inactive") =>
-    apiClient.post<ToggleStatusResponse>(`/invoices/data-sources/${dataSourceId}/toggle-status`, { status }),
+  toggleDataSourceStatus: (
+    dataSourceId: string,
+    status: "active" | "inactive"
+  ) =>
+    apiClient.post<ToggleStatusResponse>(
+      `/invoices/data-sources/${dataSourceId}/toggle-status`,
+      { status }
+    ),
 
   chatWithInvoices: (data: ChatRequest) =>
     apiClient.post<ChatResponse>("/invoices/chat", data),
@@ -44,7 +78,7 @@ export const invoiceProcessorApi = {
 
   getBatchInvoiceDetails: async (invoiceIds: string[]) => {
     try {
-      const response = await apiClient.post('/invoices/batch', invoiceIds);
+      const response = await apiClient.post("/invoices/batch", invoiceIds);
       return response;
     } catch (error) {
       console.error("Error fetching batch invoice details:", error);
@@ -55,16 +89,66 @@ export const invoiceProcessorApi = {
   getSuggestedPrompts: async (invoiceIds: string[], sessionId?: string) => {
     try {
       const queryParams = new URLSearchParams();
-      invoiceIds.forEach(id => queryParams.append('invoice_ids', id));
+      invoiceIds.forEach((id) => queryParams.append("invoice_ids", id));
       if (sessionId) {
-        queryParams.append('session_id', sessionId);
+        queryParams.append("session_id", sessionId);
       }
-      const response = await apiClient.get<SuggestedPromptsResponse>(`/invoices/chat/suggested-prompts?${queryParams}`);
+      const response = await apiClient.get<SuggestedPromptsResponse>(
+        `/invoices/chat/suggested-prompts?${queryParams}`
+      );
       return response;
     } catch (error) {
       console.error("Error fetching suggested prompts:", error);
       throw error;
     }
   },
-};
 
+  checkOrgHasAdmin: async () => {
+    try {
+      const response = await apiClient.get<{ data: boolean; message: string }>(
+        "/users/has-admin"
+      );
+      return response;
+    } catch (error) {
+      console.error("Error checking if organization has admin");
+      throw error;
+    }
+  },
+
+  registerAdmin: async (UserResponse: User) => {
+    const response = await apiClient.post<{
+      data: UserResponse;
+    }>("/users/admin/register", UserResponse);
+
+    return response;
+  },
+
+  inviteUser: async (UserResponse: User) => {
+    const response = await apiClient.post<{
+      data: UserResponse;
+    }>("/users/invite", UserResponse);
+
+    return response;
+  },
+
+  getUsers: async () => await apiClient.get<{ data: UserResponse[] }>("/users"),
+
+  getRoles: async () => await apiClient.get<{ data: RoleResponse[] }>("/roles"),
+
+  getAllPermissions: async () =>
+    await apiClient.get<{ data: { permissions: PermissionGroup[] } }>(
+      "/roles/permissions"
+    ),
+
+  getUserPermissions: async () => await apiClient.get("/users/me/role"),
+
+  addRole: async (data: Role) => await apiClient.post("/roles", data),
+
+  updateRole: async (roleId: string, data: Role) =>
+    await apiClient.put(`/roles/${roleId}`, data),
+
+  getInvoiceImage: async (invoiceId: string) =>
+    await apiClient.get<{ data: { image_data: string } }>(
+      `/invoices/${invoiceId}/image`
+    ),
+};

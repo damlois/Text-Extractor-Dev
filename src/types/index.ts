@@ -4,12 +4,6 @@ export type Message = {
   image?: string;
 };
 
-export interface User {
-  id: string;
-  username: string;
-  role: string;
-}
-
 export interface ImageData {
   craeted_at: string;
   image_name: string;
@@ -34,13 +28,6 @@ export interface chatHistoryRecord {
   timestamp: string;
 }
 
-export interface User {
-  id: string;
-  username: string;
-  role: string;
-}
-
-
 export interface DataSourceInfo {
   id?: string;
   name: string;
@@ -49,7 +36,7 @@ export interface DataSourceInfo {
 }
 
 export interface DataSourceDetails {
-  data_source_id: string;
+  id: string;
   source_type: string;
   username: string;
   password: string;
@@ -70,12 +57,6 @@ export interface ToggleStatusResponse {
   status: string;
   message: string;
   data: Record<string, never>;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
 }
 
 export interface TemplateItem {
@@ -127,10 +108,13 @@ export interface ProcessedInvoice {
   id: string;
   file_name: string;
   content: string;
-  invoice_data: DynamicObject;
+  extracted_content: DynamicObject;
   image_data: string;
-  sender: string;
-  source?: string; // Added optional source field
+  email_metadata: {
+    sender: string;
+    receiver: string;
+  };
+  source?: string;
   processing_status: string;
   created_at: string;
 }
@@ -217,7 +201,6 @@ export interface SuggestedPromptsResponse {
   };
 }
 
-
 export interface InvoiceMetricsResponse {
   status_code: number;
   status: string;
@@ -241,4 +224,46 @@ export interface ChatSessionsResponse {
   status: string;
   message: string;
   data: ChatSessionSummary[];
+}
+
+export interface User {
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  password?: string;
+  role?: string;
+  is_invited: boolean;
+}
+
+export interface UserResponse {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  role: string | undefined;
+  status: string;
+}
+
+export interface Permission {
+  name: string;
+  description?: string;
+}
+
+export interface PermissionGroup {
+  group_name: "string";
+  permissions: Permission[];
+}
+
+export interface Role {
+  name: string;
+  permissions: Permission[];
+}
+
+export interface RoleResponse {
+  id: string;
+  name: string;
+  permissions: Permission[];
+  created_at: string;
 }
