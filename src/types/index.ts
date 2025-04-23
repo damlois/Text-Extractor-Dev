@@ -1,3 +1,5 @@
+import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
+
 export type Message = {
   text: string;
   from: "user" | "model" | "loader";
@@ -113,9 +115,12 @@ export interface ProcessedInvoice {
   email_metadata: {
     sender: string;
     receiver: string;
+    sender_email: string;
   };
   source?: string;
   processing_status: string;
+  confidence_level: string;
+  review_status: ReviewStatus;
   created_at: string;
 }
 

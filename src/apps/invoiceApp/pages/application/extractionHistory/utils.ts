@@ -1,4 +1,4 @@
-import { ProcessedInvoice } from "../../../../../../../types";
+import { ProcessedInvoice } from "../../../../../types";
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
@@ -6,7 +6,8 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
   const formattedInvoices = invoices.map((item: any) => {
     const formattedInvoice = {
       ...item,
-      sender: item.email_metadata.sender,
+      review_status: "qa_passed",
+      confidence_level: "0.8",
       processing_status:
         item.processing_status === "COMPLETED"
           ? "Successful"

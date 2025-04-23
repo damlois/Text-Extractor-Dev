@@ -202,3 +202,16 @@ export const formatDate = (isoDateString: string): string => {
   };
   return date.toLocaleDateString("en-GB", options);
 };
+
+export const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  });
+  return formatter.format(date);
+};

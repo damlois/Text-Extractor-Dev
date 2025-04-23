@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Alert, Table } from "antd";
+import { Alert, Dropdown, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../components/AppButton";
 import InvoicePreviewModal from "./InvoicePreviewModal";
@@ -9,20 +9,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
 import { filterInvoices } from "../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../types";
-import { WarningOutlined } from "@ant-design/icons";
+import { EditOutlined, WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import {
   handleError,
   showNotification,
 } from "../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../service/sseClient";
-import { formatInvoiceAndCreateMap } from "./utils";
+import { formatInvoiceAndCreateMap } from "../../utils";
 import { PERMISSIONS } from "../../../../../constants/permissions";
 import { usePermission } from "../../../../../context/PermissionContext";
+import { formatDateTime } from "../../../../../../../utils";
+import ExtractionStatusItem from "./ExtractionStatusItem";
+import { StatusType } from "../../types";
+import TableHeaderTooltip from "./TableHeaderTooltip";
+import ConfidenceIndicator from "./ConfidenceIndicator";
+import ReviewStatusBadge from "./ReviewStatusBadge";
+import DocumentInReviewModal from "./DocumentInReviewModal";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] =
     useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
@@ -47,6 +55,7 @@ const ExtractionHistoryTable = () => {
   const canGenerateInsights = userHasPermission(PERMISSIONS.GENERATE_INSIGHT);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
+  const confidenceSortOptions = ["Lowest to Highest", "Higehst to Lowest"];
 
   const { setInvoicesMapById, duplicatesMapById, duplicatesCount } =
     useInvoiceProcessor();
@@ -151,6 +160,10 @@ const ExtractionHistoryTable = () => {
     setShowFilterModal(!showFilterModal);
   };
 
+  const toggleDocInReviewModal = () => {
+    setShowDocInReviewModal(!showDocInReviewModal);
+  };
+
   const handleFilterApply = (newFilters: ExtractionHistoryFilter) => {
     setFilters(newFilters);
     setShowFilterModal(false);
@@ -159,6 +172,10 @@ const ExtractionHistoryTable = () => {
   const handleFilterClear = () => {
     setFilters(null);
     setShowFilterModal(false);
+  };
+
+  const handleDocumentReview = (record: ProcessedInvoice) => {
+    setShowDocInReviewModal(true);
   };
 
   const rowSelection = canGenerateInsights
@@ -191,9 +208,11 @@ const ExtractionHistoryTable = () => {
     },
     {
       title: "Sender",
-      dataIndex: "sender",
-      render: (text: string) => (
-        <span className="text-dark-gray text-[14px] font-medium">{text}</span>
+      dataIndex: "email_metadata",
+      render: (data: { sender_email: string }) => (
+        <span className="text-dark-gray text-[14px] font-medium">
+          {data.sender_email}
+        </span>
       ),
     },
     {
@@ -201,19 +220,72 @@ const ExtractionHistoryTable = () => {
       dataIndex: "created_at",
       render: (text: string) => (
         <span className="text-[#28373] text-[14px]">
-          {new Date(text).toLocaleDateString()}
+          {formatDateTime(text)}
         </span>
       ),
     },
     {
-      title: "Status",
+      title: (
+        <div className="flex items-center gap-1">
+          <span>Status</span>
+          <TableHeaderTooltip header="processing_status" />
+        </div>
+      ),
       dataIndex: "processing_status",
       render: (text: string) => (
-        <span
-          className={`${text.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
+        <ExtractionStatusItem type={text.toLowerCase() as StatusType} />
+      ),
+    },
+    {
+      title: (
+        <Dropdown
+          menu={{
+            items: confidenceSortOptions.map((option, index) => ({
+              key: index,
+              label: (
+                <button className="w-full text-left text-dark-gray">
+                  {option}
+                </button>
+              ),
+            })),
+          }}
+          trigger={["click"]}
         >
-          {text.toLowerCase()}
-        </span>
+          <div className="flex items-center gap-1 cursor-pointer">
+            <div className="flex">
+              <img src="/assets/icons/arrow-down.svg" alt="arrow-down" />
+              <img src="/assets/icons/arrow-up.svg" alt="arrow-up" />
+            </div>
+            <span>Confidence</span>
+            <TableHeaderTooltip header="confidence" />
+          </div>
+        </Dropdown>
+      ),
+      dataIndex: "confidence_level",
+      render: (text: string) => <ConfidenceIndicator value={text} />,
+    },
+    {
+      title: (
+        <div className="flex items-center gap-1">
+          <span>Review Status</span>
+          <TableHeaderTooltip header="review_status" />
+        </div>
+      ),
+      dataIndex: "review_status",
+      render: (_: any, record: ProcessedInvoice) => (
+        <ReviewStatusBadge record={record} />
+      ),
+    },
+    {
+      title: "",
+      render: (_: any, record: ProcessedInvoice) => (
+        <div
+          className="inline-flex items-center cursor-pointer gap-1 px-2 py-0.5 border border-[#006A94] text-[#006A94] rounded-[4px] hover:bg-[#E6F7FF] transition-colors"
+          onClick={() => handleDocumentReview(record)}
+        >
+          <EditOutlined />
+          <span className="text-[12px]">Review</span>
+        </div>
       ),
     },
   ];
@@ -287,6 +359,10 @@ const ExtractionHistoryTable = () => {
         open={showPreviewModal}
         onCancel={() => togglePreviewModal(undefined)}
         invoiceDetails={selectedInvoice}
+      />
+      <DocumentInReviewModal
+        open={showDocInReviewModal}
+        onCancel={toggleDocInReviewModal}
       />
       <FilterHistoryModal
         open={showFilterModal}
