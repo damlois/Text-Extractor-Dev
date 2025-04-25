@@ -6,7 +6,7 @@ import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import AppButton from "../../../../../../../components/AppButton";
-import InvoicePreviewModal from "../extraction-history/invoicePreview/InvoicePreviewModal";
+import InvoicePreviewModal from "../extractionHistory/invoicePreview/InvoicePreviewModal";
 import { useTemplate } from "../../../../../context/TemplateContext";
 import { formatInvoiceData } from "../../utils";
 import { ProcessedInvoice } from "../../../../../../../types";
