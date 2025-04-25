@@ -298,15 +298,25 @@ const ExtractionHistoryTable = () => {
     },
     {
       title: "",
-      render: (_: any, record: ProcessedInvoice) => (
-        <div
-          className="inline-flex items-center cursor-pointer gap-1 px-2 py-0.5 border border-[#006A94] text-[#006A94] rounded-[4px] hover:bg-[#E6F7FF] transition-colors"
-          onClick={() => handleDocumentReview(record)}
-        >
-          <EditOutlined />
-          <span className="text-[12px]">Review</span>
-        </div>
-      ),
+      render: (_: any, record: ProcessedInvoice) => {
+        const isDisabled =
+          record.processing_status.toLowerCase() === "processing" ||
+          record.processing_status.toLowerCase() === "failed";
+
+        return (
+          <div
+            className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${
+              isDisabled
+                ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
+                : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
+            }`}
+            onClick={() => !isDisabled && handleDocumentReview(record)}
+          >
+            <EditOutlined />
+            <span className="text-[12px]">Review</span>
+          </div>
+        );
+      },
     },
   ];
 

@@ -460,7 +460,7 @@ td .processing {
 }
 
 .disabled-row {
-  opacity: 0.8;
+  background-color: #F5F5F5;
   pointer-events: none;
 }
 
