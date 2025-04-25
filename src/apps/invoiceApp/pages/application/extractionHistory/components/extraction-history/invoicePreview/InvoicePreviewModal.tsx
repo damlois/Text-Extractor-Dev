@@ -22,6 +22,8 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
     ImageDataResponse[] | undefined
   >();
 
+  console.log(invoiceDetails);
+
   useEffect(() => {
     if (invoiceDetails) {
       const fetchInvoiceImageData = async () => {

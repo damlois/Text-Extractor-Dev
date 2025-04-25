@@ -9,12 +9,13 @@ import AppButton from "../../../../../../../components/AppButton";
 import InvoicePreviewModal from "../extraction-history/invoicePreview/InvoicePreviewModal";
 import { useTemplate } from "../../../../../context/TemplateContext";
 import { formatInvoiceData } from "../../utils";
+import { ProcessedInvoice } from "../../../../../../../types";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
   const [originalData, setOriginalData] = useState<any>();
   const [loading, setLoading] = useState(true);
-  const [selectedFile, setSelectedFile] = useState<any>();
+  const [selectedFile, setSelectedFile] = useState<ProcessedInvoice | null>();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,13 +53,12 @@ const ExtractionDetailsTable = () => {
     return obj;
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       if (
         selectedInvoiceIds?.length === 0 ||
         !invoicesMapById ||
-        (Object.keys(invoicesMapById)).length === 0
+        Object.keys(invoicesMapById).length === 0
       ) {
         navigate("../extraction-history");
         return;
@@ -84,8 +84,8 @@ const ExtractionDetailsTable = () => {
     fetchData();
   }, [selectedInvoiceIds, currentDataSource, , invoicesMapById]);
 
-  const handleFileClick = (raw_data: any) => {
-    setSelectedFile(raw_data);
+  const handleFileClick = (invoice: ProcessedInvoice) => {
+    setSelectedFile(invoice);
   };
 
   const closeModal = () => {
@@ -120,7 +120,7 @@ const ExtractionDetailsTable = () => {
                   cursor: "pointer",
                 }}
                 title={value}
-                onClick={() => handleFileClick(record.rawData)}
+                onClick={() => handleFileClick(record)}
               >
                 {value}
               </span>
@@ -152,7 +152,7 @@ const ExtractionDetailsTable = () => {
         <p className="text-[13px] font-normal text-dark-gray mb-4">
           Review the details of your extraction below
         </p>
-        
+
         <div className="w-full monospace-table">
           <CustomTable
             dataSource={selectedInvoices}
@@ -193,12 +193,13 @@ const ExtractionDetailsTable = () => {
             </div>
           </div>
         )}
-
-        <InvoicePreviewModal
-          open={!!selectedFile}
-          onCancel={closeModal}
-          invoiceDetails={selectedFile}
-        />
+        {selectedFile?.id && (
+          <InvoicePreviewModal
+            open={!!selectedFile}
+            onCancel={closeModal}
+            invoiceDetails={invoicesMapById[selectedFile?.id]}
+          />
+        )}
       </div>
     </div>
   );

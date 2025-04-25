@@ -20,7 +20,7 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
       <div className="px-[18px] py-[12px] text-[16px] font-bold text-dark-gray bg-[#F9FAFB] rounded-t-[8px] flex justify-between flex-wrap items-center">
         <div>
           Original Document
-          <Tooltip title="Yooo">
+          <Tooltip title="This is the uploaded file used for data extraction. You can refer to it to verify the accuracy of the extracted information.">
             <InfoCircleOutlined className="text-[#00000073] cursor-pointer ml-[6px]" />
           </Tooltip>
         </div>
