@@ -1,7 +1,10 @@
 import { Modal, Spin } from "antd";
 import { useEffect, useState } from "react";
-import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { handleError } from "../../../../../../../utils/notification";
+import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
+import { handleError } from "../../../../../../../../utils/notification";
+import OriginalDocument from "./OriginalDocument";
+import ExtractedConetnt from "./ExtractedConetnt";
+import { ImageDataResponse } from "../../../../../../../../types";
 
 interface InvoicePreviewModalProps {
   open: boolean;
@@ -15,7 +18,9 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
   invoiceDetails,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [imageString, setImageString] = useState<string | undefined>();
+  const [documentPages, setDocumentPages] = useState<
+    ImageDataResponse[] | undefined
+  >();
 
   useEffect(() => {
     if (invoiceDetails) {
@@ -26,9 +31,9 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
           const response = await invoiceProcessorApi.getInvoiceImage(
             invoiceDetails.id
           );
-          setImageString(response.data.data.image_data);
-        } catch(error) {
-          handleError(error)
+          setDocumentPages(response.data.data.pages);
+        } catch (error) {
+          handleError(error);
         } finally {
           setLoading(false);
         }
@@ -45,11 +50,11 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
       open={open}
       onCancel={onCancel}
       footer={null}
-      width={600}
+      width={"80%"}
       className="app-modal"
       style={{ top: "24px" }}
     >
-      <div className="text-[20px] font-bold p-6 border-b border-0.5 border-[#cfc1c1]">
+      <div className="text-[19px] font-bold p-6 border-b border-0.5 border-[#f0f0f0]">
         Preview of {invoiceDetails.file_name}
       </div>
       {loading ? (
@@ -57,16 +62,15 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
           <Spin></Spin>
         </div>
       ) : (
-        <div className="p-6">
-          {imageString && (
-            <div>
-              <img
-                src={`data:image/jpeg;base64,${imageString}`}
-                alt="Invoice Preview"
-                className="w-full rounded"
-              />
-            </div>
-          )}
+        <div className="p-6 grid md:grid-cols-2 sm:grid-cols-1 gap-4 items-stretch">
+          <div className="border border-[#F1F1F1]">
+            <OriginalDocument pages={documentPages || []} />{" "}
+          </div>
+          <div className="border border-[#F1F1F1]">
+            <ExtractedConetnt
+              extractedContent={invoiceDetails.extracted_content}
+            />
+          </div>
         </div>
       )}
     </Modal>

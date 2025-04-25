@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import MetricCard from "../../../../../../../components/MetricCard";
-import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import MetricCard from "../../../../../../../../components/MetricCard";
+import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
 import { useNavigate } from "react-router-dom";
-import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import {
   DuplicateInvoiceItemResponse,
   DuplicateInvoicesFileHashMap,
   DuplicateInvoicesResponse,
-} from "../../types";
-import { manageSSE } from "../../../../../../../service/sseClient";
-import { showNotification } from "../../../../../../../utils/notification";
+} from "../../../types";
+import { manageSSE } from "../../../../../../../../service/sseClient";
+import { showNotification } from "../../../../../../../../utils/notification";
 import { Spin } from "antd";
-import { PERMISSIONS } from "../../../../../constants/permissions";
-import { usePermission } from "../../../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../../constants/permissions";
+import { usePermission } from "../../../../../../context/PermissionContext";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});

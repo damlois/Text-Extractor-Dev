@@ -1,6 +1,6 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
-import { Header } from "../../types";
+import { Header } from "../../../types";
 
 interface TableHeaderTooltipProps {
   header: Header;

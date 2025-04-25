@@ -17,6 +17,7 @@ import {
   Role,
   DataSourceDetails,
   PermissionGroup,
+  ImagePagesResponse,
 } from "../types";
 import apiClient from "../service/apiClient";
 
@@ -148,7 +149,7 @@ export const invoiceProcessorApi = {
     await apiClient.put(`/roles/${roleId}`, data),
 
   getInvoiceImage: async (invoiceId: string) =>
-    await apiClient.get<{ data: { image_data: string } }>(
+    await apiClient.get<{ data: ImagePagesResponse }>(
       `/invoices/${invoiceId}/image`
     ),
 };

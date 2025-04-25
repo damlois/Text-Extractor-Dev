@@ -1,9 +1,6 @@
-import {
-  ClockCircleOutlined,
-  WarningOutlined,
-} from "@ant-design/icons";
+import { ClockCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
-import { StatusType } from "../../types";
+import { StatusType } from "../../../types";
 
 const statusMap: Record<
   StatusType,
@@ -14,7 +11,7 @@ const statusMap: Record<
     icon: <img src="/assets/icons/custom-check-circle.svg" />,
     label: "Extraction Successful",
   },
-  pending: {
+  processing: {
     dotColor: "#FAAD14",
     icon: <ClockCircleOutlined className="text-[#FAAD14]" />,
     label: "Processing",
@@ -27,7 +24,7 @@ const statusMap: Record<
 };
 
 const ExtractionStatusItem = ({ type }: { type: StatusType }) => {
-  const { dotColor, icon, label } = statusMap[type];
+  const { dotColor, icon, label } = statusMap[type] ?? statusMap["successful"];
 
   return (
     <div className="flex items-center py-2">

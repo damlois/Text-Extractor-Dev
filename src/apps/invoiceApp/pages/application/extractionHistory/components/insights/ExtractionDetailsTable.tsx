@@ -2,13 +2,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DownloadResults from "./DownloadResults";
 import CustomTable from "../../../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
-import { ProcessedInvoice } from "../../../../../../../types";
 import { formatExtractionValue } from "../../../../../../../utils";
 import { camelCase } from "lodash";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import AppButton from "../../../../../../../components/AppButton";
-import InvoicePreviewModal from "../extraction-history/InvoicePreviewModal";
+import InvoicePreviewModal from "../extraction-history/invoicePreview/InvoicePreviewModal";
 import { useTemplate } from "../../../../../context/TemplateContext";
+import { formatInvoiceData } from "../../utils";
 
 const ExtractionDetailsTable = () => {
   const [selectedInvoices, setSelectedInvoices] = useState<any[]>([]);
@@ -51,25 +51,7 @@ const ExtractionDetailsTable = () => {
     }
     return obj;
   };
-  const standardizeInvoice = (
-    invoice: Record<string, any>
-  ): Record<string, any> => {
-    return Object.keys(invoice).reduce<Record<string, any>>((acc, key) => {
-      const formattedKey = camelCase(key);
-      acc[formattedKey] = invoice[key] ?? "N/A";
-      return acc;
-    }, {});
-  };
 
-  const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
-    return invoices.map(({ id, file_name, extracted_content }) => {
-      return standardizeInvoice({
-        file_name,
-        ...extracted_content,
-        raw_data: { file_name, id },
-      });
-    });
-  };
 
   useEffect(() => {
     const fetchData = async () => {

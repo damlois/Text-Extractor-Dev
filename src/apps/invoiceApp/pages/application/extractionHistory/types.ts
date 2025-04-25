@@ -34,7 +34,7 @@ export type DuplicateInvoicesFileHashMap = Record<
   { invoices: DuplicateInvoiceItemResponse[]; visible: boolean }
 >;
 
-export type StatusType = "successful" | "pending" | "failed";
+export type StatusType = "successful" | "processing" | "failed";
 
 export type Header = "processing_status" | "confidence" | "review_status";
 
