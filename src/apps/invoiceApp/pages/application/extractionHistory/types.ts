@@ -43,3 +43,15 @@ export type ReviewStatus =
   | "in_review"
   | "qa_passed"
   | "not_applicable";
+
+export type RegularField = {
+  field: string;
+  value: string;
+  confidence?: string;
+};
+
+export type ItemField = {
+  label: string;
+  data: any;
+  confidence?: string;
+};

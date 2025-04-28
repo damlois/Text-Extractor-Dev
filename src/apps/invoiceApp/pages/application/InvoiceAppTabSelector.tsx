@@ -8,7 +8,7 @@ const InvoiceAppTabSelector = () => {
   const navigate = useNavigate();
 
   const { currentDataSource, loadingDataSource } = useInvoiceProcessor();
-  
+
   const routeConfig = useRouteConfig();
 
   const handleTabChange = (key: string) => {
@@ -33,6 +33,9 @@ const InvoiceAppTabSelector = () => {
   const currentTabLabel =
     currentNestedRoute?.label || currentPageData?.label || "";
 
+  const showOnlyBreadCrumb =
+    currentNestedRoute && currentNestedRoute?.hideTabAndTitle;
+
   return (
     <div className="flex flex-col items-start font-inter">
       <PageHeader
@@ -49,23 +52,25 @@ const InvoiceAppTabSelector = () => {
         onActionClick={() =>
           navigate("/home/invoice-processing/data-source/create")
         }
+        showOnlyBreadCrumb={showOnlyBreadCrumb}
         noBorder
       />
 
-      <div className="flex flex-col items-center w-full py-3">
-        <div className="w-full border-b border-[#F0F0F0]">
-          <Tabs
-            activeKey={activeTabKey}
-            onChange={handleTabChange}
-            items={routeConfig.map((tab) => ({
-              key: tab.key,
-              label: tab.label,
-            }))}
-            className="custom-tabs font-inter text-dark-gray px-6"
-          />
+      {!showOnlyBreadCrumb && (
+        <div className="flex flex-col items-center w-full py-3">
+          <div className="w-full border-b border-[#F0F0F0]">
+            <Tabs
+              activeKey={activeTabKey}
+              onChange={handleTabChange}
+              items={routeConfig.map((tab) => ({
+                key: tab.key,
+                label: tab.label,
+              }))}
+              className="custom-tabs font-inter text-dark-gray px-6"
+            />
+          </div>
         </div>
-      </div>
-
+      )}
       <div className="p-6 w-full">
         <Outlet />
       </div>

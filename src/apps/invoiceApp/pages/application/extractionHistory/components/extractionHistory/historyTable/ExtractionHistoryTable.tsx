@@ -63,6 +63,7 @@ const ExtractionHistoryTable = () => {
     duplicatesMapById,
     duplicatesCount,
     currentDataSource,
+    setReviewInvoice,
     fetchDataSource,
   } = useInvoiceProcessor();
 
@@ -195,7 +196,15 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    setShowDocInReviewModal(true);
+    if (record.review_status === "in_review") {
+      setShowDocInReviewModal(true);
+      return;
+    }
+
+    setReviewInvoice(record);
+    navigate("../extraction-history/review", {
+      state: { duplicatesCheckDone: true },
+    });
   };
 
   const rowSelection = canGenerateInsights
