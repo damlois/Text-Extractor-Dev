@@ -54,6 +54,7 @@ const ExtractionHistoryTable = () => {
 
   const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
   const canGenerateInsights = userHasPermission(PERMISSIONS.GENERATE_INSIGHT);
+  const canEditExtraction = userHasPermission(PERMISSIONS.EDIT_EXTRACTION);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
   const confidenceSortOptions = ["Lowest to Highest", "Higehst to Lowest"];
@@ -195,19 +196,23 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    setShowDocInReviewModal(true);
+    if (canEditExtraction) {
+      setShowDocInReviewModal(true);
+      return;
+    }
+
   };
 
   const rowSelection = canGenerateInsights
     ? {
-        onChange: (selectedRowKeys: React.Key[]) => {
-          setSelectedInvoiceIds(selectedRowKeys as string[]);
-        },
-        selectedRowKeys: selectedInvoiceIds,
-        getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
-          disabled: processing_status.toLowerCase() === "processing",
-        }),
-      }
+      onChange: (selectedRowKeys: React.Key[]) => {
+        setSelectedInvoiceIds(selectedRowKeys as string[]);
+      },
+      selectedRowKeys: selectedInvoiceIds,
+      getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
+        disabled: processing_status.toLowerCase() === "processing",
+      }),
+    }
     : undefined;
 
   const extractionHistoryColumns: TableColumnsType<ProcessedInvoice> = [
@@ -296,28 +301,33 @@ const ExtractionHistoryTable = () => {
         <ReviewStatusBadge record={record} />
       ),
     },
-    {
-      title: "",
-      render: (_: any, record: ProcessedInvoice) => {
-        const isDisabled =
-          record.processing_status.toLowerCase() === "processing" ||
-          record.processing_status.toLowerCase() === "failed";
+    ...(canEditExtraction
+      ? [
+        {
+          title: "",
+          render: (_: any, record: ProcessedInvoice) => {
+            if (!canEditExtraction) return null;
 
-        return (
-          <div
-            className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${
-              isDisabled
-                ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
-                : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
-            }`}
-            onClick={() => !isDisabled && handleDocumentReview(record)}
-          >
-            <EditOutlined />
-            <span className="text-[12px]">Review</span>
-          </div>
-        );
-      },
-    },
+            const isDisabled =
+              record.processing_status.toLowerCase() === "processing" ||
+              record.processing_status.toLowerCase() === "failed";
+
+            return (
+              <div
+                className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${isDisabled
+                    ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
+                    : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
+                  }`}
+                onClick={() => !isDisabled && handleDocumentReview(record)}
+              >
+                <EditOutlined />
+                <span className="text-[12px]">Review</span>
+              </div>
+            );
+          },
+        },
+      ]
+      : []),
   ];
 
   const handleTableChange = (newPagination: any) => {
