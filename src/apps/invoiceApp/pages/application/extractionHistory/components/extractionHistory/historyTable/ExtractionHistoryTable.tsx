@@ -1,31 +1,32 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Alert, Dropdown, Table } from "antd";
 import type { TableColumnsType } from "antd";
-import AppButton from "../../../../../../../components/AppButton";
-import InvoicePreviewModal from "./InvoicePreviewModal";
-import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { ProcessedInvoice } from "../../../../../../../types";
+import AppButton from "../../../../../../../../components/AppButton";
+import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
+import { ProcessedInvoice } from "../../../../../../../../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
-import { filterInvoices } from "../../../../../../../utils/filterInvoices";
-import { ExtractionHistoryFilter } from "../../../../../../../types";
+import { filterInvoices } from "../../../../../../../../utils/filterInvoices";
+import { ExtractionHistoryFilter } from "../../../../../../../../types";
 import { EditOutlined, WarningOutlined } from "@ant-design/icons";
-import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import {
   handleError,
   showNotification,
-} from "../../../../../../../utils/notification";
-import { manageSSE } from "../../../../../../../service/sseClient";
-import { formatInvoiceAndCreateMap } from "../../utils";
-import { PERMISSIONS } from "../../../../../constants/permissions";
-import { usePermission } from "../../../../../context/PermissionContext";
-import { formatDateTime } from "../../../../../../../utils";
+} from "../../../../../../../../utils/notification";
+import { manageSSE } from "../../../../../../../../service/sseClient";
+import { formatInvoiceAndCreateMap } from "../../../utils";
+import { PERMISSIONS } from "../../../../../../constants/permissions";
+import { usePermission } from "../../../../../../context/PermissionContext";
+import { formatDateTime } from "../../../../../../../../utils";
 import ExtractionStatusItem from "./ExtractionStatusItem";
-import { StatusType } from "../../types";
+import { StatusType } from "../../../types";
 import TableHeaderTooltip from "./TableHeaderTooltip";
 import ConfidenceIndicator from "./ConfidenceIndicator";
 import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
+import InvoicePreviewModal from "../invoicePreview";
+import { useTemplate } from "../../../../../../context/TemplateContext";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -57,8 +58,25 @@ const ExtractionHistoryTable = () => {
   const sseRef = useRef<{ stop: () => void } | null>(null);
   const confidenceSortOptions = ["Lowest to Highest", "Higehst to Lowest"];
 
-  const { setInvoicesMapById, duplicatesMapById, duplicatesCount } =
-    useInvoiceProcessor();
+  const {
+    setInvoicesMapById,
+    duplicatesMapById,
+    duplicatesCount,
+    currentDataSource,
+    fetchDataSource,
+  } = useInvoiceProcessor();
+
+  const { templateItems, fetchTemplate } = useTemplate();
+
+  const handleTemplatesFetch = async () => {
+    if (!currentDataSource) {
+      await fetchDataSource();
+    }
+
+    if (currentDataSource && (!templateItems || templateItems.length === 0)) {
+      await fetchTemplate();
+    }
+  };
 
   const handleSSEMessage = (data: any) => {
     setLoading(false);
@@ -118,6 +136,8 @@ const ExtractionHistoryTable = () => {
       sessionStorage.removeItem("hideDuplicatesAlert");
       setShowAlert(true);
     }
+
+    handleTemplatesFetch();
   }, []);
 
   useEffect(() => {
@@ -278,15 +298,25 @@ const ExtractionHistoryTable = () => {
     },
     {
       title: "",
-      render: (_: any, record: ProcessedInvoice) => (
-        <div
-          className="inline-flex items-center cursor-pointer gap-1 px-2 py-0.5 border border-[#006A94] text-[#006A94] rounded-[4px] hover:bg-[#E6F7FF] transition-colors"
-          onClick={() => handleDocumentReview(record)}
-        >
-          <EditOutlined />
-          <span className="text-[12px]">Review</span>
-        </div>
-      ),
+      render: (_: any, record: ProcessedInvoice) => {
+        const isDisabled =
+          record.processing_status.toLowerCase() === "processing" ||
+          record.processing_status.toLowerCase() === "failed";
+
+        return (
+          <div
+            className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${
+              isDisabled
+                ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
+                : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
+            }`}
+            onClick={() => !isDisabled && handleDocumentReview(record)}
+          >
+            <EditOutlined />
+            <span className="text-[12px]">Review</span>
+          </div>
+        );
+      },
     },
   ];
 

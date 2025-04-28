@@ -460,7 +460,7 @@ td .processing {
 }
 
 .disabled-row {
-  opacity: 0.8;
+  background-color: #F5F5F5;
   pointer-events: none;
 }
 
@@ -494,4 +494,9 @@ td .processing {
 
 .create-role label.ant-checkbox-wrapper {
   margin-bottom: 17px;
+}
+
+
+.extracted-content-th{
+  text-transform: capitalize;
 }

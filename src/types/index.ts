@@ -272,3 +272,11 @@ export interface RoleResponse {
   permissions: Permission[];
   created_at: string;
 }
+
+export interface ImageDataResponse {
+  image_data: string;
+}
+
+export interface ImagePagesResponse {
+  pages: ImageDataResponse[];
+}

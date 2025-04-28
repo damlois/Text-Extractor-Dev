@@ -1,7 +1,7 @@
 import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { TableColumnsType, Table } from "antd";
 import { useState } from "react";
-import InvoicePreviewModal from "../extraction-history/InvoicePreviewModal";
+import InvoicePreviewModal from "../extractionHistory/invoicePreview/InvoicePreviewModal";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import { DuplicateInvoiceItemResponse } from "../../types";
 

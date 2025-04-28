@@ -1,3 +1,4 @@
+import { camelCase } from "lodash";
 import { ProcessedInvoice } from "../../../../../types";
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
@@ -22,4 +23,24 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
   });
 
   return { formattedInvoices, invoiceMapById };
+};
+
+export const standardizeInvoice = (
+  invoice: Record<string, any>
+): Record<string, any> => {
+  return Object.keys(invoice).reduce<Record<string, any>>((acc, key) => {
+    const formattedKey = camelCase(key);
+    acc[formattedKey] = invoice[key] ?? "N/A";
+    return acc;
+  }, {});
+};
+
+export const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
+  return invoices.map(({ id, file_name, extracted_content }) => {
+    return standardizeInvoice({
+      id,
+      file_name,
+      ...extracted_content,
+    });
+  });
 };

@@ -6,8 +6,8 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { Tooltip } from "antd";
-import { ReviewStatus } from "../../types";
-import { ProcessedInvoice } from "../../../../../../../types";
+import { ReviewStatus } from "../../../types";
+import { ProcessedInvoice } from "../../../../../../../../types";
 
 interface ReviewStatusBadgeProps {
   record: ProcessedInvoice;
