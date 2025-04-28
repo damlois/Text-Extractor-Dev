@@ -132,7 +132,7 @@ const App = () => {
                 path="extraction-history/review"
                 element={
                   <RouteProtector
-                    requiredPermission={PERMISSIONS.GENERATE_INSIGHT}
+                    requiredPermission={PERMISSIONS.EDIT_EXTRACTION}
                   />
                 }
               >
