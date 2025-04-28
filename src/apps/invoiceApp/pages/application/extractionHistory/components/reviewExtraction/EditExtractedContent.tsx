@@ -69,30 +69,48 @@ const EditExtractedContent = ({
     value: string
   ) => {
     setUpdatedItemsFields((prevItems) =>
-      prevItems.map((item, idx) => {
-        if (idx !== itemIndex) return item;
-  
+      prevItems.map((item, index) => {
+        if (index !== itemIndex) return item;
+
         const data = item.data;
-  
+
         if (Array.isArray(data)) {
-          // Array of objects
           if (typeof data[0] === "object" && data[0] !== null) {
-            const newData = data.map((row, rIdx) =>
-              rIdx === rowIndex ? { ...row, [key]: { value, ...(row[key]?.confidence && { confidence: row[key].confidence }) } } : row
-            );
+            const newData = data.map((row, rIndex) => {
+              if (rIndex !== rowIndex) return row;
+
+              const originalCell = row[key];
+
+              if (
+                originalCell &&
+                typeof originalCell === "object" &&
+                "value" in originalCell
+              ) {
+                return {
+                  ...row,
+                  [key]: {
+                    ...originalCell,
+                    value: value,
+                  },
+                };
+              } else {
+                return {
+                  ...row,
+                  [key]: value,
+                };
+              }
+            });
             return { ...item, data: newData };
           }
-  
-          // Array of strings
+
           if (typeof data[0] === "string") {
-            const newData = data.map((str, rIdx) =>
-              rIdx === rowIndex ? value : str
+            const newData = data.map((item, index) =>
+              index === rowIndex ? value : item
             );
             return { ...item, data: newData };
           }
         }
-  
-        // If data is a numeric-keyed object
+
         if (typeof data === "object" && data !== null) {
           const keys = Object.keys(data);
           if (keys.every((k) => /^\d+$/.test(k))) {
@@ -100,12 +118,11 @@ const EditExtractedContent = ({
             return { ...item, data: newData };
           }
         }
-  
+
         return item;
       })
     );
   };
-  
 
   if (!extractedContent || typeof extractedContent !== "object") {
     return (

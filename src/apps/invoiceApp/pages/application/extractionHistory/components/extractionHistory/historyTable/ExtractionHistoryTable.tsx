@@ -292,7 +292,7 @@ const ExtractionHistoryTable = () => {
         </Dropdown>
       ),
       dataIndex: "confidence_level",
-      render: (text: string) => <ConfidenceIndicator value={text} />,
+      render: (_: any, record: ProcessedInvoice) => <ConfidenceIndicator record={record} />,
     },
     {
       title: (
