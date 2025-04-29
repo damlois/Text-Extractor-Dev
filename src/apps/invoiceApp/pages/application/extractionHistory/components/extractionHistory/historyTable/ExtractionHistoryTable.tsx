@@ -36,14 +36,19 @@ const ExtractionHistoryTable = () => {
     useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [invoices, setInvoices] = useState<ProcessedInvoice[]>([]);
+  const [originalInvoices, setOriginalInvoices] = useState<ProcessedInvoice[]>(
+    []
+  );
+  const [displayInvoices, setDisplayInvoices] = useState<ProcessedInvoice[]>(
+    []
+  );
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
-  const [pageInvoices, setPageInvoices] = useState<ProcessedInvoice[]>([]);
+  const [confidenceSort, setConfidenceSort] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(
     !sessionStorage.getItem("hideDuplicatesAlert")
   );
@@ -57,7 +62,11 @@ const ExtractionHistoryTable = () => {
   const canEditExtraction = userHasPermission(PERMISSIONS.EDIT_EXTRACTION);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
-  const confidenceSortOptions = ["Lowest to Highest", "Higehst to Lowest"];
+  const confidenceSortOptions = [
+    "Lowest to Highest",
+    "Higehst to Lowest",
+    "Reset",
+  ];
 
   const {
     setInvoicesMapById,
@@ -96,7 +105,7 @@ const ExtractionHistoryTable = () => {
       data.invoices
     );
 
-    setPageInvoices(formattedInvoices);
+    setOriginalInvoices(formattedInvoices);
     setInvoicesMapById(invoiceMapById);
     setPagination((prevPagination) => ({
       ...prevPagination,
@@ -116,7 +125,7 @@ const ExtractionHistoryTable = () => {
         response.data.data.invoices
       );
 
-      setPageInvoices(formattedInvoices);
+      setOriginalInvoices(formattedInvoices);
       setInvoicesMapById(invoiceMapById);
       setPagination({
         current: response.data.data.page,
@@ -162,16 +171,35 @@ const ExtractionHistoryTable = () => {
   }, [pagination.current, pagination.pageSize]);
 
   useEffect(() => {
-    if (pageInvoices.length) {
-      setInvoices(filterInvoices(pageInvoices, filters));
+    if (originalInvoices.length) {
+      setDisplayInvoices(filterInvoices(originalInvoices, filters));
     }
-  }, [filters, pageInvoices]);
+  }, [filters, originalInvoices]);
+
+  useEffect(() => {
+    if (!confidenceSort || confidenceSort === "Reset") {
+      setDisplayInvoices(filterInvoices(originalInvoices, filters));
+      return;
+    }
+
+    const sorted = [...originalInvoices].sort((a, b) => {
+      const aConfidence = a.extracted_content?.overall_confidence?.score ?? 0;
+      const bConfidence = b.extracted_content?.overall_confidence?.score ?? 0;
+
+      return confidenceSort === "Lowest to Highest"
+        ? aConfidence - bConfidence
+        : bConfidence - aConfidence;
+    });
+
+    const filteredSorted = filterInvoices(sorted, filters);
+    setDisplayInvoices(filteredSorted);
+  }, [confidenceSort, filters, originalInvoices]);
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
-      new Set(pageInvoices?.map((invoice) => invoice.email_metadata.sender))
+      new Set(originalInvoices?.map((invoice) => invoice.email_metadata.sender))
     ).filter(Boolean);
-  }, [pageInvoices]);
+  }, [originalInvoices]);
 
   const togglePreviewModal = (invoice?: ProcessedInvoice) => {
     setSelectedInvoice(invoice || null);
@@ -273,7 +301,10 @@ const ExtractionHistoryTable = () => {
             items: confidenceSortOptions.map((option, index) => ({
               key: index,
               label: (
-                <button className="w-full text-left text-dark-gray">
+                <button
+                  className="w-full text-left text-dark-gray"
+                  onClick={() => setConfidenceSort(option)}
+                >
                   {option}
                 </button>
               ),
@@ -291,8 +322,10 @@ const ExtractionHistoryTable = () => {
           </div>
         </Dropdown>
       ),
-      dataIndex: "confidence_level",
-      render: (_: any, record: ProcessedInvoice) => <ConfidenceIndicator record={record} />,
+      dataIndex: "overall_confidence",
+      render: (_: any, record: ProcessedInvoice) => (
+        <ConfidenceIndicator record={record} />
+      ),
     },
     {
       title: (
@@ -377,7 +410,7 @@ const ExtractionHistoryTable = () => {
           rowSelection={rowSelection}
           rowKey="id"
           columns={extractionHistoryColumns}
-          dataSource={invoices}
+          dataSource={displayInvoices}
           className="app-table extraction-history-table no-vertical-lines"
           loading={loading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
