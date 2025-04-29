@@ -1,5 +1,7 @@
 import { camelCase } from "lodash";
 import { ProcessedInvoice } from "../../../../../types";
+import { formatExtractionValue } from "../../../../../utils";
+import { ItemField, RegularField } from "./types";
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
@@ -43,4 +45,32 @@ export const formatInvoiceData = (invoices: ProcessedInvoice[]) => {
       ...extracted_content,
     });
   });
+};
+
+export const processExtractedContent = (
+  extractedContent: any,
+  templateItems: { label: string }[]
+) => {
+  const regularFieldsData: RegularField[] = [];
+  const itemsFieldsData: ItemField[] = [];
+
+  const standardizedExtractionContent = standardizeInvoice(extractedContent);
+
+  templateItems.forEach(({ label }) => {
+    const value = standardizedExtractionContent[camelCase(label)];
+
+    if (
+      (label.toLowerCase().includes("item") ||
+        label.toLowerCase().includes("description") ||
+        label.toLowerCase().includes("material")) &&
+      Array.isArray(value)
+    ) {
+      itemsFieldsData.push({ label, data: value });
+    } else {
+      let displayValue = formatExtractionValue(value);
+      regularFieldsData.push({ field: label, value: displayValue });
+    }
+  });
+
+  return { regularFieldsData, itemsFieldsData };
 };

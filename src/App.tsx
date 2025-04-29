@@ -18,6 +18,7 @@ import RolesList from "./apps/invoiceApp/pages/roles";
 import ViewDuplicates from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/ViewDuplicates";
 import { PERMISSIONS } from "./apps/invoiceApp/constants/permissions";
 import ForbiddenPage from "./apps/invoiceApp/pages/ForbiddenPage";
+import ReviewExtractedContent from "./apps/invoiceApp/pages/application/extractionHistory/components/reviewExtraction";
 
 const App = () => {
   return (
@@ -125,6 +126,17 @@ const App = () => {
                 }
               >
                 <Route index element={<GenerateInsights />} />
+              </Route>
+
+              <Route
+                path="extraction-history/review"
+                element={
+                  <RouteProtector
+                    requiredPermission={PERMISSIONS.EDIT_EXTRACTION}
+                  />
+                }
+              >
+                <Route index element={<ReviewExtractedContent />} />
               </Route>
 
               <Route

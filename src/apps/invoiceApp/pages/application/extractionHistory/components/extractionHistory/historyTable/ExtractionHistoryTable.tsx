@@ -64,6 +64,7 @@ const ExtractionHistoryTable = () => {
     duplicatesMapById,
     duplicatesCount,
     currentDataSource,
+    setReviewInvoice,
     fetchDataSource,
   } = useInvoiceProcessor();
 
@@ -196,23 +197,27 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    if (canEditExtraction) {
+    if (record.review_status === "in_review") {
       setShowDocInReviewModal(true);
       return;
     }
 
+    setReviewInvoice(record);
+    navigate("../extraction-history/review", {
+      state: { duplicatesCheckDone: true },
+    });
   };
 
   const rowSelection = canGenerateInsights
     ? {
-      onChange: (selectedRowKeys: React.Key[]) => {
-        setSelectedInvoiceIds(selectedRowKeys as string[]);
-      },
-      selectedRowKeys: selectedInvoiceIds,
-      getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
-        disabled: processing_status.toLowerCase() === "processing",
-      }),
-    }
+        onChange: (selectedRowKeys: React.Key[]) => {
+          setSelectedInvoiceIds(selectedRowKeys as string[]);
+        },
+        selectedRowKeys: selectedInvoiceIds,
+        getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
+          disabled: processing_status.toLowerCase() === "processing",
+        }),
+      }
     : undefined;
 
   const extractionHistoryColumns: TableColumnsType<ProcessedInvoice> = [
@@ -287,7 +292,7 @@ const ExtractionHistoryTable = () => {
         </Dropdown>
       ),
       dataIndex: "confidence_level",
-      render: (text: string) => <ConfidenceIndicator value={text} />,
+      render: (_: any, record: ProcessedInvoice) => <ConfidenceIndicator record={record} />,
     },
     {
       title: (
@@ -303,30 +308,29 @@ const ExtractionHistoryTable = () => {
     },
     ...(canEditExtraction
       ? [
-        {
-          title: "",
-          render: (_: any, record: ProcessedInvoice) => {
-            if (!canEditExtraction) return null;
+          {
+            title: "",
+            render: (_: any, record: ProcessedInvoice) => {
+              const isDisabled =
+                record.processing_status.toLowerCase() === "processing" ||
+                record.processing_status.toLowerCase() === "failed";
 
-            const isDisabled =
-              record.processing_status.toLowerCase() === "processing" ||
-              record.processing_status.toLowerCase() === "failed";
-
-            return (
-              <div
-                className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${isDisabled
-                    ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
-                    : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
+              return (
+                <div
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${
+                    isDisabled
+                      ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
+                      : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
                   }`}
-                onClick={() => !isDisabled && handleDocumentReview(record)}
-              >
-                <EditOutlined />
-                <span className="text-[12px]">Review</span>
-              </div>
-            );
+                  onClick={() => !isDisabled && handleDocumentReview(record)}
+                >
+                  <EditOutlined />
+                  <span className="text-[12px]">Review</span>
+                </div>
+              );
+            },
           },
-        },
-      ]
+        ]
       : []),
   ];
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
 import { handleError } from "../../../../../../../../utils/notification";
 import OriginalDocument from "./OriginalDocument";
-import ExtractedConetnt from "./ExtractedConetnt";
+import ExtractedConetnt from "./ExtractedContent";
 import { ImageDataResponse } from "../../../../../../../../types";
 
 interface InvoicePreviewModalProps {
@@ -21,8 +21,6 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
   const [documentPages, setDocumentPages] = useState<
     ImageDataResponse[] | undefined
   >();
-
-  console.log(invoiceDetails);
 
   useEffect(() => {
     if (invoiceDetails) {
