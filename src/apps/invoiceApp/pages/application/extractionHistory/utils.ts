@@ -58,6 +58,9 @@ export const processExtractedContent = (
 
   templateItems.forEach(({ label }) => {
     const value = standardizedExtractionContent[camelCase(label)];
+    const confidence = extractedContent.confidence
+      ? extractedContent?.confidence[label]
+      : undefined;
 
     if (
       (label.toLowerCase().includes("item") ||
@@ -65,12 +68,15 @@ export const processExtractedContent = (
         label.toLowerCase().includes("material")) &&
       Array.isArray(value)
     ) {
-      itemsFieldsData.push({ label, data: value });
+      itemsFieldsData.push({ label, data: value, confidence });
     } else {
       let displayValue = formatExtractionValue(value);
-      regularFieldsData.push({ field: label, value: displayValue });
+      regularFieldsData.push({ field: label, value: displayValue, confidence });
     }
   });
 
-  return { regularFieldsData, itemsFieldsData };
+  return {
+    regularFieldsData,
+    itemsFieldsData,
+  };
 };

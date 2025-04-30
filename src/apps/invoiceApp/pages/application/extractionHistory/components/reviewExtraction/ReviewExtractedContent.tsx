@@ -1,8 +1,11 @@
 import { Spin } from "antd";
 import { useEffect, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { ImageDataResponse } from "../../../../../../../types";
-import { handleError } from "../../../../../../../utils/notification";
+import { DynamicObject, ImageDataResponse } from "../../../../../../../types";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../../../utils/notification";
 import OriginalDocument from "../extractionHistory/invoicePreview/OriginalDocument";
 import AppButton from "../../../../../../../components/AppButton";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
@@ -12,40 +15,68 @@ import { useNavigate } from "react-router-dom";
 import ExtractedContent from "../extractionHistory/invoicePreview/ExtractedContent";
 
 const ReviewExtractedContent = () => {
-  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [isEditState, setIsEditState] = useState(false);
+  const [extractedContent, setExtractedContent] = useState<DynamicObject>();
   const [documentPages, setDocumentPages] = useState<
     ImageDataResponse[] | undefined
   >();
+  const [editedFields, setEditedFields] = useState<{
+    regular: Record<string, string>;
+    items: Record<number, any>;
+  }>({
+    regular: {},
+    items: {},
+  });
 
   const { reviewInvoice } = useInvoiceProcessor();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (reviewInvoice) {
+      setExtractedContent(reviewInvoice?.extracted_content);
+
       const fetchInvoiceImageData = async () => {
         try {
-          setLoading(true);
+          setPageLoading(true);
 
           const response = await invoiceProcessorApi.getInvoiceImage(
             reviewInvoice.id
           );
+
           setDocumentPages(response.data.data.pages);
         } catch (error) {
           handleError(error);
         } finally {
-          setLoading(false);
+          setPageLoading(false);
         }
       };
 
       fetchInvoiceImageData();
     }
-  }, [reviewInvoice?.id]);
+  }, [reviewInvoice]);
 
-  if (!reviewInvoice) return null;
+  if (!reviewInvoice) {
+    return null;
+  }
 
-  const handleSaveChanges = () => {
-    console.log("save changes");
+  const handleSaveChanges = async () => {
+    try {
+      setSaveLoading(true);
+      const response = await invoiceProcessorApi.editInvoiceExtraction(
+        reviewInvoice.id,
+        { edited_content: editedFields }
+      );
+
+      setExtractedContent(response.data.data.extracted_content);
+      showNotification("success", "Your changes have been successfully svaed");
+      setIsEditState(false);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setSaveLoading(false);
+    }
   };
 
   return (
@@ -66,7 +97,7 @@ const ReviewExtractedContent = () => {
             necessary corrections by manually editing the fields.
           </p>
         </div>
-        {!loading && (
+        {!pageLoading && (
           <div className="flex gap-4 flex-wrap ml-auto">
             <AppButton
               children="Approve QA"
@@ -75,6 +106,7 @@ const ReviewExtractedContent = () => {
             />
 
             <AppButton
+              loading={saveLoading}
               children={
                 <>
                   {isEditState ? (
@@ -97,7 +129,7 @@ const ReviewExtractedContent = () => {
           </div>
         )}
       </div>
-      {loading ? (
+      {pageLoading ? (
         <div className="w-full h-[80vh] flex justify-center items-center">
           <Spin></Spin>
         </div>
@@ -106,9 +138,11 @@ const ReviewExtractedContent = () => {
           <div
             className="text-deep-blue px-[0] cursor-pointer mt-8 mb-4"
             onClick={() =>
-              navigate("../extraction-history", {
-                state: { fromDuplicatesPage: true },
-              })
+              isEditState
+                ? setIsEditState(false)
+                : navigate("../extraction-history", {
+                    state: { fromDuplicatesPage: true },
+                  })
             }
           >
             <ArrowLeftOutlined className="mr-6" /> Back
@@ -118,14 +152,19 @@ const ReviewExtractedContent = () => {
               <OriginalDocument pages={documentPages || []} />{" "}
             </div>
             <div className="border border-[#F1F1F1]">
-              {isEditState ? (
-                <EditExtractedContent
-                  extractedContent={reviewInvoice.extracted_content}
-                />
+              {extractedContent ? (
+                isEditState ? (
+                  <EditExtractedContent
+                    extractedContent={extractedContent}
+                    onEdit={setEditedFields}
+                  />
+                ) : (
+                  <ExtractedContent extractedContent={extractedContent} />
+                )
               ) : (
-                <ExtractedContent
-                  extractedContent={reviewInvoice.extracted_content}
-                />
+                <div className="p-4 text-center text-gray-500">
+                  No extracted content available to display.
+                </div>
               )}
             </div>
           </div>

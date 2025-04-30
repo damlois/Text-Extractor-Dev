@@ -47,11 +47,11 @@ export type ReviewStatus =
 export type RegularField = {
   field: string;
   value: string;
-  confidence?: string;
+  confidence?: number;
 };
 
 export type ItemField = {
   label: string;
   data: any;
-  confidence?: string;
+  confidence?: number;
 };

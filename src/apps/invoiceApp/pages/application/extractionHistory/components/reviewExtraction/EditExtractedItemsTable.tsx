@@ -1,14 +1,17 @@
 import { ChangeEvent } from "react";
+import ConfidenceBadge from "./ConfidenceBadge";
 
 interface ExtractedItemsTableProps {
   label: string;
   itemsFieldData: any;
+  confidence: number | undefined;
   onCellChange?: (rowIndex: number, key: string, value: string) => void;
 }
 
 const EditExtractedItemsTable = ({
   label,
   itemsFieldData,
+  confidence,
   onCellChange,
 }: ExtractedItemsTableProps) => {
   const isArray = Array.isArray(itemsFieldData);
@@ -78,7 +81,11 @@ const EditExtractedItemsTable = ({
               >
                 <input
                   type="text"
-                  value={typeof value === "object" && value !== null ? JSON.stringify(value) : String(value)}
+                  value={
+                    typeof value === "object" && value !== null
+                      ? JSON.stringify(value)
+                      : String(value)
+                  }
                   onChange={(e) => handleInputChange(e, rowIndex, key)}
                   className="w-full bg-transparent border-none outline-none text-[11px] text-dark-gray"
                 />
@@ -100,8 +107,11 @@ const EditExtractedItemsTable = ({
 
   return (
     <div className="w-full">
-      <p className="text-dark-gray text-[14px] font-bold mb-2">{label}</p>
-      <div className="overflow-x-auto border-t border-b border-[#E5E7EB]">
+      <label className="text-dark-gray text-[14px] font-bold">
+        {label}
+        {confidence && <ConfidenceBadge confidence={confidence} />}
+      </label>
+      <div className="overflow-x-auto border-t border-b border-[#E5E7EB] mt-2">
         <table className="min-w-full">{renderTableContent()}</table>
       </div>
     </div>

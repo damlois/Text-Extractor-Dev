@@ -152,4 +152,7 @@ export const invoiceProcessorApi = {
     await apiClient.get<{ data: ImagePagesResponse }>(
       `/invoices/${invoiceId}/image`
     ),
+
+  editInvoiceExtraction: async (invoiceId: string, data: any) => 
+    await apiClient.put(`/invoices/${invoiceId}/edit`, data)
 };
