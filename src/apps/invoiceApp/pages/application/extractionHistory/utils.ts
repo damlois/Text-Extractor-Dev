@@ -80,3 +80,42 @@ export const processExtractedContent = (
     itemsFieldsData,
   };
 };
+
+export const extractJsonData = (invoices: any[], templateItems: any[]) => {
+  return invoices.map((invoice) => {
+    const { rawData, confidence, overallConfidence, ...filteredData } = invoice;
+
+    const filteredResult = templateItems?.reduce<Record<string, any>>(
+      (acc, { label }) => {
+        const key = camelCase(label);
+        if (filteredData[key]) {
+          acc[key] = {
+            value: filteredData[key],
+            confidence: confidence ? confidence[label] : "N/A",
+          };
+        }
+        return acc;
+      },
+      {}
+    );
+
+    return {
+      ...filteredResult,
+      overall_confidence: overallConfidence ?? "N/A",
+    };
+  });
+};
+
+export const extractCsvData = (invoices: any[], templateItems: any[]) => {
+  return invoices.map((invoice) => {
+    const { rawData, ...filteredData } = invoice;
+
+    return templateItems?.reduce<Record<string, any>>((acc, { label }) => {
+      const key = camelCase(label);
+      if (filteredData[key]) {
+        acc[key] = filteredData[key];
+      }
+      return acc;
+    }, {});
+  });
+};
