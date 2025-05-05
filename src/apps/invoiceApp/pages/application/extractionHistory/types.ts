@@ -41,7 +41,7 @@ export type Header = "processing_status" | "confidence" | "review_status";
 export type ReviewStatus =
   | "pending"
   | "in_review"
-  | "qa_passed"
+  | "reviewed"
   | "not_applicable";
 
 export type RegularField = {

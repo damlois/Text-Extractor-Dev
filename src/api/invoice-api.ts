@@ -20,6 +20,7 @@ import {
   ImagePagesResponse,
 } from "../types";
 import apiClient from "../service/apiClient";
+import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
 
 export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
@@ -153,6 +154,11 @@ export const invoiceProcessorApi = {
       `/invoices/${invoiceId}/image`
     ),
 
-  editInvoiceExtraction: async (invoiceId: string, data: any) => 
-    await apiClient.put(`/invoices/${invoiceId}/edit`, data)
+  editInvoiceExtraction: async (invoiceId: string, data: any) =>
+    await apiClient.put(`/invoices/${invoiceId}/edit`, data),
+
+  updateReviewStatus: async (
+    invoiceId: string,
+    data: { status: ReviewStatus }
+  ) => await apiClient.patch(`/invoices/${invoiceId}/review-status`, data),
 };

@@ -4,6 +4,7 @@ import { useState } from "react";
 import InvoicePreviewModal from "../extractionHistory/invoicePreview/InvoicePreviewModal";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import { DuplicateInvoiceItemResponse } from "../../types";
+import { formatDateTime } from "../../../../../../../utils";
 
 interface DuplicatesTableInterface {
   selectedInvoiceIds: Record<string, string[]>;
@@ -21,10 +22,8 @@ const DuplicatesTable = ({
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  const {
-    duplicateMapByFileHash,
-    setDuplicatesMapByFileHash,
-  } = useInvoiceProcessor();
+  const { duplicateMapByFileHash, setDuplicatesMapByFileHash } =
+    useInvoiceProcessor();
 
   const togglePreviewModal = (invoice?: DuplicateInvoiceItemResponse) => {
     setSelectedInvoice(invoice || null);
@@ -65,9 +64,9 @@ const DuplicatesTable = ({
       {
         title: "Sender",
         dataIndex: "metadata",
-        render: (metadata: { sender: string }) => (
+        render: (metadata: { sender_email: string }) => (
           <span className="text-dark-gray text-[14px] font-medium">
-            {metadata.sender}
+            {metadata.sender_email}
           </span>
         ),
       },
@@ -76,7 +75,7 @@ const DuplicatesTable = ({
         dataIndex: "created_at",
         render: (text: string) => (
           <span className="text-[#28373] text-[14px]">
-            {new Date(text).toLocaleDateString()}
+            {formatDateTime(text)}
           </span>
         ),
       },
@@ -129,9 +128,7 @@ const DuplicatesTable = ({
       <InvoicePreviewModal
         open={showPreviewModal}
         onCancel={() => togglePreviewModal()}
-        invoiceDetails={
-          selectedInvoice
-        }
+        invoiceDetails={selectedInvoice}
       />
     </>
   );

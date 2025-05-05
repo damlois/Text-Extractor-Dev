@@ -69,6 +69,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
           <div className="border border-[#F1F1F1]">
             <ExtractedConetnt
               extractedContent={invoiceDetails.extracted_content}
+              reviewStatus={invoiceDetails.review_status}
             />
           </div>
         </div>

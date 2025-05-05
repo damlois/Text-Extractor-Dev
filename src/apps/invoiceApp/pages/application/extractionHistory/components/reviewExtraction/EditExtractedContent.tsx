@@ -163,7 +163,9 @@ const EditExtractedContent = ({
             <div key={field} className="flex flex-col gap-1">
               <label className="text-dark-gray text-[13px] font-bold">
                 {field}
-                {confidence && <ConfidenceBadge confidence={confidence} />}
+                {confidence && typeof confidence === "number" && (
+                  <ConfidenceBadge confidence={confidence} />
+                )}
               </label>
               <AppInput
                 type="text"

@@ -36,7 +36,8 @@ const DocumentInReviewModal = ({
       }}
     >
       <p className="text-dark-gray text-sm font-normal ml-[38px]">
-        This document is currently being reviewed by Ann Paul. <br /> <br />
+        This document is currently being reviewed by another person. <br />{" "}
+        <br />
         You won’t be able to make changes or take action until their review is
         complete.
       </p>

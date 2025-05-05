@@ -3,7 +3,7 @@ import keycloakService from "./keycloakService";
 
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_DEV_API_URL,
-  timeout: 60000
+  timeout: 180000
 });
 
 apiClient.interceptors.request.use((config) => {

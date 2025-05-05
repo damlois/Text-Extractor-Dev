@@ -109,7 +109,9 @@ const EditExtractedItemsTable = ({
     <div className="w-full">
       <label className="text-dark-gray text-[14px] font-bold">
         {label}
-        {confidence && <ConfidenceBadge confidence={confidence} />}
+        {confidence && typeof confidence === "number" && (
+          <ConfidenceBadge confidence={confidence} />
+        )}
       </label>
       <div className="overflow-x-auto border-t border-b border-[#E5E7EB] mt-2">
         <table className="min-w-full">{renderTableContent()}</table>

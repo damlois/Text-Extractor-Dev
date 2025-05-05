@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Alert, Dropdown, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../../components/AppButton";
-import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../../../../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
@@ -11,7 +10,6 @@ import { ExtractionHistoryFilter } from "../../../../../../../../types";
 import { EditOutlined, WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import {
-  handleError,
   showNotification,
 } from "../../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../../service/sseClient";
@@ -113,36 +111,11 @@ const ExtractionHistoryTable = () => {
     }));
   };
 
-  const fetchInvoices = async (page: number, size: number) => {
-    setLoading(true);
-    try {
-      const response = await invoiceProcessorApi.getProcessedInvoices({
-        page,
-        size,
-      });
-
-      const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
-        response.data.data.invoices
-      );
-
-      setOriginalInvoices(formattedInvoices);
-      setInvoicesMapById(invoiceMapById);
-      setPagination({
-        current: response.data.data.page,
-        pageSize: response.data.data.size,
-        total: response.data.data.total,
-      });
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (
       !location.state?.fromInsightsPage &&
-      !location.state?.fromDuplicatesPage
+      !location.state?.fromDuplicatesPage &&
+      !location.state?.fromReviewpage
     ) {
       sessionStorage.removeItem("hideDuplicatesAlert");
       setShowAlert(true);
@@ -152,16 +125,11 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    if (pagination.current === 1) {
-      if (!sseRef.current) {
-        sseRef.current = manageSSE(
-          `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
-          handleSSEMessage
-        );
-      }
-    } else {
-      sseRef.current?.stop();
-      sseRef.current = null;
+    if (!sseRef.current) {
+      sseRef.current = manageSSE(
+        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
+        handleSSEMessage
+      );
     }
 
     return () => {
@@ -225,10 +193,10 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    if (record.review_status === "in_review") {
-      setShowDocInReviewModal(true);
-      return;
-    }
+    // if (record.review_status === "in_review") {
+    //   setShowDocInReviewModal(true);
+    //   return;
+    // }
 
     setReviewInvoice(record);
     navigate("../extraction-history/review", {
@@ -369,7 +337,7 @@ const ExtractionHistoryTable = () => {
 
   const handleTableChange = (newPagination: any) => {
     setPagination(newPagination);
-    fetchInvoices(newPagination.current, newPagination.pageSize);
+    // fetchInvoices(newPagination.current, newPagination.pageSize);
   };
 
   const handleAlertClose = () => {
