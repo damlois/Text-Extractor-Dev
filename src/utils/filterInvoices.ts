@@ -12,9 +12,17 @@ export const filterInvoices = (
       return false;
     }
 
-    // Filter by status
+    // Filter by extraction status
     if (filters.status && invoice.processing_status.toLowerCase() !== filters.status.toLowerCase()) {
       return false;
+    }
+
+    // Filter by review status
+    if (filters.reviewStatus?.length) {
+      const currentReviewStatus = invoice.review_status.replace(/_/g, " ");
+      if (!filters.reviewStatus.some(status => status.toLowerCase() === currentReviewStatus.toLowerCase())) {
+        return false;
+      }
     }
 
     // Filter by date range

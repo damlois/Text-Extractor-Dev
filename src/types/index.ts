@@ -160,11 +160,12 @@ export interface BreadCrumb {
   path?: string;
 }
 
-export type ExtractionStatus = "Successful" | "Failed" | null;
+export type ExtractionStatus = "Successful" | "Processing" | "Failed";
 
 export interface ExtractionHistoryFilter {
   senders?: string[];
   status?: ExtractionStatus;
+  reviewStatus?: string[];
   dateFrom?: string;
   dateTo?: string;
 }

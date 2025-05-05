@@ -1,8 +1,9 @@
-import { Modal } from "antd";
+import { Modal, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import AppSelect from "../../../../../../../../components/AppSelect";
 import ToggleButton from "../../../../../../../../components/ToggleButton";
 import { useState, useEffect } from "react";
-import { ExtractionHistoryFilter } from "../../../../../../../../types";
+import { ExtractionHistoryFilter, ExtractionStatus } from "../../../../../../../../types";
 import DateRangePicker from "../../../../../../../../components/DateRangePicker";
 import AppButton from "../../../../../../../../components/AppButton";
 
@@ -30,6 +31,8 @@ const FilterHistoryModal = ({
   useEffect(() => {
     setFilters(initialFilters);
   }, [initialFilters]);
+
+  const reviewStatusOptions = ["Pending", "In Review", "QA Passed", "N/A"];
 
   const handleClear = () => {
     setFilters(null);
@@ -65,27 +68,55 @@ const FilterHistoryModal = ({
             className="mb-4"
             multiple
           />
-          <div className="mb-4">
-            <p className="text-dark-gray font-bold text-[14.5px] mb-2">
-              Status
-            </p>
+
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="text-dark-gray font-bold text-[14.5px]">Extraction Status</span>
+              <Tooltip title="This shows the status of the document extraction process">
+                <InfoCircleOutlined className="ml-2 text-[#00000073] cursor-pointer" />
+              </Tooltip>
+            </div>
             <ToggleButton
-              options={["Successful", "Failed"]}
+              options={["Successful", "Processing", "Failed"]}
+              value={filters?.status}
               onSelect={(selected) =>
-                setFilters({ ...filters, status: selected })
+                setFilters({ ...filters, status: selected as ExtractionStatus })
               }
             />
           </div>
-          <DateRangePicker
-            onDateChange={([dateFrom, dateTo]) => {
-              setFilters({
-                ...filters,
-                dateFrom: dateFrom?.format("DD-MM-YYYY"),
-                dateTo: dateTo?.format("DD-MM-YYYY"),
-              });
-            }}
-          />
+
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="text-dark-gray font-bold text-[14.5px]">Review Status</span>
+              <Tooltip title="Filter by the current review status">
+                <InfoCircleOutlined className="ml-2 text-[#00000073] cursor-pointer" />
+              </Tooltip>
+            </div>
+            <ToggleButton
+              options={reviewStatusOptions}
+              value={filters?.reviewStatus}
+              multiple
+              onSelect={(selected) =>
+                setFilters({ ...filters, reviewStatus: selected as string[] })
+              }
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center mb-2">
+            </div>
+            <DateRangePicker
+              onDateChange={([dateFrom, dateTo]) => {
+                setFilters({
+                  ...filters,
+                  dateFrom: dateFrom?.format("DD-MM-YYYY"),
+                  dateTo: dateTo?.format("DD-MM-YYYY"),
+                });
+              }}
+            />
+          </div>
         </div>
+
         <div className="border-t border-[#f0f0f0]">
           <div className="flex flex-end gap-2 p-6 flex-wrap">
             <AppButton
