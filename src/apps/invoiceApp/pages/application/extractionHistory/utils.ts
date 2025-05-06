@@ -1,7 +1,12 @@
 import { camelCase } from "lodash";
 import { ProcessedInvoice } from "../../../../../types";
 import { formatExtractionValue } from "../../../../../utils";
-import { ItemField, RegularField } from "./types";
+import {
+  EditedFields,
+  ItemField,
+  RegularField,
+  ReviewActionType,
+} from "./types";
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
@@ -116,4 +121,22 @@ export const extractCsvData = (invoices: any[], templateItems: any[]) => {
       return acc;
     }, {});
   });
+};
+
+export const constructReviewPayload = (
+  actionType: ReviewActionType,
+  reviewInvoice: ProcessedInvoice,
+  editedFields?: EditedFields
+) => {
+  return {
+    edited_content:
+      actionType === "approve_qa"
+        ? reviewInvoice.extracted_content
+        : {
+            ...editedFields,
+            confidence: reviewInvoice.extracted_content.confidence,
+            overall_confidence:
+              reviewInvoice.extracted_content.overall_confidence,
+          },
+  };
 };

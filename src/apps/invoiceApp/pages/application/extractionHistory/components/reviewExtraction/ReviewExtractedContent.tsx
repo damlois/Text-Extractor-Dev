@@ -7,14 +7,15 @@ import {
   showNotification,
 } from "../../../../../../../utils/notification";
 import OriginalDocument from "../extractionHistory/invoicePreview/OriginalDocument";
-import AppButton from "../../../../../../../components/AppButton";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { ArrowLeftOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import EditExtractedContent from "./EditExtractedContent";
 import { useBlocker, useNavigate } from "react-router-dom";
 import ExtractedContent from "../extractionHistory/invoicePreview/ExtractedContent";
-import { ReviewStatus } from "../../types";
+import { EditedFields, ReviewActionType, ReviewStatus } from "../../types";
 import ConfirmLeaveModal from "./ConfirmLeaveModal";
+import ActionButtons from "./ActionButtons";
+import { constructReviewPayload } from "../../utils";
 
 const ReviewExtractedContent = () => {
   const [pageLoading, setPageLoading] = useState(false);
@@ -26,17 +27,10 @@ const ReviewExtractedContent = () => {
   const [extractedContent, setExtractedContent] = useState<DynamicObject>();
   const [QAPassed, setQAPassed] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
-
   const [documentPages, setDocumentPages] = useState<
     ImageDataResponse[] | undefined
   >();
-  const [editedFields, setEditedFields] = useState<{
-    regular: Record<string, string>;
-    items: Record<number, any>;
-  }>({
-    regular: {},
-    items: {},
-  });
+  const [editedFields, setEditedFields] = useState<EditedFields | undefined>();
 
   const { reviewInvoice } = useInvoiceProcessor();
   const navigate = useNavigate();
@@ -62,13 +56,20 @@ const ReviewExtractedContent = () => {
       navigate("../extraction-history");
     }
 
+    const pageEntryTime = Date.now();
+
     return () => {
-      console.log("lets update");
-      console.log(QAPassedRef.current, "QA PAssed");
-      if (!QAPassedRef.current) {
-        updateReviewStatus("pending");
-      } else {
-        updateReviewStatus("reviewed");
+      const timeSpent = Date.now() - pageEntryTime;
+
+      //update review status when user is leaving the page
+      if (timeSpent > 200) {
+        if (!QAPassedRef.current) {
+          updateReviewStatus("pending");
+        } else {
+          updateReviewStatus("reviewed");
+        }
+
+        blockerRef.current?.reset?.();
       }
     };
   }, []);
@@ -137,23 +138,13 @@ const ReviewExtractedContent = () => {
     }
   };
 
-  const handleSaveChanges = async (type: string) => {
+  const handleSaveChanges = async (type: ReviewActionType) => {
     try {
       if (!reviewInvoice) return;
 
       setSaveLoading({ type, isLoading: true });
 
-      const data = {
-        edited_content:
-          type === "approve_qa"
-            ? reviewInvoice.extracted_content
-            : {
-                ...editedFields,
-                confidence: reviewInvoice.extracted_content.confidence,
-                overall_confidence:
-                  reviewInvoice.extracted_content.overall_confidence,
-              },
-      };
+      const data = constructReviewPayload(type, reviewInvoice, editedFields);
 
       const response = await invoiceProcessorApi.editInvoiceExtraction(
         reviewInvoice.id,
@@ -169,7 +160,7 @@ const ReviewExtractedContent = () => {
         "success",
         type === "approve_qa"
           ? "Invoice QA approved successfully"
-          : "Your changes have been successfully saved"
+          : "Changes Saved Successfully"
       );
     } catch (error) {
       handleError(error);
@@ -197,41 +188,13 @@ const ReviewExtractedContent = () => {
           </p>
         </div>
         {!pageLoading && (
-          <div className="flex gap-4 flex-wrap ml-auto">
-            <AppButton
-              loading={
-                saveLoading.type === "approve_qa" && saveLoading.isLoading
-              }
-              children="Approve QA"
-              variant="secondary"
-              className="!w-fit"
-              onClick={() => handleSaveChanges("approve_qa")}
-            />
-
-            <AppButton
-              loading={
-                saveLoading.type === "save_edit" && saveLoading.isLoading
-              }
-              children={
-                <>
-                  {isEditState ? (
-                    "Save Changes"
-                  ) : (
-                    <div>
-                      <EditOutlined className="mr-2" />{" "}
-                      <span>Edit Content</span>
-                    </div>
-                  )}
-                </>
-              }
-              className="!w-fit"
-              onClick={
-                isEditState
-                  ? () => handleSaveChanges("save_edit")
-                  : () => setIsEditState(true)
-              }
-            />
-          </div>
+          <ActionButtons
+            saveLoading={saveLoading}
+            isEditState={isEditState}
+            blockerRef={blockerRef}
+            setIsEditState={setIsEditState}
+            handleSaveChanges={handleSaveChanges}
+          />
         )}
       </div>
       {pageLoading ? (

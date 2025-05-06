@@ -55,3 +55,10 @@ export type ItemField = {
   data: any;
   confidence?: number;
 };
+
+export type EditedFields = {
+  regular: Record<string, string>;
+  items: Record<number, any>;
+};
+
+export type ReviewActionType = "approve_qa" | "save_edit";

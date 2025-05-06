@@ -9,9 +9,7 @@ import { filterInvoices } from "../../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../../types";
 import { EditOutlined, WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
-import {
-  showNotification,
-} from "../../../../../../../../utils/notification";
+import { showNotification } from "../../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../../service/sseClient";
 import { formatInvoiceAndCreateMap } from "../../../utils";
 import { PERMISSIONS } from "../../../../../../constants/permissions";
@@ -193,15 +191,13 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    // if (record.review_status === "in_review") {
-    //   setShowDocInReviewModal(true);
-    //   return;
-    // }
+    if (record.review_status === "in_review") {
+      setShowDocInReviewModal(true);
+      return;
+    }
 
     setReviewInvoice(record);
-    navigate("../extraction-history/review", {
-      state: { duplicatesCheckDone: true },
-    });
+    navigate("../extraction-history/review");
   };
 
   const rowSelection = canGenerateInsights
@@ -222,7 +218,9 @@ const ExtractionHistoryTable = () => {
       dataIndex: "file_name",
       render: (text: string, record: ProcessedInvoice) => (
         <button
-          className={`text-dark-gray text-[14px] font-medium underline text-left`}
+          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[240px] truncate`}
+          style={{ display: "inline-block", verticalAlign: "top" }}
+          title={text}
           onClick={() => togglePreviewModal(record)}
         >
           {text}
@@ -337,7 +335,6 @@ const ExtractionHistoryTable = () => {
 
   const handleTableChange = (newPagination: any) => {
     setPagination(newPagination);
-    // fetchInvoices(newPagination.current, newPagination.pageSize);
   };
 
   const handleAlertClose = () => {
