@@ -157,7 +157,7 @@ const LabelSetupTemplate = ({
                 disabled={!!editingKey}
                 onClick={() => edit(record)}
               >
-                <FaRegEdit className="text-[18px] text-deep-blue" />
+                {/* <FaRegEdit className="text-[18px] text-deep-blue" /> */}
               </Typography.Link>
             )}
             {!editable && (
