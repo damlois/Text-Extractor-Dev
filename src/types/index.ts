@@ -101,7 +101,9 @@ export type DynamicValue =
   | null
   | boolean
   | DynamicObject
-  | DynamicValue[];
+  | DynamicValue[]
+  | any
+  
 export interface DynamicObject {
   [key: string]: DynamicValue;
 }
@@ -119,7 +121,6 @@ export interface ProcessedInvoice {
   };
   source?: string;
   processing_status: string;
-  confidence_level: string;
   review_status: ReviewStatus;
   created_at: string;
 }

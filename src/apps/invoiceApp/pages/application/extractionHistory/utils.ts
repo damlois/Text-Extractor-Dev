@@ -1,7 +1,12 @@
 import { camelCase } from "lodash";
 import { ProcessedInvoice } from "../../../../../types";
 import { formatExtractionValue } from "../../../../../utils";
-import { ItemField, RegularField } from "./types";
+import {
+  EditedFields,
+  ItemField,
+  RegularField,
+  ReviewActionType,
+} from "./types";
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
@@ -9,8 +14,6 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
   const formattedInvoices = invoices.map((item: any) => {
     const formattedInvoice = {
       ...item,
-      review_status: "qa_passed",
-      confidence_level: "0.8",
       processing_status:
         item.processing_status === "COMPLETED"
           ? "Successful"
@@ -58,6 +61,9 @@ export const processExtractedContent = (
 
   templateItems.forEach(({ label }) => {
     const value = standardizedExtractionContent[camelCase(label)];
+    const confidence = extractedContent.confidence
+      ? extractedContent?.confidence[label]
+      : undefined;
 
     if (
       (label.toLowerCase().includes("item") ||
@@ -65,12 +71,72 @@ export const processExtractedContent = (
         label.toLowerCase().includes("material")) &&
       Array.isArray(value)
     ) {
-      itemsFieldsData.push({ label, data: value });
+      itemsFieldsData.push({ label, data: value, confidence });
     } else {
       let displayValue = formatExtractionValue(value);
-      regularFieldsData.push({ field: label, value: displayValue });
+      regularFieldsData.push({ field: label, value: displayValue, confidence });
     }
   });
 
-  return { regularFieldsData, itemsFieldsData };
+  return {
+    regularFieldsData,
+    itemsFieldsData,
+  };
+};
+
+export const extractJsonData = (invoices: any[], templateItems: any[]) => {
+  return invoices.map((invoice) => {
+    const { rawData, confidence, overallConfidence, ...filteredData } = invoice;
+
+    const filteredResult = templateItems?.reduce<Record<string, any>>(
+      (acc, { label }) => {
+        const key = camelCase(label);
+        if (filteredData[key]) {
+          acc[key] = {
+            value: filteredData[key],
+            confidence: confidence ? confidence[label] : "N/A",
+          };
+        }
+        return acc;
+      },
+      {}
+    );
+
+    return {
+      ...filteredResult,
+      overall_confidence: overallConfidence ?? "N/A",
+    };
+  });
+};
+
+export const extractCsvData = (invoices: any[], templateItems: any[]) => {
+  return invoices.map((invoice) => {
+    const { rawData, ...filteredData } = invoice;
+
+    return templateItems?.reduce<Record<string, any>>((acc, { label }) => {
+      const key = camelCase(label);
+      if (filteredData[key]) {
+        acc[key] = filteredData[key];
+      }
+      return acc;
+    }, {});
+  });
+};
+
+export const constructReviewPayload = (
+  actionType: ReviewActionType,
+  reviewInvoice: ProcessedInvoice,
+  editedFields?: EditedFields
+) => {
+  return {
+    edited_content:
+      actionType === "approve_qa"
+        ? reviewInvoice.extracted_content
+        : {
+            ...editedFields,
+            confidence: reviewInvoice.extracted_content.confidence,
+            overall_confidence:
+              reviewInvoice.extracted_content.overall_confidence,
+          },
+  };
 };

@@ -1,5 +1,3 @@
-import { ProcessedInvoice } from "../../../../../types";
-
 export type ExtractionHistoryTableInfo = {
   key: React.Key;
   fileName: string;
@@ -18,8 +16,10 @@ export type DuplicateInvoiceItemResponse = {
     receiver: string;
   };
   source?: string;
-  status: string;
+  processing_status: string;
   created_at: string;
+  extracted_content: any;
+  review_status: ReviewStatus;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";
@@ -41,17 +41,24 @@ export type Header = "processing_status" | "confidence" | "review_status";
 export type ReviewStatus =
   | "pending"
   | "in_review"
-  | "qa_passed"
+  | "reviewed"
   | "not_applicable";
 
 export type RegularField = {
   field: string;
   value: string;
-  confidence?: string;
+  confidence?: number;
 };
 
 export type ItemField = {
   label: string;
   data: any;
-  confidence?: string;
+  confidence?: number;
 };
+
+export type EditedFields = {
+  regular: Record<string, string>;
+  items: Record<number, any>;
+};
+
+export type ReviewActionType = "approve_qa" | "save_edit";

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Alert, Dropdown, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../../components/AppButton";
-import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
 import { ProcessedInvoice } from "../../../../../../../../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
@@ -10,10 +9,7 @@ import { filterInvoices } from "../../../../../../../../utils/filterInvoices";
 import { ExtractionHistoryFilter } from "../../../../../../../../types";
 import { EditOutlined, WarningOutlined } from "@ant-design/icons";
 import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
-import {
-  handleError,
-  showNotification,
-} from "../../../../../../../../utils/notification";
+import { showNotification } from "../../../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../../../service/sseClient";
 import { formatInvoiceAndCreateMap } from "../../../utils";
 import { PERMISSIONS } from "../../../../../../constants/permissions";
@@ -36,14 +32,19 @@ const ExtractionHistoryTable = () => {
     useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [invoices, setInvoices] = useState<ProcessedInvoice[]>([]);
+  const [originalInvoices, setOriginalInvoices] = useState<ProcessedInvoice[]>(
+    []
+  );
+  const [displayInvoices, setDisplayInvoices] = useState<ProcessedInvoice[]>(
+    []
+  );
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
-  const [pageInvoices, setPageInvoices] = useState<ProcessedInvoice[]>([]);
+  const [confidenceSort, setConfidenceSort] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(
     !sessionStorage.getItem("hideDuplicatesAlert")
   );
@@ -57,7 +58,11 @@ const ExtractionHistoryTable = () => {
   const canEditExtraction = userHasPermission(PERMISSIONS.EDIT_EXTRACTION);
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
-  const confidenceSortOptions = ["Lowest to Highest", "Higehst to Lowest"];
+  const confidenceSortOptions = [
+    "Lowest to Highest",
+    "Higehst to Lowest",
+    "Reset",
+  ];
 
   const {
     setInvoicesMapById,
@@ -96,7 +101,7 @@ const ExtractionHistoryTable = () => {
       data.invoices
     );
 
-    setPageInvoices(formattedInvoices);
+    setOriginalInvoices(formattedInvoices);
     setInvoicesMapById(invoiceMapById);
     setPagination((prevPagination) => ({
       ...prevPagination,
@@ -104,36 +109,11 @@ const ExtractionHistoryTable = () => {
     }));
   };
 
-  const fetchInvoices = async (page: number, size: number) => {
-    setLoading(true);
-    try {
-      const response = await invoiceProcessorApi.getProcessedInvoices({
-        page,
-        size,
-      });
-
-      const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
-        response.data.data.invoices
-      );
-
-      setPageInvoices(formattedInvoices);
-      setInvoicesMapById(invoiceMapById);
-      setPagination({
-        current: response.data.data.page,
-        pageSize: response.data.data.size,
-        total: response.data.data.total,
-      });
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (
       !location.state?.fromInsightsPage &&
-      !location.state?.fromDuplicatesPage
+      !location.state?.fromDuplicatesPage &&
+      !location.state?.fromReviewpage
     ) {
       sessionStorage.removeItem("hideDuplicatesAlert");
       setShowAlert(true);
@@ -143,16 +123,11 @@ const ExtractionHistoryTable = () => {
   }, []);
 
   useEffect(() => {
-    if (pagination.current === 1) {
-      if (!sseRef.current) {
-        sseRef.current = manageSSE(
-          `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
-          handleSSEMessage
-        );
-      }
-    } else {
-      sseRef.current?.stop();
-      sseRef.current = null;
+    if (!sseRef.current) {
+      sseRef.current = manageSSE(
+        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
+        handleSSEMessage
+      );
     }
 
     return () => {
@@ -162,16 +137,35 @@ const ExtractionHistoryTable = () => {
   }, [pagination.current, pagination.pageSize]);
 
   useEffect(() => {
-    if (pageInvoices.length) {
-      setInvoices(filterInvoices(pageInvoices, filters));
+    if (originalInvoices.length) {
+      setDisplayInvoices(filterInvoices(originalInvoices, filters));
     }
-  }, [filters, pageInvoices]);
+  }, [filters, originalInvoices]);
+
+  useEffect(() => {
+    if (!confidenceSort || confidenceSort === "Reset") {
+      setDisplayInvoices(filterInvoices(originalInvoices, filters));
+      return;
+    }
+
+    const sorted = [...originalInvoices].sort((a, b) => {
+      const aConfidence = a.extracted_content?.overall_confidence?.score ?? 0;
+      const bConfidence = b.extracted_content?.overall_confidence?.score ?? 0;
+
+      return confidenceSort === "Lowest to Highest"
+        ? aConfidence - bConfidence
+        : bConfidence - aConfidence;
+    });
+
+    const filteredSorted = filterInvoices(sorted, filters);
+    setDisplayInvoices(filteredSorted);
+  }, [confidenceSort, filters, originalInvoices]);
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
-      new Set(pageInvoices?.map((invoice) => invoice.email_metadata.sender))
+      new Set(originalInvoices?.map((invoice) => invoice.email_metadata.sender))
     ).filter(Boolean);
-  }, [pageInvoices]);
+  }, [originalInvoices]);
 
   const togglePreviewModal = (invoice?: ProcessedInvoice) => {
     setSelectedInvoice(invoice || null);
@@ -203,9 +197,7 @@ const ExtractionHistoryTable = () => {
     }
 
     setReviewInvoice(record);
-    navigate("../extraction-history/review", {
-      state: { duplicatesCheckDone: true },
-    });
+    navigate("../extraction-history/review");
   };
 
   const rowSelection = canGenerateInsights
@@ -226,7 +218,9 @@ const ExtractionHistoryTable = () => {
       dataIndex: "file_name",
       render: (text: string, record: ProcessedInvoice) => (
         <button
-          className={`text-dark-gray text-[14px] font-medium underline text-left`}
+          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[240px] truncate`}
+          style={{ display: "inline-block", verticalAlign: "top" }}
+          title={text}
           onClick={() => togglePreviewModal(record)}
         >
           {text}
@@ -273,7 +267,10 @@ const ExtractionHistoryTable = () => {
             items: confidenceSortOptions.map((option, index) => ({
               key: index,
               label: (
-                <button className="w-full text-left text-dark-gray">
+                <button
+                  className="w-full text-left text-dark-gray"
+                  onClick={() => setConfidenceSort(option)}
+                >
                   {option}
                 </button>
               ),
@@ -291,8 +288,10 @@ const ExtractionHistoryTable = () => {
           </div>
         </Dropdown>
       ),
-      dataIndex: "confidence_level",
-      render: (_: any, record: ProcessedInvoice) => <ConfidenceIndicator record={record} />,
+      dataIndex: "overall_confidence",
+      render: (_: any, record: ProcessedInvoice) => (
+        <ConfidenceIndicator record={record} />
+      ),
     },
     {
       title: (
@@ -336,7 +335,6 @@ const ExtractionHistoryTable = () => {
 
   const handleTableChange = (newPagination: any) => {
     setPagination(newPagination);
-    fetchInvoices(newPagination.current, newPagination.pageSize);
   };
 
   const handleAlertClose = () => {
@@ -377,7 +375,7 @@ const ExtractionHistoryTable = () => {
           rowSelection={rowSelection}
           rowKey="id"
           columns={extractionHistoryColumns}
-          dataSource={invoices}
+          dataSource={displayInvoices}
           className="app-table extraction-history-table no-vertical-lines"
           loading={loading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}

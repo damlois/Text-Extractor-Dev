@@ -1,33 +1,27 @@
 import { useEffect, useState } from "react";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
 import { useTemplate } from "../../../../../context/TemplateContext";
-import { useNavigate } from "react-router-dom";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import AppInput from "../../../../../../../components/AppInput";
 import EditExtractedItemsTable from "./EditExtractedItemsTable";
-import { RegularField } from "../../types";
-
-interface UpdatedItemField {
-  label: string;
-  data: Record<string, any>;
-}
+import { ItemField, RegularField } from "../../types";
+import ConfidenceBadge from "./ConfidenceBadge";
 
 interface EditExtractedContentProps {
   extractedContent: any;
+  onEdit: (editedFields: any) => void;
 }
 
 const EditExtractedContent = ({
   extractedContent,
+  onEdit,
 }: EditExtractedContentProps) => {
   const [updatedRegularFields, setUpdatedRegularFields] = useState<
     RegularField[]
   >([]);
-  const [updatedItemFields, setUpdatedItemsFields] = useState<
-    UpdatedItemField[]
-  >([]);
+  const [updatedItemFields, setUpdatedItemsFields] = useState<ItemField[]>([]);
 
-  const navigate = useNavigate();
   const { templateItems, fetchTemplate } = useTemplate();
   const {
     currentDataSource,
@@ -54,6 +48,23 @@ const EditExtractedContent = ({
     setUpdatedItemsFields(itemsFieldsData);
   }, [regularFieldsData, itemsFieldsData]);
 
+  useEffect(() => {
+    const regularFieldsObject = updatedRegularFields.reduce(
+      (acc, { field, value }) => ({ ...acc, [field]: value }),
+      {}
+    );
+
+    const itemFieldsObject = updatedItemFields.reduce((acc, item) => {
+      acc[item.label] = item.data;
+      return acc;
+    }, {} as Record<string, any>);
+
+    onEdit({
+      ...regularFieldsObject,
+      ...itemFieldsObject,
+    });
+  }, [updatedRegularFields, updatedItemFields]);
+
   const updateRegularFieldValue = (field: string, value: string) => {
     setUpdatedRegularFields((prevFields) =>
       prevFields.map((item) =>
@@ -73,53 +84,48 @@ const EditExtractedContent = ({
         if (index !== itemIndex) return item;
 
         const data = item.data;
+        let newData: any = [];
 
-        if (Array.isArray(data)) {
-          if (typeof data[0] === "object" && data[0] !== null) {
-            const newData = data.map((row, rIndex) => {
-              if (rIndex !== rowIndex) return row;
+        const isArray = Array.isArray(data);
+        const isArrayOfObjects =
+          isArray &&
+          data.length > 0 &&
+          typeof data[0] === "object" &&
+          !Array.isArray(data[0]);
+        const isArrayOfStrings =
+          isArray && data.length > 0 && typeof data[0] === "string";
+        const isNumericKeyedObject =
+          !isArray &&
+          typeof data === "object" &&
+          Object.keys(data).every((key) => /^\d+$/.test(key));
 
-              const originalCell = row[key];
+        if (isArrayOfObjects) {
+          newData = data.map((row: any, rIndex: number) => {
+            if (rIndex !== rowIndex) return row;
 
-              if (
-                originalCell &&
+            const originalCell = row[key];
+            return {
+              ...row,
+              [key]:
                 typeof originalCell === "object" &&
+                originalCell !== null &&
                 "value" in originalCell
-              ) {
-                return {
-                  ...row,
-                  [key]: {
-                    ...originalCell,
-                    value: value,
-                  },
-                };
-              } else {
-                return {
-                  ...row,
-                  [key]: value,
-                };
-              }
-            });
-            return { ...item, data: newData };
-          }
-
-          if (typeof data[0] === "string") {
-            const newData = data.map((item, index) =>
-              index === rowIndex ? value : item
-            );
-            return { ...item, data: newData };
-          }
+                  ? { ...originalCell, value }
+                  : value,
+            };
+          });
+        } else if (isArrayOfStrings) {
+          newData = data.map((item: string, i: number) =>
+            i === rowIndex ? value : item
+          );
+        } else if (isNumericKeyedObject) {
+          newData = {
+            ...data,
+            [rowIndex]: value,
+          };
         }
 
-        if (typeof data === "object" && data !== null) {
-          const keys = Object.keys(data);
-          if (keys.every((k) => /^\d+$/.test(k))) {
-            const newData = { ...data, [rowIndex]: value };
-            return { ...item, data: newData };
-          }
-        }
-
-        return item;
+        return { ...item, data: newData };
       })
     );
   };
@@ -136,15 +142,19 @@ const EditExtractedContent = ({
     <div className="h-full flex flex-col">
       <div className="flex justify-between gap-4 px-[18px] py-[12px] text-[16px] text-dark-gray bg-[#F9FAFB] rounded-t-[8px]">
         <p className="font-bold">Extracted Content</p>
-        <div>
-          <span className="text-[14px] mr-1">Confidence Level:</span>
-          <Tooltip title="This confidence level (80%) means the system is fairly certain about the accuracy of the extracted data, 4 out of 5 required fields were matched accurately based on format, structure, and position in the document.">
-            <InfoCircleOutlined className="text-[#00000073] cursor-pointer mr-2" />
-          </Tooltip>
-          <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
-            80%
-          </span>
-        </div>
+        {extractedContent?.overall_confidence?.score ? (
+          <div>
+            <span className="text-[14px] mr-1">Confidence Level:</span>
+            <Tooltip title={extractedContent?.overall_confidence?.reason}>
+              <InfoCircleOutlined className="text-[#00000073] cursor-pointer mr-2" />
+            </Tooltip>
+            <ConfidenceBadge
+              confidence={extractedContent?.overall_confidence?.score}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh] flex flex-col gap-6">
@@ -153,9 +163,9 @@ const EditExtractedContent = ({
             <div key={field} className="flex flex-col gap-1">
               <label className="text-dark-gray text-[13px] font-bold">
                 {field}
-                <span className="text-[10px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] ml-[6px] rounded-full">
-                  80%
-                </span>
+                {confidence && typeof confidence === "number" && (
+                  <ConfidenceBadge confidence={confidence} />
+                )}
               </label>
               <AppInput
                 type="text"
@@ -171,6 +181,7 @@ const EditExtractedContent = ({
             <EditExtractedItemsTable
               key={itemIndex}
               label={item.label}
+              confidence={item.confidence}
               itemsFieldData={item.data}
               onCellChange={(rowIndex, key, value) =>
                 updateItemFieldValue(itemIndex, rowIndex, key, value)

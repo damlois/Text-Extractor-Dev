@@ -3,9 +3,11 @@ import { processExtractedContent } from "../../../utils";
 import ExtractedItemsTable from "./ExtractedItemsTable";
 import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import { useEffect } from "react";
+import { ReviewStatus } from "../../../types";
 
 interface ExtractedContentProps {
   extractedContent: any;
+  reviewStatus?: ReviewStatus;
 }
 
 interface ExtractedItemDisplayProps {
@@ -22,7 +24,10 @@ const ExtractedItem = ({ field, value }: ExtractedItemDisplayProps) => {
   );
 };
 
-const ExtractedContent = ({ extractedContent }: ExtractedContentProps) => {
+const ExtractedContent = ({
+  extractedContent,
+  reviewStatus,
+}: ExtractedContentProps) => {
   const { templateItems, fetchTemplate } = useTemplate();
   const {
     currentDataSource,
@@ -59,15 +64,19 @@ const ExtractedContent = ({ extractedContent }: ExtractedContentProps) => {
     <div className="h-full flex flex-col">
       <div className="flex justify-between gap-4 px-[18px] py-[12px] text-[16px] text-dark-gray bg-[#F9FAFB] rounded-t-[8px]">
         <p className="font-bold">Extracted Content</p>
-        <div>
-          <span className="text-[14px] mr-1">QA Passed By:</span>
-          <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
+        {reviewStatus === "reviewed" && (
+          <div>
+            <span className="text-[14px] mr-1">QA Passed</span>
+            {/* <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
             Ann Paul
           </span>
-          <span className="text-[12px]">2:00pm, 12/4/2025</span>
-        </div>
+          <span className="text-[12px]">2:00pm, 12/4/2025</span> */}
+          </div>
+        )}
       </div>
-      {!extractedContent || typeof extractedContent !== "object" ? (
+      {!extractedContent ||
+      typeof extractedContent !== "object" ||
+      Object.keys(extractedContent).length === 0 ? (
         <div className="text-gray text-[12px]">
           No extracted content available.
         </div>

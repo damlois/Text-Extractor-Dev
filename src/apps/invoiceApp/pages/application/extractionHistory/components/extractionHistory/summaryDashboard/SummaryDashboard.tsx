@@ -19,7 +19,7 @@ const SummaryDashboard = () => {
   const [duplicatesLoading, setDuplicatesLoading] = useState(true);
   const [metricsLoading, setMetricsLoading] = useState(true);
 
-  const {userHasPermission} = usePermission();
+  const { userHasPermission } = usePermission();
   const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
 
   const navigate = useNavigate();
@@ -60,17 +60,32 @@ const SummaryDashboard = () => {
     let invoiceIdMap: Record<string, DuplicateInvoiceItemResponse> = {};
 
     const fileHashMap = data.duplicates?.reduce(
-      (acc: DuplicateInvoicesFileHashMap, item: DuplicateInvoicesResponse) => {
+      (acc: DuplicateInvoicesFileHashMap, item: any) => {
+        const updatedInvoices = item.invoices
+          .map((invoice: any) => {
+            const { status, ...rest } = invoice;
+            const updatedInvoice = {
+              ...rest,
+              processing_status:
+                status.toLowerCase() === "completed" ? "successful" : status,
+            };
+
+            if (!invoiceIdMap[invoice.id] && invoice.id) {
+              invoiceIdMap[invoice.id] = updatedInvoice;
+            }
+
+            return updatedInvoice;
+          })
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          );
+
         acc[item.file_hash] = {
-          invoices: item.invoices,
+          invoices: updatedInvoices,
           visible: true,
         };
-
-        item.invoices.forEach((invoice) => {
-          if (!invoiceIdMap[invoice.id] && invoice.id) {
-            invoiceIdMap[invoice.id] = invoice;
-          }
-        });
 
         count += item.invoices.length;
         return acc;

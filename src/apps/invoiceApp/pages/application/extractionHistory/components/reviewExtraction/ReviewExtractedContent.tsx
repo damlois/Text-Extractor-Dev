@@ -1,51 +1,172 @@
 import { Spin } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
-import { ImageDataResponse } from "../../../../../../../types";
-import { handleError } from "../../../../../../../utils/notification";
+import { DynamicObject, ImageDataResponse } from "../../../../../../../types";
+import {
+  handleError,
+  showNotification,
+} from "../../../../../../../utils/notification";
 import OriginalDocument from "../extractionHistory/invoicePreview/OriginalDocument";
-import AppButton from "../../../../../../../components/AppButton";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { ArrowLeftOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import EditExtractedContent from "./EditExtractedContent";
-import { useNavigate } from "react-router-dom";
+import { useBlocker, useNavigate } from "react-router-dom";
 import ExtractedContent from "../extractionHistory/invoicePreview/ExtractedContent";
+import { EditedFields, ReviewActionType, ReviewStatus } from "../../types";
+import ConfirmLeaveModal from "./ConfirmLeaveModal";
+import ActionButtons from "./ActionButtons";
+import { constructReviewPayload } from "../../utils";
 
 const ReviewExtractedContent = () => {
-  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState({
+    type: "save_edit",
+    isLoading: false,
+  });
   const [isEditState, setIsEditState] = useState(false);
+  const [extractedContent, setExtractedContent] = useState<DynamicObject>();
+  const [QAPassed, setQAPassed] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [documentPages, setDocumentPages] = useState<
     ImageDataResponse[] | undefined
   >();
+  const [editedFields, setEditedFields] = useState<EditedFields | undefined>();
 
   const { reviewInvoice } = useInvoiceProcessor();
   const navigate = useNavigate();
 
+  const blockerRef = useRef<ReturnType<typeof useBlocker> | null>(null);
+  const QAPassedRef = useRef(false);
+
+  const blocker = useBlocker(() => {
+    if (!QAPassed) {
+      setShowLeaveModal(true);
+      return true;
+    }
+
+    return false;
+  });
+
+  useEffect(() => {
+    blockerRef.current = blocker;
+  }, [blocker]);
+
+  useEffect(() => {
+    if (!reviewInvoice) {
+      navigate("../extraction-history");
+    }
+
+    const pageEntryTime = Date.now();
+
+    return () => {
+      const timeSpent = Date.now() - pageEntryTime;
+
+      //update review status when user is leaving the page
+      if (timeSpent > 200) {
+        if (!QAPassedRef.current) {
+          updateReviewStatus("pending");
+        } else {
+          updateReviewStatus("reviewed");
+        }
+
+        blockerRef.current?.reset?.();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!QAPassed) {
+        e.preventDefault();
+      }
+    };
+
+    const handleUnload = () => {
+      if (!QAPassed) {
+        updateReviewStatus("pending");
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("unload", handleUnload);
+    };
+  }, [QAPassed]);
+
   useEffect(() => {
     if (reviewInvoice) {
+      if (reviewInvoice?.review_status === "reviewed") {
+        setQAPassed(true);
+        QAPassedRef.current = true;
+      }
+
+      setExtractedContent(reviewInvoice?.extracted_content);
+
       const fetchInvoiceImageData = async () => {
         try {
-          setLoading(true);
+          setPageLoading(true);
 
           const response = await invoiceProcessorApi.getInvoiceImage(
             reviewInvoice.id
           );
+
           setDocumentPages(response.data.data.pages);
         } catch (error) {
           handleError(error);
         } finally {
-          setLoading(false);
+          setPageLoading(false);
         }
       };
 
+      updateReviewStatus("in_review");
       fetchInvoiceImageData();
     }
-  }, [reviewInvoice?.id]);
+  }, [reviewInvoice]);
 
-  if (!reviewInvoice) return null;
+  const updateReviewStatus = async (status: ReviewStatus) => {
+    if (reviewInvoice) {
+      try {
+        await invoiceProcessorApi.updateReviewStatus(reviewInvoice.id, {
+          status,
+        });
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  };
 
-  const handleSaveChanges = () => {
-    console.log("save changes");
+  const handleSaveChanges = async (type: ReviewActionType) => {
+    try {
+      if (!reviewInvoice) return;
+
+      setSaveLoading({ type, isLoading: true });
+
+      const data = constructReviewPayload(type, reviewInvoice, editedFields);
+
+      const response = await invoiceProcessorApi.editInvoiceExtraction(
+        reviewInvoice.id,
+        data
+      );
+
+      setIsEditState(false);
+      setQAPassed(true);
+      QAPassedRef.current = true;
+
+      setExtractedContent(response.data.data.extracted_content);
+      showNotification(
+        "success",
+        type === "approve_qa"
+          ? "Invoice QA approved successfully"
+          : "Changes Saved Successfully"
+      );
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setSaveLoading({ type, isLoading: false });
+    }
   };
 
   return (
@@ -59,45 +180,24 @@ const ReviewExtractedContent = () => {
       >
         <div className="flex flex-col gap-1">
           <p className="font-medium text-[16px]">
-            Review Extracted Content for {reviewInvoice.file_name}{" "}
+            Review Extracted Content for {reviewInvoice?.file_name}{" "}
           </p>
           <p>
             Compare the original document with the extracted fields and make any
             necessary corrections by manually editing the fields.
           </p>
         </div>
-        {!loading && (
-          <div className="flex gap-4 flex-wrap ml-auto">
-            <AppButton
-              children="Approve QA"
-              variant="secondary"
-              className="!w-fit"
-            />
-
-            <AppButton
-              children={
-                <>
-                  {isEditState ? (
-                    "Save Changes"
-                  ) : (
-                    <div>
-                      <EditOutlined className="mr-2" />{" "}
-                      <span>Edit Content</span>
-                    </div>
-                  )}
-                </>
-              }
-              className="!w-fit"
-              onClick={
-                isEditState
-                  ? () => handleSaveChanges()
-                  : () => setIsEditState(true)
-              }
-            />
-          </div>
+        {!pageLoading && (
+          <ActionButtons
+            saveLoading={saveLoading}
+            isEditState={isEditState}
+            blockerRef={blockerRef}
+            setIsEditState={setIsEditState}
+            handleSaveChanges={handleSaveChanges}
+          />
         )}
       </div>
-      {loading ? (
+      {pageLoading ? (
         <div className="w-full h-[80vh] flex justify-center items-center">
           <Spin></Spin>
         </div>
@@ -105,11 +205,16 @@ const ReviewExtractedContent = () => {
         <>
           <div
             className="text-deep-blue px-[0] cursor-pointer mt-8 mb-4"
-            onClick={() =>
+            onClick={() => {
+              if (isEditState) {
+                setIsEditState(false);
+                return;
+              }
+
               navigate("../extraction-history", {
-                state: { fromDuplicatesPage: true },
-              })
-            }
+                state: { fromReviewPage: true },
+              });
+            }}
           >
             <ArrowLeftOutlined className="mr-6" /> Back
           </div>
@@ -118,19 +223,42 @@ const ReviewExtractedContent = () => {
               <OriginalDocument pages={documentPages || []} />{" "}
             </div>
             <div className="border border-[#F1F1F1]">
-              {isEditState ? (
-                <EditExtractedContent
-                  extractedContent={reviewInvoice.extracted_content}
-                />
+              {extractedContent ? (
+                isEditState ? (
+                  <EditExtractedContent
+                    extractedContent={extractedContent}
+                    onEdit={setEditedFields}
+                  />
+                ) : (
+                  <ExtractedContent
+                    extractedContent={extractedContent}
+                    reviewStatus={reviewInvoice?.review_status}
+                  />
+                )
               ) : (
-                <ExtractedContent
-                  extractedContent={reviewInvoice.extracted_content}
-                />
+                <div className="p-4 text-center text-gray-500">
+                  No extracted content available to display.
+                </div>
               )}
             </div>
           </div>
         </>
       )}
+      <ConfirmLeaveModal
+        open={showLeaveModal}
+        onCancel={() => {
+          blockerRef.current?.reset?.();
+          setShowLeaveModal(false);
+        }}
+        onConfirmLeave={() => {
+          blockerRef.current?.proceed?.();
+          setShowLeaveModal(false);
+        }}
+        onApproveQA={() => {
+          handleSaveChanges("approve_qa");
+          setShowLeaveModal(false);
+        }}
+      />
     </>
   );
 };

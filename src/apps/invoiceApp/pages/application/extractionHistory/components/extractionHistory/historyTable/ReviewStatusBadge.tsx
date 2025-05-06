@@ -6,11 +6,11 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { Tooltip } from "antd";
-import { ReviewStatus } from "../../../types";
+import { DuplicateInvoiceItemResponse, ReviewStatus } from "../../../types";
 import { ProcessedInvoice } from "../../../../../../../../types";
 
 interface ReviewStatusBadgeProps {
-  record: ProcessedInvoice;
+  record: ProcessedInvoice | DuplicateInvoiceItemResponse;
 }
 
 const statusMap: Record<
@@ -32,14 +32,14 @@ const statusMap: Record<
   },
   in_review: {
     label: "In Review",
-    info: "Document in review by Ann Winston",
+    info: "Document in review",
     icon: <EyeOutlined />,
     bgColor: "bg-[#FAF5FF]",
     textColor: "text-[#9333EA]",
   },
-  qa_passed: {
+  reviewed: {
     label: "QA Passed",
-    info: "QA passed by Lisa Wang",
+    info: "QA passed",
     icon: <CheckCircleOutlined />,
     bgColor: "bg-[#DCFCE7]",
     textColor: "text-[#166534]",
@@ -56,7 +56,7 @@ const statusMap: Record<
 const ReviewStatusBadge: React.FC<ReviewStatusBadgeProps> = ({ record }) => {
   let status = record.review_status;
 
-  if (record.processing_status.toLowerCase() !== "successful") {
+  if (record.processing_status.toLowerCase() !== "successful" || !status) {
     status = "not_applicable";
   }
 
