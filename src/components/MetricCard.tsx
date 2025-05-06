@@ -13,7 +13,8 @@ const MetricCard = ({ iconUrl, status, count, onClick }: MetricCardProps) => {
       <div className="flex justify-between ">
         <img src={iconUrl} className="mb-6" alt="success icon" />
         <p className="text-[#98A2B3] text-[12px] flex">
-          <span>Last 30 days</span> <FaAngleDown className="ml-2" />
+          <span>Last 30 days</span>{" "}
+          {(<FaAngleDown className="ml-2" />) as JSX.Element}
         </p>
       </div>
       <p className="text-[#667185] text-[14px] font-normal mb-2">{status}</p>
