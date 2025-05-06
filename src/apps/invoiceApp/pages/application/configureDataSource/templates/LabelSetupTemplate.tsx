@@ -162,7 +162,7 @@ const LabelSetupTemplate = ({
             )}
             {!editable && (
               <Typography.Link onClick={() => deleteRow(record.key)}>
-                <RiDeleteBinLine className="text-[18px] text-[#EA4335]" />
+                {/* <RiDeleteBinLine className="text-[18px] text-[#EA4335]" /> */}
               </Typography.Link>
             )}
           </div>
