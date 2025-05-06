@@ -1,5 +1,3 @@
-import { ProcessedInvoice } from "../../../../../types";
-
 export type ExtractionHistoryTableInfo = {
   key: React.Key;
   fileName: string;
@@ -18,8 +16,10 @@ export type DuplicateInvoiceItemResponse = {
     receiver: string;
   };
   source?: string;
-  status: string;
+  processing_status: string;
   created_at: string;
+  extracted_content: any;
+  review_status: ReviewStatus;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";

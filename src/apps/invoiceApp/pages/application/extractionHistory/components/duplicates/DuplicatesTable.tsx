@@ -3,8 +3,12 @@ import { TableColumnsType, Table } from "antd";
 import { useState } from "react";
 import InvoicePreviewModal from "../extractionHistory/invoicePreview/InvoicePreviewModal";
 import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
-import { DuplicateInvoiceItemResponse } from "../../types";
+import { DuplicateInvoiceItemResponse, StatusType } from "../../types";
 import { formatDateTime } from "../../../../../../../utils";
+import TableHeaderTooltip from "../extractionHistory/historyTable/TableHeaderTooltip";
+import ConfidenceIndicator from "../extractionHistory/historyTable/ConfidenceIndicator";
+import ExtractionStatusItem from "../extractionHistory/historyTable/ExtractionStatusItem";
+import ReviewStatusBadge from "../extractionHistory/historyTable/ReviewStatusBadge";
 
 interface DuplicatesTableInterface {
   selectedInvoiceIds: Record<string, string[]>;
@@ -80,16 +84,38 @@ const DuplicatesTable = ({
         ),
       },
       {
-        title: "Status",
-        dataIndex: "status",
+        title: (
+          <div className="flex items-center gap-1">
+            <span>Status</span>
+            <TableHeaderTooltip header="processing_status" />
+          </div>
+        ),
+        dataIndex: "processing_status",
         render: (text: string) => (
-          <span
-            className={`${text?.toLowerCase()} text-[12px] px-2 py-[2px] rounded-[100px]`}
-          >
-            {text?.toLowerCase() === "completed"
-              ? "successful"
-              : text.toLowerCase()}
-          </span>
+          <ExtractionStatusItem type={text.toLowerCase() as StatusType} />
+        ),
+      },
+      {
+        title: (
+          <div className="flex items-center gap-1">
+            <span>Confidence</span>
+            <TableHeaderTooltip header="confidence" />
+          </div>
+        ),
+        render: (_: any, record: DuplicateInvoiceItemResponse) => (
+          <ConfidenceIndicator record={record} />
+        ),
+      },
+      {
+        title: (
+          <div className="flex items-center gap-1">
+            <span>Review Status</span>
+            <TableHeaderTooltip header="review_status" />
+          </div>
+        ),
+        dataIndex: "review_status",
+        render: (_: any, record: DuplicateInvoiceItemResponse) => (
+          <ReviewStatusBadge record={record} />
         ),
       },
     ];

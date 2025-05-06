@@ -1,9 +1,10 @@
 import React from "react";
 import { ProcessedInvoice } from "../../../../../../../../types";
 import { Tooltip } from "antd";
+import { DuplicateInvoiceItemResponse } from "../../../types";
 
 interface ConfidenceIndicatorProps {
-  record: ProcessedInvoice | null;
+  record: ProcessedInvoice | DuplicateInvoiceItemResponse | null;
 }
 
 const ConfidenceIndicator: React.FC<ConfidenceIndicatorProps> = ({

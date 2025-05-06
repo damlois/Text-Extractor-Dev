@@ -142,9 +142,22 @@ const ReviewExtractedContent = () => {
       if (!reviewInvoice) return;
 
       setSaveLoading({ type, isLoading: true });
+
+      const data = {
+        edited_content:
+          type === "approve_qa"
+            ? reviewInvoice.extracted_content
+            : {
+                ...editedFields,
+                confidence: reviewInvoice.extracted_content.confidence,
+                overall_confidence:
+                  reviewInvoice.extracted_content.overall_confidence,
+              },
+      };
+
       const response = await invoiceProcessorApi.editInvoiceExtraction(
         reviewInvoice.id,
-        { edited_content: editedFields }
+        data
       );
 
       setIsEditState(false);
