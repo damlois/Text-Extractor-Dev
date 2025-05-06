@@ -115,11 +115,7 @@ const UsersList = () => {
                 }}
               >
                 <Button
-                  icon={
-                    (
-                      <FaEllipsisVertical className="text-black" />
-                    ) as JSX.Element
-                  }
+                  icon={FaEllipsisVertical({ className: "text-black" })}
                   type="link"
                   className="py-2 px-3 border border-[#E4E7EC] rounded-lg"
                 />
