@@ -70,6 +70,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({
             <ExtractedConetnt
               extractedContent={invoiceDetails.extracted_content}
               reviewStatus={invoiceDetails.review_status}
+              editorName={invoiceDetails.editor}
             />
           </div>
         </div>

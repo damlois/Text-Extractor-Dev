@@ -9,6 +9,7 @@ interface ActionButtonsProps {
   saveLoading: { type: string; isLoading: boolean };
   isEditState: boolean;
   blockerRef: React.MutableRefObject<Blocker | null>;
+  isQAApproved: boolean;
   setIsEditState: (isEditState: boolean) => void;
   handleSaveChanges: (type: ReviewActionType) => void;
 }
@@ -17,6 +18,7 @@ const ActionButtons = ({
   saveLoading,
   isEditState,
   blockerRef,
+  isQAApproved,
   setIsEditState,
   handleSaveChanges,
 }: ActionButtonsProps) => {
@@ -34,6 +36,7 @@ const ActionButtons = ({
         children="Approve QA"
         variant="secondary"
         className="!w-fit"
+        disabled={isEditState || isQAApproved}
         onClick={() => setShowApproveQAModal(true)}
       />
 

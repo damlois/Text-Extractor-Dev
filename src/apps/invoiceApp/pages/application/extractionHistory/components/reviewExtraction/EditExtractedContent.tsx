@@ -10,11 +10,17 @@ import ConfidenceBadge from "./ConfidenceBadge";
 
 interface EditExtractedContentProps {
   extractedContent: any;
+  reviewStatus?: string;
+  editorName?: string;
+  editTime: string;
   onEdit: (editedFields: any) => void;
 }
 
 const EditExtractedContent = ({
   extractedContent,
+  reviewStatus,
+  editorName,
+  editTime,
   onEdit,
 }: EditExtractedContentProps) => {
   const [updatedRegularFields, setUpdatedRegularFields] = useState<
@@ -132,7 +138,7 @@ const EditExtractedContent = ({
 
   if (!extractedContent || typeof extractedContent !== "object") {
     return (
-      <div className="h-full flex items-center justify-center text-gray text-[12px]">
+      <div className="h-full flex items-center justify-center text-gray text-[12px] p-6">
         No extracted content available.
       </div>
     );
@@ -142,19 +148,32 @@ const EditExtractedContent = ({
     <div className="h-full flex flex-col">
       <div className="flex justify-between gap-4 px-[18px] py-[12px] text-[16px] text-dark-gray bg-[#F9FAFB] rounded-t-[8px]">
         <p className="font-bold">Extracted Content</p>
-        {extractedContent?.overall_confidence?.score ? (
+        {reviewStatus === "reviewed" && (
           <div>
-            <span className="text-[14px] mr-1">Confidence Level:</span>
-            <Tooltip title={extractedContent?.overall_confidence?.reason}>
-              <InfoCircleOutlined className="text-[#00000073] cursor-pointer mr-2" />
-            </Tooltip>
-            <ConfidenceBadge
-              confidence={extractedContent?.overall_confidence?.score}
-            />
+            <span className="text-[14px] mr-1">QA Passed </span>
+            {editorName && (
+              <>
+                <span>by</span>
+                <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
+                  {editorName}
+                </span>
+              </>
+            )}
+            {editTime && <span className="text-[12px]">2:00pm, 12/4/2025</span>}
           </div>
-        ) : (
-          <></>
         )}
+        {reviewStatus === "pending" &&
+          extractedContent?.overall_confidence?.score && (
+            <div>
+              <span className="text-[14px] mr-1">Confidence Level:</span>
+              <Tooltip title={extractedContent?.overall_confidence?.reason}>
+                <InfoCircleOutlined className="text-[#00000073] cursor-pointer mr-2" />
+              </Tooltip>
+              <ConfidenceBadge
+                confidence={extractedContent?.overall_confidence?.score}
+              />
+            </div>
+          )}
       </div>
 
       <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh] flex flex-col gap-6">
@@ -163,7 +182,7 @@ const EditExtractedContent = ({
             <div key={field} className="flex flex-col gap-1">
               <label className="text-dark-gray text-[13px] font-bold">
                 {field}
-                {confidence && typeof confidence === "number" && (
+                {confidence && (
                   <ConfidenceBadge confidence={confidence} />
                 )}
               </label>

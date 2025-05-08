@@ -63,7 +63,13 @@ const ReviewStatusBadge: React.FC<ReviewStatusBadgeProps> = ({ record }) => {
   const { label, info, icon, bgColor, textColor } = statusMap[status];
 
   return (
-    <Tooltip title={info}>
+    <Tooltip
+      title={`${info} ${
+        label === "QA Passed" || label === "In Review"
+          ? `by ${record.editor}`
+          : ""
+      }`}
+    >
       <span
         className={`inline-flex items-center px-2 py-0.5 text-[12px]] rounded-full ${bgColor} ${textColor}`}
       >

@@ -20,6 +20,7 @@ export type DuplicateInvoiceItemResponse = {
   created_at: string;
   extracted_content: any;
   review_status: ReviewStatus;
+  editor: string;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";
@@ -62,3 +63,8 @@ export type EditedFields = {
 };
 
 export type ReviewActionType = "approve_qa" | "save_edit";
+
+export type Confidence =
+  | number
+  | Record<string, number>
+  | Array<Record<string, number>>;

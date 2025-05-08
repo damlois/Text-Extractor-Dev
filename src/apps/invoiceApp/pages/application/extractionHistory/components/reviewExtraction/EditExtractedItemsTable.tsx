@@ -109,7 +109,7 @@ const EditExtractedItemsTable = ({
     <div className="w-full">
       <label className="text-dark-gray text-[14px] font-bold">
         {label}
-        {confidence && typeof confidence === "number" && (
+        {confidence && (
           <ConfidenceBadge confidence={confidence} />
         )}
       </label>

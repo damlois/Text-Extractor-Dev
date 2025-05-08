@@ -122,21 +122,3 @@ export const extractCsvData = (invoices: any[], templateItems: any[]) => {
     }, {});
   });
 };
-
-export const constructReviewPayload = (
-  actionType: ReviewActionType,
-  reviewInvoice: ProcessedInvoice,
-  editedFields?: EditedFields
-) => {
-  return {
-    edited_content:
-      actionType === "approve_qa"
-        ? reviewInvoice.extracted_content
-        : {
-            ...editedFields,
-            confidence: reviewInvoice.extracted_content.confidence,
-            overall_confidence:
-              reviewInvoice.extracted_content.overall_confidence,
-          },
-  };
-};

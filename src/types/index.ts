@@ -123,6 +123,7 @@ export interface ProcessedInvoice {
   processing_status: string;
   review_status: ReviewStatus;
   created_at: string;
+  editor: string;
 }
 
 export interface InvoiceDetailsResponse {
