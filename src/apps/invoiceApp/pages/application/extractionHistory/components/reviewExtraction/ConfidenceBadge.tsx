@@ -1,14 +1,55 @@
-import React from 'react';
+import React from "react";
+import { Confidence } from "../../types";
 
 interface ConfidenceBadgeProps {
-  confidence: number;
+  confidence: Confidence;
 }
+
+const getAverageConfidence = (confidence: Confidence): number => {
+  if (typeof confidence === "number") {
+    return confidence;
+  }
+
+  // Handle object with numeric values
+  if (!Array.isArray(confidence)) {
+    const values = Object.values(confidence);
+    const validNumbers = values.filter((v) => typeof v === "number");
+
+    if (validNumbers.length === 0) return NaN;
+
+    const sum = validNumbers.reduce((acc, val) => acc + val, 0);
+    return sum / validNumbers.length;
+  }
+
+  // Handle array of objects
+  const allValues: number[] = [];
+
+  for (const obj of confidence) {
+    if (typeof obj === "object" && obj !== null) {
+      for (const val of Object.values(obj)) {
+        if (typeof val === "number") {
+          allValues.push(val);
+        }
+      }
+    }
+  }
+
+  if (allValues.length === 0) return NaN;
+
+  const total = allValues.reduce((acc, val) => acc + val, 0);
+  return total / allValues.length;
+};
+
 
 const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence }) => {
   let textColorClass = "!text-[#166534]";
   let bgColorClass = "bg-[#DCFCE7]";
 
-  const confidencePercent = confidence * 100;
+  const confidencePercent = getAverageConfidence(confidence) * 100;
+
+  if (isNaN(confidencePercent)) {
+    return null;
+  }
 
   if (confidencePercent < 70) {
     textColorClass = "!text-[#CF1322]";

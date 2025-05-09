@@ -21,6 +21,7 @@ import {
 } from "../types";
 import apiClient from "../service/apiClient";
 import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
+import keycloakService from "../service/keycloakService";
 
 export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
@@ -35,11 +36,6 @@ export const invoiceProcessorApi = {
     apiClient.put(`/invoices/template?data_source_id=${dataSourceId}`, {
       items,
     }),
-
-  getProcessedInvoices: (params: ProcessedInvoicesParams) =>
-    apiClient.get<ProcessedInvoicesResponse>(
-      `/invoices/processed?page=${params.page}&size=${params.size}`
-    ),
 
   updateInvoiceStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
@@ -161,4 +157,25 @@ export const invoiceProcessorApi = {
     invoiceId: string,
     data: { status: ReviewStatus }
   ) => await apiClient.patch(`/invoices/${invoiceId}/review-status`, data),
+
+  updateReviewStatusWithFetch: async (
+    invoiceId: string,
+    status: ReviewStatus
+  ) => {
+    const token = keycloakService.getToken();
+    const body = JSON.stringify({ status });
+
+    fetch(
+      `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body,
+        keepalive: true, // Enables background sending
+      }
+    );
+  },
 };

@@ -6,7 +6,6 @@ import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorC
 import {
   DuplicateInvoiceItemResponse,
   DuplicateInvoicesFileHashMap,
-  DuplicateInvoicesResponse,
 } from "../../../types";
 import { manageSSE } from "../../../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../../../utils/notification";

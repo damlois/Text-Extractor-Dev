@@ -1,14 +1,17 @@
 import { Button, Modal } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { InvoiceEditor } from "../../../../../../../../types";
 
 interface DocumentInReviewModalProps {
   open?: boolean;
   onCancel: () => void;
+  editor?: InvoiceEditor;
 }
 
 const DocumentInReviewModal = ({
   open,
   onCancel,
+  editor,
 }: DocumentInReviewModalProps) => {
   return (
     <Modal
@@ -36,8 +39,7 @@ const DocumentInReviewModal = ({
       }}
     >
       <p className="text-dark-gray text-sm font-normal ml-[38px]">
-        This document is currently being reviewed by another person. <br />{" "}
-        <br />
+        This document is currently being reviewed by {editor?.full_name}. <br /> <br />
         You won’t be able to make changes or take action until their review is
         complete.
       </p>

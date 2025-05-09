@@ -461,7 +461,6 @@ td .processing {
 
 .disabled-row {
   background-color: #F5F5F5;
-  pointer-events: none;
 }
 
 .duplicate-row:hover, .duplicate-row:focus,

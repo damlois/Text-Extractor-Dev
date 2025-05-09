@@ -15,7 +15,6 @@ import ExtractedContent from "../extractionHistory/invoicePreview/ExtractedConte
 import { EditedFields, ReviewActionType, ReviewStatus } from "../../types";
 import ConfirmLeaveModal from "./ConfirmLeaveModal";
 import ActionButtons from "./ActionButtons";
-import { constructReviewPayload } from "../../utils";
 
 const ReviewExtractedContent = () => {
   const [pageLoading, setPageLoading] = useState(false);
@@ -39,7 +38,7 @@ const ReviewExtractedContent = () => {
   const QAPassedRef = useRef(false);
 
   const blocker = useBlocker(() => {
-    if (!QAPassed) {
+    if (!QAPassed || isEditState) {
       setShowLeaveModal(true);
       return true;
     }
@@ -68,30 +67,24 @@ const ReviewExtractedContent = () => {
         } else {
           updateReviewStatus("reviewed");
         }
-
-        blockerRef.current?.reset?.();
       }
+
+      blockerRef.current?.reset?.();
     };
   }, []);
 
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (!QAPassed) {
-        e.preventDefault();
-      }
-    };
-
     const handleUnload = () => {
-      if (!QAPassed) {
+      if (!QAPassedRef.current) {
         updateReviewStatus("pending");
+      } else {
+        updateReviewStatus("reviewed");
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
     window.addEventListener("unload", handleUnload);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
       window.removeEventListener("unload", handleUnload);
     };
   }, [QAPassed]);
@@ -129,9 +122,10 @@ const ReviewExtractedContent = () => {
   const updateReviewStatus = async (status: ReviewStatus) => {
     if (reviewInvoice) {
       try {
-        await invoiceProcessorApi.updateReviewStatus(reviewInvoice.id, {
-          status,
-        });
+        await invoiceProcessorApi.updateReviewStatusWithFetch(
+          reviewInvoice.id,
+          status
+        );
       } catch (error) {
         handleError(error);
       }
@@ -142,20 +136,28 @@ const ReviewExtractedContent = () => {
     try {
       if (!reviewInvoice) return;
 
-      setSaveLoading({ type, isLoading: true });
+      if (type === "save_edit") {
+        setSaveLoading({ type, isLoading: true });
 
-      const data = constructReviewPayload(type, reviewInvoice, editedFields);
+        const response = await invoiceProcessorApi.editInvoiceExtraction(
+          reviewInvoice.id,
+          {
+            edited_content: {
+              ...editedFields,
+              confidence: reviewInvoice.extracted_content.confidence,
+              overall_confidence:
+                reviewInvoice.extracted_content.overall_confidence,
+            },
+          }
+        );
 
-      const response = await invoiceProcessorApi.editInvoiceExtraction(
-        reviewInvoice.id,
-        data
-      );
+        setExtractedContent(response.data.data.extracted_content);
+        setIsEditState(false);
+      }
 
-      setIsEditState(false);
       setQAPassed(true);
       QAPassedRef.current = true;
 
-      setExtractedContent(response.data.data.extracted_content);
       showNotification(
         "success",
         type === "approve_qa"
@@ -163,7 +165,7 @@ const ReviewExtractedContent = () => {
           : "Changes Saved Successfully"
       );
     } catch (error) {
-      handleError(error);
+      handleError(error, "edit-invoice");
     } finally {
       setSaveLoading({ type, isLoading: false });
     }
@@ -192,6 +194,7 @@ const ReviewExtractedContent = () => {
             saveLoading={saveLoading}
             isEditState={isEditState}
             blockerRef={blockerRef}
+            isQAApproved={QAPassed}
             setIsEditState={setIsEditState}
             handleSaveChanges={handleSaveChanges}
           />
@@ -204,13 +207,8 @@ const ReviewExtractedContent = () => {
       ) : (
         <>
           <div
-            className="text-deep-blue px-[0] cursor-pointer mt-8 mb-4"
+            className="text-deep-blue px-[0] cursor-pointer mt-8 mb-4 w-fit"
             onClick={() => {
-              if (isEditState) {
-                setIsEditState(false);
-                return;
-              }
-
               navigate("../extraction-history", {
                 state: { fromReviewPage: true },
               });
@@ -227,16 +225,21 @@ const ReviewExtractedContent = () => {
                 isEditState ? (
                   <EditExtractedContent
                     extractedContent={extractedContent}
+                    reviewStatus={reviewInvoice?.review_status}
+                    editorName={reviewInvoice?.editor.full_name}
+                    editTime={reviewInvoice?.updated_at}
                     onEdit={setEditedFields}
                   />
                 ) : (
                   <ExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewInvoice?.review_status}
+                    editorName={reviewInvoice?.editor.full_name}
+                    editTime={reviewInvoice?.updated_at}
                   />
                 )
               ) : (
-                <div className="p-4 text-center text-gray-500">
+                <div className="text-center text-gray-500 p-6">
                   No extracted content available to display.
                 </div>
               )}
@@ -246,6 +249,7 @@ const ReviewExtractedContent = () => {
       )}
       <ConfirmLeaveModal
         open={showLeaveModal}
+        isEditState={isEditState}
         onCancel={() => {
           blockerRef.current?.reset?.();
           setShowLeaveModal(false);
@@ -256,6 +260,10 @@ const ReviewExtractedContent = () => {
         }}
         onApproveQA={() => {
           handleSaveChanges("approve_qa");
+          setShowLeaveModal(false);
+        }}
+        onSaveChanges={() => {
+          handleSaveChanges("save_edit");
           setShowLeaveModal(false);
         }}
       />

@@ -23,6 +23,7 @@ import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
 import InvoicePreviewModal from "../invoicePreview";
 import { useTemplate } from "../../../../../../context/TemplateContext";
+import keycloakService from "../../../../../../../../service/keycloakService";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -60,7 +61,7 @@ const ExtractionHistoryTable = () => {
   const sseRef = useRef<{ stop: () => void } | null>(null);
   const confidenceSortOptions = [
     "Lowest to Highest",
-    "Higehst to Lowest",
+    "Highest to Lowest",
     "Reset",
   ];
 
@@ -69,6 +70,7 @@ const ExtractionHistoryTable = () => {
     duplicatesMapById,
     duplicatesCount,
     currentDataSource,
+    reviewInvoice,
     setReviewInvoice,
     fetchDataSource,
   } = useInvoiceProcessor();
@@ -191,12 +193,16 @@ const ExtractionHistoryTable = () => {
   };
 
   const handleDocumentReview = (record: ProcessedInvoice) => {
-    if (record.review_status === "in_review") {
+    setReviewInvoice(record);
+
+    if (
+      record.review_status === "in_review" &&
+      record.editor.user_id !== keycloakService.getUserId()
+    ) {
       setShowDocInReviewModal(true);
       return;
     }
 
-    setReviewInvoice(record);
     navigate("../extraction-history/review");
   };
 
@@ -207,7 +213,9 @@ const ExtractionHistoryTable = () => {
         },
         selectedRowKeys: selectedInvoiceIds,
         getCheckboxProps: ({ processing_status }: ProcessedInvoice) => ({
-          disabled: processing_status.toLowerCase() === "processing",
+          disabled:
+            processing_status.toLowerCase() === "processing" ||
+            processing_status.toLowerCase() === "failed",
         }),
       }
     : undefined;
@@ -405,6 +413,7 @@ const ExtractionHistoryTable = () => {
       <DocumentInReviewModal
         open={showDocInReviewModal}
         onCancel={toggleDocInReviewModal}
+        editor={reviewInvoice?.editor}
       />
       <FilterHistoryModal
         open={showFilterModal}

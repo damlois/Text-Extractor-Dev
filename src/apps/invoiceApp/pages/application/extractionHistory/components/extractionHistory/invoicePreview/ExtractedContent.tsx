@@ -4,10 +4,15 @@ import ExtractedItemsTable from "./ExtractedItemsTable";
 import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import { useEffect } from "react";
 import { ReviewStatus } from "../../../types";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
+import ConfidenceBadge from "../../reviewExtraction/ConfidenceBadge";
 
 interface ExtractedContentProps {
   extractedContent: any;
   reviewStatus?: ReviewStatus;
+  editorName?: string;
+  editTime?: string;
 }
 
 interface ExtractedItemDisplayProps {
@@ -27,6 +32,8 @@ const ExtractedItem = ({ field, value }: ExtractedItemDisplayProps) => {
 const ExtractedContent = ({
   extractedContent,
   reviewStatus,
+  editorName,
+  editTime,
 }: ExtractedContentProps) => {
   const { templateItems, fetchTemplate } = useTemplate();
   const {
@@ -66,18 +73,48 @@ const ExtractedContent = ({
         <p className="font-bold">Extracted Content</p>
         {reviewStatus === "reviewed" && (
           <div>
-            <span className="text-[14px] mr-1">QA Passed</span>
-            {/* <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
-            Ann Paul
-          </span>
-          <span className="text-[12px]">2:00pm, 12/4/2025</span> */}
+            <span className="text-[14px] mr-1">QA Passed </span>
+            {editorName && (
+              <>
+                <span>by</span>
+                <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
+                  {editorName}
+                </span>
+              </>
+            )}
+            {editTime && <span className="text-[12px]">{editTime}</span>}
           </div>
         )}
+        {reviewStatus === "in_review" && (
+          <div>
+            <span className="text-[14px] mr-1">In Review </span>
+            {editorName && (
+              <>
+                <span>by</span>
+                <span className="text-[14px] text-[#166534] bg-[#DCFCE7] px-[8px] pt-[2px] pb-[2px] mr-1 rounded-full">
+                  {editorName}
+                </span>
+              </>
+            )}
+          </div>
+        )}
+        {reviewStatus === "pending" &&
+          extractedContent?.overall_confidence?.score && (
+            <div>
+              <span className="text-[14px] mr-1">Confidence Level:</span>
+              <Tooltip title={extractedContent?.overall_confidence?.reason}>
+                <InfoCircleOutlined className="text-[#00000073] cursor-pointer mr-2" />
+              </Tooltip>
+              <ConfidenceBadge
+                confidence={extractedContent?.overall_confidence?.score}
+              />
+            </div>
+          )}
       </div>
       {!extractedContent ||
       typeof extractedContent !== "object" ||
       Object.keys(extractedContent).length === 0 ? (
-        <div className="text-gray text-[12px]">
+        <div className="text-gray text-[12px] p-6">
           No extracted content available.
         </div>
       ) : (

@@ -1,3 +1,5 @@
+import { InvoiceEditor } from "../../../../../types";
+
 export type ExtractionHistoryTableInfo = {
   key: React.Key;
   fileName: string;
@@ -18,8 +20,10 @@ export type DuplicateInvoiceItemResponse = {
   source?: string;
   processing_status: string;
   created_at: string;
+  updated_at: string;
   extracted_content: any;
   review_status: ReviewStatus;
+  editor: InvoiceEditor;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";
@@ -62,3 +66,8 @@ export type EditedFields = {
 };
 
 export type ReviewActionType = "approve_qa" | "save_edit";
+
+export type Confidence =
+  | number
+  | Record<string, number>
+  | Array<Record<string, number>>;
