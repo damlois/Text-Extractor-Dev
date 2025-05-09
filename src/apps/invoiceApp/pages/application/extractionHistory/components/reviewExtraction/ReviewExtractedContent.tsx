@@ -122,9 +122,10 @@ const ReviewExtractedContent = () => {
   const updateReviewStatus = async (status: ReviewStatus) => {
     if (reviewInvoice) {
       try {
-        await invoiceProcessorApi.updateReviewStatus(reviewInvoice.id, {
-          status,
-        });
+        await invoiceProcessorApi.updateReviewStatusWithFetch(
+          reviewInvoice.id,
+          status
+        );
       } catch (error) {
         handleError(error);
       }
@@ -164,7 +165,7 @@ const ReviewExtractedContent = () => {
           : "Changes Saved Successfully"
       );
     } catch (error) {
-      handleError(error);
+      handleError(error, "edit-invoice");
     } finally {
       setSaveLoading({ type, isLoading: false });
     }
@@ -225,16 +226,16 @@ const ReviewExtractedContent = () => {
                   <EditExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewInvoice?.review_status}
-                    editorName={reviewInvoice?.editor}
-                    editTime=""
+                    editorName={reviewInvoice?.editor.full_name}
+                    editTime={reviewInvoice?.updated_at}
                     onEdit={setEditedFields}
                   />
                 ) : (
                   <ExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewInvoice?.review_status}
-                    editorName={reviewInvoice?.editor}
-                    editTime=""
+                    editorName={reviewInvoice?.editor.full_name}
+                    editTime={reviewInvoice?.updated_at}
                   />
                 )
               ) : (

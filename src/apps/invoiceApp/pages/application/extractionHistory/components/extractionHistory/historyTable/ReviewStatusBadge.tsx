@@ -66,7 +66,7 @@ const ReviewStatusBadge: React.FC<ReviewStatusBadgeProps> = ({ record }) => {
     <Tooltip
       title={`${info} ${
         label === "QA Passed" || label === "In Review"
-          ? `by ${record.editor}`
+          ? `by ${record.editor.full_name}`
           : ""
       }`}
     >

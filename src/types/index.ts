@@ -102,11 +102,16 @@ export type DynamicValue =
   | boolean
   | DynamicObject
   | DynamicValue[]
-  | any
-  
+  | any;
+
 export interface DynamicObject {
   [key: string]: DynamicValue;
 }
+
+export type InvoiceEditor = {
+  full_name: string;
+  user_id: string;
+};
 
 export interface ProcessedInvoice {
   id: string;
@@ -123,7 +128,8 @@ export interface ProcessedInvoice {
   processing_status: string;
   review_status: ReviewStatus;
   created_at: string;
-  editor: string;
+  updated_at: string;
+  editor: InvoiceEditor;
 }
 
 export interface InvoiceDetailsResponse {

@@ -1,12 +1,22 @@
 import { camelCase } from "lodash";
 import { ProcessedInvoice } from "../../../../../types";
 import { formatExtractionValue } from "../../../../../utils";
-import {
-  EditedFields,
-  ItemField,
-  RegularField,
-  ReviewActionType,
-} from "./types";
+import { ItemField, RegularField } from "./types";
+
+export const formatToReadableDate = (isoDateString: string): string => {
+  const date = new Date(isoDateString);
+
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'pm' : 'am';
+  const formattedHour = (hours % 12) || 12;
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${formattedHour}:${minutes}${ampm}, ${month}/${day}/${year}`;
+};
 
 export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
@@ -18,6 +28,7 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
         item.processing_status === "COMPLETED"
           ? "Successful"
           : item.processing_status,
+      updated_at: formatToReadableDate(item.updated_at),
     };
 
     if (!invoiceMapById[item.id]) {

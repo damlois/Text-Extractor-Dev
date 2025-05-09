@@ -70,6 +70,17 @@ export const handleError = (error: any, resource?: string): string | null => {
     message = handleAxiosError(error, resource);
   } else if (typeof error === "object" && error !== null && "error" in error) {
     message = handleThirdPartyError(error);
+  } else if (
+    error instanceof TypeError &&
+    error.message === "Failed to fetch"
+  ) {
+    message = NETWORK_ERROR_MESSAGE;
+  } else if (error instanceof Response) {
+    message = parseDetail(
+      error.statusText,
+      resource || "Resource",
+      error.status
+    );
   }
 
   showNotification("error", message);
@@ -89,6 +100,12 @@ const parseDetail = (
     case 401:
       return UNAUTHORIZED_MESSAGE;
     case 403:
+      if (
+        resource === "edit-invoice" &&
+        cleanedDetail.includes("must be in 'IN_REVIEW'")
+      ) {
+        return "This invoice is not currently under review. To continue editing, please re-open it to return it to review status.";
+      }
       return FORBIDDEN_MESSAGE;
     case 404:
       return cleanedDetail;

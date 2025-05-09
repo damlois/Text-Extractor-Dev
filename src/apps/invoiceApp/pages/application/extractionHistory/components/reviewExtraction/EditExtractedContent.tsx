@@ -12,7 +12,7 @@ interface EditExtractedContentProps {
   extractedContent: any;
   reviewStatus?: string;
   editorName?: string;
-  editTime: string;
+  editTime?: string;
   onEdit: (editedFields: any) => void;
 }
 
@@ -159,7 +159,7 @@ const EditExtractedContent = ({
                 </span>
               </>
             )}
-            {editTime && <span className="text-[12px]">2:00pm, 12/4/2025</span>}
+            {editTime && <span className="text-[12px]">{editTime}</span>}
           </div>
         )}
         {reviewStatus === "pending" &&
@@ -182,9 +182,7 @@ const EditExtractedContent = ({
             <div key={field} className="flex flex-col gap-1">
               <label className="text-dark-gray text-[13px] font-bold">
                 {field}
-                {confidence && (
-                  <ConfidenceBadge confidence={confidence} />
-                )}
+                {confidence && <ConfidenceBadge confidence={confidence} />}
               </label>
               <AppInput
                 type="text"

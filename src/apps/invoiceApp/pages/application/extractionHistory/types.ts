@@ -1,3 +1,5 @@
+import { InvoiceEditor } from "../../../../../types";
+
 export type ExtractionHistoryTableInfo = {
   key: React.Key;
   fileName: string;
@@ -18,9 +20,10 @@ export type DuplicateInvoiceItemResponse = {
   source?: string;
   processing_status: string;
   created_at: string;
+  updated_at: string;
   extracted_content: any;
   review_status: ReviewStatus;
-  editor: string;
+  editor: InvoiceEditor;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";

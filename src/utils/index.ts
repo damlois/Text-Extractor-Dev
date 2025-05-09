@@ -144,7 +144,7 @@ export const formatDate = (isoDateString: string): string => {
 };
 
 export const formatDateTime = (dateString: string) => {
-  const date = new Date(`${dateString}Z`); // Force UTC parsing
+  const date = new Date(dateString);
   const formatter = new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",
     minute: "2-digit",

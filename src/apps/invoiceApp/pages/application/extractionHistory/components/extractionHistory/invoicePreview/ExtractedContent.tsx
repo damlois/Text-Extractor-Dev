@@ -82,7 +82,7 @@ const ExtractedContent = ({
                 </span>
               </>
             )}
-            {editTime && <span className="text-[12px]">2:00pm, 12/4/2025</span>}
+            {editTime && <span className="text-[12px]">{editTime}</span>}
           </div>
         )}
         {reviewStatus === "in_review" && (

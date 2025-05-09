@@ -23,6 +23,7 @@ import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
 import InvoicePreviewModal from "../invoicePreview";
 import { useTemplate } from "../../../../../../context/TemplateContext";
+import keycloakService from "../../../../../../../../service/keycloakService";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -194,7 +195,10 @@ const ExtractionHistoryTable = () => {
   const handleDocumentReview = (record: ProcessedInvoice) => {
     setReviewInvoice(record);
 
-    if (record.review_status === "in_review") {
+    if (
+      record.review_status === "in_review" &&
+      record.editor.user_id !== keycloakService.getUserId()
+    ) {
       setShowDocInReviewModal(true);
       return;
     }
