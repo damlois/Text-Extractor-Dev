@@ -100,22 +100,21 @@ export const formatExtractionValue = (value: any): string => {
 
   if (typeof value === "object") {
     if (Array.isArray(value)) {
-      if (value.length === 0) return "N/A";
+      const filtered = value.filter(
+        (item) => item !== null && typeof item === "object" && !Array.isArray(item)
+      );
 
-      // Check if array contains objects
-      if (value.every((item) => typeof item === "object" && item !== null)) {
-        return value
-          .map(
-            (obj, index) =>
-              `{${index + 1}} ` +
-              Object.entries(obj)
-                .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
-                .join(", ")
-          )
-          .join(" | ");
-      }
+      if (filtered.length === 0) return "N/A";
 
-      return value.join(", ");
+      return filtered
+        .map(
+          (obj, index) =>
+            `{${index + 1}} ` +
+            Object.entries(obj)
+              .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+              .join(", ")
+        )
+        .join(" | ");
     } else {
       return Object.entries(value)
         .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
@@ -125,6 +124,7 @@ export const formatExtractionValue = (value: any): string => {
 
   return value.toString();
 };
+
 
 export const areRecordsEqual = (
   obj1: Record<any, any>,

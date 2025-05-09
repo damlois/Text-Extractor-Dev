@@ -197,7 +197,7 @@ const ExtractionHistoryTable = () => {
 
     if (
       record.review_status === "in_review" &&
-      record.editor.user_id !== keycloakService.getUserId()
+      record.editor?.user_id !== keycloakService.getUserId()
     ) {
       setShowDocInReviewModal(true);
       return;

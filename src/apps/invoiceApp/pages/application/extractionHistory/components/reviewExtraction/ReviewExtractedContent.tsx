@@ -226,7 +226,7 @@ const ReviewExtractedContent = () => {
                   <EditExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewInvoice?.review_status}
-                    editorName={reviewInvoice?.editor.full_name}
+                    editorName={reviewInvoice?.editor?.full_name}
                     editTime={reviewInvoice?.updated_at}
                     onEdit={setEditedFields}
                   />
@@ -234,7 +234,7 @@ const ReviewExtractedContent = () => {
                   <ExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewInvoice?.review_status}
-                    editorName={reviewInvoice?.editor.full_name}
+                    editorName={reviewInvoice?.editor?.full_name}
                     editTime={reviewInvoice?.updated_at}
                   />
                 )

@@ -23,50 +23,63 @@ const ExtractedItemsTable = ({
     typeof itemsFieldData === "object" &&
     Object.keys(itemsFieldData).every((key) => /^\d+$/.test(key));
 
-  const renderStrings = (arr: string[]) => (
+  const renderStrings = (arr: (string | null | undefined)[]) => (
     <tbody>
       {arr.map((str, idx) => (
         <tr key={idx} className="border-t border-[#E5E7EB]">
           <td className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium">
-            {str}
+            {str ?? "—"} {/* fallback for null/undefined */}
           </td>
         </tr>
       ))}
     </tbody>
   );
 
-  const renderObjects = (arr: any[]) => (
-    <>
-      <thead className="bg-[#F5F5F5]">
-        <tr>
-          {Object.keys(arr[0]).map((key) => (
-            <th
-              key={key}
-              className="px-4 py-2 text-left text-dark-gray text-[10px] font-medium extracted-content-th"
-            >
-              {key}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {arr.map((item, idx) => (
-          <tr key={idx} className="border-t border-[#E5E7EB]">
-            {Object.values(item).map((val, i) => (
-              <td
-                key={i}
-                className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium"
+  const renderObjects = (arr: (Record<string, any> | null | undefined)[]) => {
+    if (!Array.isArray(arr) || arr.length === 0 || arr[0] == null) {
+      return null;
+    }
+
+    const headers = Object.keys(arr[0] ?? {});
+
+    return (
+      <>
+        <thead className="bg-[#F5F5F5]">
+          <tr>
+            {headers.map((key) => (
+              <th
+                key={key}
+                className="px-4 py-2 text-left text-dark-gray text-[10px] font-medium extracted-content-th"
               >
-                {typeof val === "object" && val !== null
-                  ? JSON.stringify(val)
-                  : String(val)}
-              </td>
+                {key}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </>
-  );
+        </thead>
+        <tbody>
+          {arr.map((item, idx) => (
+            <tr key={idx} className="border-t border-[#E5E7EB]">
+              {headers.map((key, i) => {
+                const val = item?.[key];
+                return (
+                  <td
+                    key={i}
+                    className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium"
+                  >
+                    {val === null || val === undefined
+                      ? "—"
+                      : typeof val === "object"
+                      ? JSON.stringify(val)
+                      : String(val)}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </>
+    );
+  };
 
   const renderTableContent = () => {
     if (isArrayOfObjects) return renderObjects(itemsFieldData);
