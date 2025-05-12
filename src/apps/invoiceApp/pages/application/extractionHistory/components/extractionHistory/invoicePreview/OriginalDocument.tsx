@@ -2,14 +2,20 @@ import {
   InfoCircleOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 import { Tooltip, Button } from "antd";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [dimensions, setDimensions] = useState<
+    { width: number; height: number }[]
+  >(Array(pages.length).fill({ width: 0, height: 0 }));
 
   const handleScroll = () => {
     if (containerRef.current) {
@@ -20,12 +26,30 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
     }
   };
 
-  const zoomIn = () => {
-    setZoom((prev) => Math.min(prev + 0.1, 3));
+  const zoomIn = () => setZoom((prev) => Math.min(prev + 0.1, 3));
+  const zoomOut = () => setZoom((prev) => Math.max(prev - 0.1, 0.5));
+  const rotateClockwise = () => setRotation((prev) => (prev + 90) % 360);
+
+  const handleImageLoad = (index: number, img: HTMLImageElement) => {
+    const { width, height } = img;
+    setDimensions((prev) => {
+      const updated = [...prev];
+      updated[index] = { width, height };
+      return updated;
+    });
   };
 
-  const zoomOut = () => {
-    setZoom((prev) => Math.max(prev - 0.1, 0.5));
+  const getTransformedSize = (
+    width: number,
+    height: number,
+    rotation: number,
+    zoom: number
+  ) => {
+    const angle = rotation % 360;
+    if (angle === 90 || angle === 270) {
+      return { width: height * zoom, height: width * zoom };
+    }
+    return { width: width * zoom, height: height * zoom };
   };
 
   return (
@@ -44,19 +68,22 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
           </span>
 
           <div className="flex items-center gap-1">
-            <Tooltip title="Zoom Out">
+          <Tooltip title="Rotate Clockwise">
               <Button
                 size="small"
-                icon={<ZoomOutOutlined />}
-                onClick={zoomOut}
+                icon={<ReloadOutlined />}
+                onClick={rotateClockwise}
+                className="mr-1"
               />
+            </Tooltip>
+            <Tooltip title="Zoom Out">
+              <Button size="small" icon={<ZoomOutOutlined />} onClick={zoomOut} />
             </Tooltip>
             <Tooltip title="Zoom In">
               <Button size="small" icon={<ZoomInOutlined />} onClick={zoomIn} />
             </Tooltip>
-            <span className="text-[12px] text-gray-500">
-              {Math.round(zoom * 100)}%
-            </span>
+            
+            <span className="text-[12px] text-gray-500">{Math.round(zoom * 100)}%</span>
           </div>
         </div>
       </div>
@@ -66,20 +93,61 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
         onScroll={handleScroll}
         className="py-[18px] px-[12px] border border-[#F1F1F1] overflow-auto h-[80vh]"
       >
-        {pages.map((page, idx) => (
-          <div key={idx} className="mb-4 flex justify-center">
-            <img
-              src={`data:image/jpeg;base64,${page.image_data}`}
-              alt={`Invoice Page ${idx + 1}`}
+        {pages.map((page, idx) => {
+          const { width, height } = dimensions[idx] || { width: 0, height: 0 };
+          const angle = rotation % 360;
+
+          const { width: transformedWidth, height: transformedHeight } =
+            getTransformedSize(width, height, rotation, zoom);
+
+          // Translation fixes for rotation
+          let translateX = 0;
+          let translateY = 0;
+          if (angle === 90) {
+            translateX = height * zoom;
+          } else if (angle === 180) {
+            translateX = width * zoom;
+            translateY = height * zoom;
+          } else if (angle === 270) {
+            translateY = width * zoom;
+          }
+
+          return (
+            <div
+              key={idx}
+              className="mb-6 flex justify-center"
               style={{
-                transform: `scale(${zoom})`,
-                transformOrigin: "top left",
-                transition: "transform 0.3s ease",
+                minHeight: transformedHeight + 20, // prevent overlap
               }}
-              className="rounded border-t border-[#E5E7EB80] inline-block"
-            />
-          </div>
-        ))}
+            >
+              <div
+                style={{
+                  width: transformedWidth,
+                  height: transformedHeight,
+                  overflow: "visible",
+                }}
+              >
+                <img
+                  src={`data:image/jpeg;base64,${page.image_data}`}
+                  alt={`Invoice Page ${idx + 1}`}
+                  onLoad={(e) => handleImageLoad(idx, e.currentTarget)}
+                  style={{
+                    transform: `
+                      translate(${translateX}px, ${translateY}px)
+                      scale(${zoom})
+                      rotate(${rotation}deg)
+                    `,
+                    transformOrigin: "top left",
+                    transition: "transform 0.3s ease",
+                    display: "block",
+                    maxWidth: "unset",
+                  }}
+                  className="rounded border-t border-[#E5E7EB80]"
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
