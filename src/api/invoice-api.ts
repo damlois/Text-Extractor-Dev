@@ -165,17 +165,26 @@ export const invoiceProcessorApi = {
     const token = keycloakService.getToken();
     const body = JSON.stringify({ status });
 
-    fetch(
-      `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body,
-        keepalive: true, // Enables background sending
-      }
-    );
+    const storageKey = "reviewStatusLoading";
+    localStorage.setItem(storageKey, "true");
+
+    try {
+      await fetch(
+        `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body,
+          keepalive: true, // Enables background sending
+        }
+      );
+    } catch (error) {
+      console.error("Error updating review status:", error);
+    } finally {
+      localStorage.removeItem(storageKey);
+    }
   },
 };
