@@ -77,6 +77,9 @@ const ExtractionHistoryTable = () => {
 
   const { templateItems, fetchTemplate } = useTemplate();
 
+  const isReviewUpdateLoading =
+    localStorage.getItem(`reviewStatusLoading`) === "true";
+
   const handleTemplatesFetch = async () => {
     if (!currentDataSource) {
       await fetchDataSource();
@@ -226,7 +229,7 @@ const ExtractionHistoryTable = () => {
       dataIndex: "file_name",
       render: (text: string, record: ProcessedInvoice) => (
         <button
-          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[240px] truncate`}
+          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[12vw] truncate`}
           style={{ display: "inline-block", verticalAlign: "top" }}
           title={text}
           onClick={() => togglePreviewModal(record)}
@@ -300,6 +303,7 @@ const ExtractionHistoryTable = () => {
       render: (_: any, record: ProcessedInvoice) => (
         <ConfidenceIndicator record={record} />
       ),
+      align: "center",
     },
     {
       title: (
@@ -310,7 +314,9 @@ const ExtractionHistoryTable = () => {
       ),
       dataIndex: "review_status",
       render: (_: any, record: ProcessedInvoice) => (
-        <ReviewStatusBadge record={record} />
+        <div className="min-w-[90px]">
+          <ReviewStatusBadge record={record} />
+        </div>
       ),
     },
     ...(canEditExtraction
@@ -324,7 +330,7 @@ const ExtractionHistoryTable = () => {
 
               return (
                 <div
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] transition-colors ${
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] w-[77px] transition-colors ${
                     isDisabled
                       ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
                       : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
@@ -385,7 +391,7 @@ const ExtractionHistoryTable = () => {
           columns={extractionHistoryColumns}
           dataSource={displayInvoices}
           className="app-table extraction-history-table no-vertical-lines"
-          loading={loading}
+          loading={loading || isReviewUpdateLoading}
           pagination={{ ...pagination, pageSizeOptions: ["10", "20"] }}
           onChange={handleTableChange}
           rowClassName={(record) => {
