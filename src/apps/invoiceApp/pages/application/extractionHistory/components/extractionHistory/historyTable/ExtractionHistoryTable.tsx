@@ -303,7 +303,6 @@ const ExtractionHistoryTable = () => {
       render: (_: any, record: ProcessedInvoice) => (
         <ConfidenceIndicator record={record} />
       ),
-      align: "center",
     },
     {
       title: (

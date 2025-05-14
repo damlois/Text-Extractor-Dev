@@ -165,9 +165,6 @@ export const invoiceProcessorApi = {
     const token = keycloakService.getToken();
     const body = JSON.stringify({ status });
 
-    const storageKey = "reviewStatusLoading";
-    localStorage.setItem(storageKey, "true");
-
     try {
       await fetch(
         `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
@@ -183,8 +180,6 @@ export const invoiceProcessorApi = {
       );
     } catch (error) {
       console.error("Error updating review status:", error);
-    } finally {
-      localStorage.removeItem(storageKey);
     }
   },
 };

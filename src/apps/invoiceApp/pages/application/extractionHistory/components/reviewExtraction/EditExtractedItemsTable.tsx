@@ -57,45 +57,56 @@ const EditExtractedItemsTable = ({
     </tbody>
   );
 
-  const renderObjects = (arr: any[]) => (
-    <>
-      <thead className="bg-[#F5F5F5]">
-        <tr>
-          {Object.keys(arr[0]).map((key) => (
-            <th
-              key={key}
-              className="px-4 py-2 text-left text-dark-gray text-[10px] font-medium extracted-content-th"
-            >
-              {key}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {arr.map((item, rowIndex) => (
-          <tr key={rowIndex} className="border-t border-[#E5E7EB]">
-            {Object.entries(item).map(([key, value], colIndex) => (
-              <td
-                key={colIndex}
-                className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium"
+  const renderObjects = (arr: any[]) => {
+    const cleanedData = Array.isArray(arr)
+      ? arr.filter(
+          (item) => item && typeof item === "object" && !Array.isArray(item)
+        )
+      : [];
+
+    const validFirstRow = cleanedData[0];
+    if (!validFirstRow) return null;
+
+    return (
+      <>
+        <thead className="bg-[#F5F5F5]">
+          <tr>
+            {Object.keys(validFirstRow).map((key) => (
+              <th
+                key={key}
+                className="px-4 py-2 text-left text-dark-gray text-[10px] font-medium extracted-content-th"
               >
-                <input
-                  type="text"
-                  value={
-                    typeof value === "object" && value !== null
-                      ? JSON.stringify(value)
-                      : String(value)
-                  }
-                  onChange={(e) => handleInputChange(e, rowIndex, key)}
-                  className="w-full bg-transparent border-none outline-none text-[11px] text-dark-gray"
-                />
-              </td>
+                {key}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </>
-  );
+        </thead>
+        <tbody>
+          {cleanedData.map((item, rowIndex) => (
+            <tr key={rowIndex} className="border-t border-[#E5E7EB]">
+              {Object.keys(validFirstRow).map((key) => (
+                <td
+                  key={key}
+                  className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium"
+                >
+                  <input
+                    type="text"
+                    value={
+                      typeof item[key] === "object" && item[key] !== null
+                        ? JSON.stringify(item[key])
+                        : String(item[key] ?? "")
+                    }
+                    onChange={(e) => handleInputChange(e, rowIndex, key)}
+                    className="w-full bg-transparent border-none outline-none text-[11px] text-dark-gray"
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </>
+    );
+  };
 
   const renderTableContent = () => {
     if (isArrayOfObjects) return renderObjects(itemsFieldData);
@@ -109,9 +120,7 @@ const EditExtractedItemsTable = ({
     <div className="w-full">
       <label className="text-dark-gray text-[14px] font-bold">
         {label}
-        {confidence && (
-          <ConfidenceBadge confidence={confidence} />
-        )}
+        {confidence && <ConfidenceBadge confidence={confidence} />}
       </label>
       <div className="overflow-x-auto border-t border-b border-[#E5E7EB] mt-2">
         <table className="min-w-full">{renderTableContent()}</table>

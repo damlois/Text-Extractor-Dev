@@ -99,12 +99,17 @@ export const formatExtractionValue = (value: any): string => {
   }
 
   if (typeof value === "object") {
+    // Case 1: Array of objects
     if (Array.isArray(value)) {
       const filtered = value.filter(
-        (item) => item !== null && typeof item === "object" && !Array.isArray(item)
+        (item) =>
+          item !== null && typeof item === "object" && !Array.isArray(item)
       );
 
-      if (filtered.length === 0) return "N/A";
+      if (filtered.length === 0) {
+        // Fallback: array of primitives
+        return value.join(", ");
+      }
 
       return filtered
         .map(
@@ -115,16 +120,38 @@ export const formatExtractionValue = (value: any): string => {
               .join(", ")
         )
         .join(" | ");
-    } else {
-      return Object.entries(value)
-        .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
-        .join(", ");
     }
+
+    // Case 2: Object with array values of same length
+    const objectValues = Object.values(value);
+    const allArrays = objectValues.every((v) => Array.isArray(v));
+    const sameLength =
+      allArrays &&
+      objectValues.every(
+        (v) =>
+          Array.isArray(v) && v.length === (objectValues[0] as unknown[]).length
+      );
+
+    if (allArrays && sameLength) {
+      const keys = Object.keys(value);
+      const rows = value[keys[0]].map((_: any, i: string | number) =>
+        keys.map((key) => `${key}: ${value[key][i] ?? "N/A"}`).join(", ")
+      );
+
+      return rows
+        .map((row: any, idx: number) => `{${idx + 1}} ${row}`)
+        .join(" | ");
+    }
+
+    // Case 3: Regular object
+    return Object.entries(value)
+      .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+      .join(", ");
   }
 
+  // Fallback: primitive value
   return value.toString();
 };
-
 
 export const areRecordsEqual = (
   obj1: Record<any, any>,

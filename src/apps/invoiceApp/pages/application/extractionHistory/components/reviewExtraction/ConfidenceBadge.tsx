@@ -5,15 +5,28 @@ interface ConfidenceBadgeProps {
   confidence: Confidence;
 }
 
-const getAverageConfidence = (confidence: Confidence): number => {
+const getAverageConfidence = (confidence: any): number => {
+  // Case 1: Single number
   if (typeof confidence === "number") {
     return confidence;
   }
 
-  // Handle object with numeric values
-  if (!Array.isArray(confidence)) {
+  // Case 2: Array of objects with 'confidence' field
+  if (Array.isArray(confidence)) {
+    const confidenceValues = confidence
+      .map((item) => item?.confidence)
+      .filter((val): val is number => typeof val === "number");
+
+    if (confidenceValues.length === 0) return NaN;
+
+    const sum = confidenceValues.reduce((acc, val) => acc + val, 0);
+    return sum / confidenceValues.length;
+  }
+
+  // Case 3: Object with numeric values
+  if (typeof confidence === "object" && confidence !== null) {
     const values = Object.values(confidence);
-    const validNumbers = values.filter((v) => typeof v === "number");
+    const validNumbers = values.filter((v): v is number => typeof v === "number");
 
     if (validNumbers.length === 0) return NaN;
 
@@ -21,25 +34,9 @@ const getAverageConfidence = (confidence: Confidence): number => {
     return sum / validNumbers.length;
   }
 
-  // Handle array of objects
-  const allValues: number[] = [];
-
-  for (const obj of confidence) {
-    if (typeof obj === "object" && obj !== null) {
-      for (const val of Object.values(obj)) {
-        if (typeof val === "number") {
-          allValues.push(val);
-        }
-      }
-    }
-  }
-
-  if (allValues.length === 0) return NaN;
-
-  const total = allValues.reduce((acc, val) => acc + val, 0);
-  return total / allValues.length;
+  // If nothing matches, return NaN
+  return NaN;
 };
-
 
 const ConfidenceBadge: React.FC<ConfidenceBadgeProps> = ({ confidence }) => {
   let textColorClass = "!text-[#166534]";

@@ -28,7 +28,7 @@ const ExtractedItemsTable = ({
       {arr.map((str, idx) => (
         <tr key={idx} className="border-t border-[#E5E7EB]">
           <td className="px-4 py-2 text-left text-dark-gray text-[11px] font-medium">
-            {str ?? "—"} {/* fallback for null/undefined */}
+            {str ?? "—"}
           </td>
         </tr>
       ))}
@@ -36,11 +36,16 @@ const ExtractedItemsTable = ({
   );
 
   const renderObjects = (arr: (Record<string, any> | null | undefined)[]) => {
-    if (!Array.isArray(arr) || arr.length === 0 || arr[0] == null) {
-      return null;
-    }
+    // Clean the data first
+    const cleanedData = Array.isArray(arr)
+      ? arr.filter(
+          (item) => item && typeof item === "object" && !Array.isArray(item)
+        )
+      : [];
 
-    const headers = Object.keys(arr[0] ?? {});
+    if (cleanedData.length === 0) return null;
+
+    const headers = Object.keys(cleanedData[0] ?? {});
 
     return (
       <>
@@ -57,7 +62,7 @@ const ExtractedItemsTable = ({
           </tr>
         </thead>
         <tbody>
-          {arr.map((item, idx) => (
+          {cleanedData.map((item, idx) => (
             <tr key={idx} className="border-t border-[#E5E7EB]">
               {headers.map((key, i) => {
                 const val = item?.[key];

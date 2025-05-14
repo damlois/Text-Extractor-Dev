@@ -27,7 +27,7 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
   };
 
   const zoomIn = () => setZoom((prev) => Math.min(prev + 0.1, 3));
-  const zoomOut = () => setZoom((prev) => Math.max(prev - 0.1, 0.5));
+  const zoomOut = () => setZoom((prev) => Math.max(prev - 0.1, 0.1));
   const rotateClockwise = () => setRotation((prev) => (prev + 90) % 360);
 
   const handleImageLoad = (index: number, img: HTMLImageElement) => {

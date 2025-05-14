@@ -7,9 +7,9 @@ export const formatToReadableDate = (isoDateString: string): string => {
   const date = new Date(isoDateString);
 
   const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const ampm = hours >= 12 ? 'pm' : 'am';
-  const formattedHour = (hours % 12) || 12;
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const ampm = hours >= 12 ? "pm" : "am";
+  const formattedHour = hours % 12 || 12;
 
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -22,6 +22,11 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
   const invoiceMapById: Record<string, ProcessedInvoice> = {};
 
   const formattedInvoices = invoices.map((item: any) => {
+    const extractedContent = item.extracted_content;
+    const overallConfidence =
+      extractedContent?.overall_confidence ??
+      extractedContent["Overall Confidence"];
+
     const formattedInvoice = {
       ...item,
       processing_status:
@@ -29,6 +34,10 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
           ? "Successful"
           : item.processing_status,
       updated_at: formatToReadableDate(item.updated_at),
+      extracted_content: {
+        ...extractedContent,
+        overall_confidence: overallConfidence,
+      },
     };
 
     if (!invoiceMapById[item.id]) {
