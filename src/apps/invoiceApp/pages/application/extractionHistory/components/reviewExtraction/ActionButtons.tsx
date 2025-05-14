@@ -4,12 +4,15 @@ import ApproveQAModal from "./ApproveQAModal";
 import { useState } from "react";
 import { Blocker } from "react-router-dom";
 import { ReviewActionType } from "../../types";
+import SaveChangesModal from "./SaveChangesModal";
 
 interface ActionButtonsProps {
   saveLoading: { type: string; isLoading: boolean };
   isEditState: boolean;
   blockerRef: React.MutableRefObject<Blocker | null>;
   isQAApproved: boolean;
+  showSaveChangesModal: boolean;
+  setShowSaveChangesModal: (show: boolean) => void;
   setIsEditState: (isEditState: boolean) => void;
   handleSaveChanges: (type: ReviewActionType) => void;
 }
@@ -19,10 +22,15 @@ const ActionButtons = ({
   isEditState,
   blockerRef,
   isQAApproved,
+  showSaveChangesModal,
+  setShowSaveChangesModal,
   setIsEditState,
   handleSaveChanges,
 }: ActionButtonsProps) => {
   const [showApproveQAModal, setShowApproveQAModal] = useState(false);
+
+  const saveEditLoading =
+    saveLoading.type === "save_edit" && saveLoading.isLoading;
 
   const handleApproval = () => {
     handleSaveChanges("approve_qa");
@@ -41,7 +49,6 @@ const ActionButtons = ({
       />
 
       <AppButton
-        loading={saveLoading.type === "save_edit" && saveLoading.isLoading}
         children={
           <>
             {isEditState ? (
@@ -56,7 +63,7 @@ const ActionButtons = ({
         className="!w-fit"
         onClick={
           isEditState
-            ? () => handleSaveChanges("save_edit")
+            ? () => setShowSaveChangesModal(true)
             : () => setIsEditState(true)
         }
       />
@@ -67,6 +74,18 @@ const ActionButtons = ({
           setShowApproveQAModal(false);
         }}
         onApproveQA={handleApproval}
+      />
+      <SaveChangesModal
+        open={showSaveChangesModal || saveEditLoading}
+        onCancel={() => {
+          blockerRef.current?.reset?.();
+          setShowSaveChangesModal(false);
+        }}
+        onSaveChanges={() => {
+          handleSaveChanges("save_edit");
+          setShowSaveChangesModal(false);
+        }}
+        laodingSave={saveEditLoading}
       />
     </div>
   );
