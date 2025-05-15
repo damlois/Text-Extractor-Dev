@@ -124,6 +124,12 @@ const ExtractionHistoryTable = () => {
       setShowAlert(true);
     }
 
+    if (location.state?.fromReviewPage) {
+      setTimeout(() => {
+        // Status update delay
+      }, 4000);
+    }
+
     handleTemplatesFetch();
   }, []);
 
