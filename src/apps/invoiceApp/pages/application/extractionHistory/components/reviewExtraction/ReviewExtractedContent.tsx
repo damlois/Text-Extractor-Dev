@@ -29,6 +29,7 @@ const ReviewExtractedContent = () => {
   const [documentPages, setDocumentPages] = useState<
     ImageDataResponse[] | undefined
   >();
+  const [showSaveChangesModal, setShowSaveChangesModal] = useState(false);
   const [editedFields, setEditedFields] = useState<EditedFields | undefined>();
 
   const { reviewInvoice } = useInvoiceProcessor();
@@ -195,6 +196,8 @@ const ReviewExtractedContent = () => {
             isEditState={isEditState}
             blockerRef={blockerRef}
             isQAApproved={QAPassed}
+            showSaveChangesModal={showSaveChangesModal}
+            setShowSaveChangesModal={setShowSaveChangesModal}
             setIsEditState={setIsEditState}
             handleSaveChanges={handleSaveChanges}
           />
@@ -263,8 +266,8 @@ const ReviewExtractedContent = () => {
           setShowLeaveModal(false);
         }}
         onSaveChanges={() => {
-          handleSaveChanges("save_edit");
           setShowLeaveModal(false);
+          setShowSaveChangesModal(true);
         }}
       />
     </>
