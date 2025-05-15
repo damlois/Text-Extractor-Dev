@@ -1,4 +1,4 @@
-import { ProcessedInvoice } from "../../../../../types";
+import { InvoiceEditor } from "../../../../../types";
 
 export type ExtractionHistoryTableInfo = {
   key: React.Key;
@@ -18,8 +18,12 @@ export type DuplicateInvoiceItemResponse = {
     receiver: string;
   };
   source?: string;
-  status: string;
+  processing_status: string;
   created_at: string;
+  updated_at: string;
+  extracted_content: any;
+  review_status: ReviewStatus;
+  editor: InvoiceEditor;
 };
 
 export type ModalType = "Not-Allowed" | "Ignore" | "Archive";
@@ -33,3 +37,37 @@ export type DuplicateInvoicesFileHashMap = Record<
   string,
   { invoices: DuplicateInvoiceItemResponse[]; visible: boolean }
 >;
+
+export type StatusType = "successful" | "processing" | "failed";
+
+export type Header = "processing_status" | "confidence" | "review_status";
+
+export type ReviewStatus =
+  | "pending"
+  | "in_review"
+  | "reviewed"
+  | "not_applicable";
+
+export type RegularField = {
+  field: string;
+  value: string;
+  confidence?: number;
+};
+
+export type ItemField = {
+  label: string;
+  data: any;
+  confidence?: number;
+};
+
+export type EditedFields = {
+  regular: Record<string, string>;
+  items: Record<number, any>;
+};
+
+export type ReviewActionType = "approve_qa" | "save_edit";
+
+export type Confidence =
+  | number
+  | Record<string, number>
+  | Array<Record<string, number>>;

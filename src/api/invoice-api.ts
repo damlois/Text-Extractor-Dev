@@ -17,8 +17,11 @@ import {
   Role,
   DataSourceDetails,
   PermissionGroup,
+  ImagePagesResponse,
 } from "../types";
 import apiClient from "../service/apiClient";
+import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
+import keycloakService from "../service/keycloakService";
 
 export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
@@ -33,11 +36,6 @@ export const invoiceProcessorApi = {
     apiClient.put(`/invoices/template?data_source_id=${dataSourceId}`, {
       items,
     }),
-
-  getProcessedInvoices: (params: ProcessedInvoicesParams) =>
-    apiClient.get<ProcessedInvoicesResponse>(
-      `/invoices/processed?page=${params.page}&size=${params.size}`
-    ),
 
   updateInvoiceStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
@@ -148,7 +146,40 @@ export const invoiceProcessorApi = {
     await apiClient.put(`/roles/${roleId}`, data),
 
   getInvoiceImage: async (invoiceId: string) =>
-    await apiClient.get<{ data: { image_data: string } }>(
+    await apiClient.get<{ data: ImagePagesResponse }>(
       `/invoices/${invoiceId}/image`
     ),
+
+  editInvoiceExtraction: async (invoiceId: string, data: any) =>
+    await apiClient.put(`/invoices/${invoiceId}/edit`, data),
+
+  updateReviewStatus: async (
+    invoiceId: string,
+    data: { status: ReviewStatus }
+  ) => await apiClient.patch(`/invoices/${invoiceId}/review-status`, data),
+
+  updateReviewStatusWithFetch: async (
+    invoiceId: string,
+    status: ReviewStatus
+  ) => {
+    const token = keycloakService.getToken();
+    const body = JSON.stringify({ status });
+
+    try {
+      await fetch(
+        `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body,
+          keepalive: true, // Enables background sending
+        }
+      );
+    } catch (error) {
+      console.error("Error updating review status:", error);
+    }
+  },
 };

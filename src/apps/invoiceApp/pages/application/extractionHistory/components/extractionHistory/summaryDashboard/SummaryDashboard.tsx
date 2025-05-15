@@ -1,25 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import MetricCard from "../../../../../../../components/MetricCard";
-import { invoiceProcessorApi } from "../../../../../../../api/invoice-api";
+import MetricCard from "../../../../../../../../components/MetricCard";
+import { invoiceProcessorApi } from "../../../../../../../../api/invoice-api";
 import { useNavigate } from "react-router-dom";
-import { useInvoiceProcessor } from "../../../../../context/InvoiceProcessorContext";
+import { useInvoiceProcessor } from "../../../../../../context/InvoiceProcessorContext";
 import {
   DuplicateInvoiceItemResponse,
   DuplicateInvoicesFileHashMap,
-  DuplicateInvoicesResponse,
-} from "../../types";
-import { manageSSE } from "../../../../../../../service/sseClient";
-import { showNotification } from "../../../../../../../utils/notification";
+} from "../../../types";
+import { manageSSE } from "../../../../../../../../service/sseClient";
+import { showNotification } from "../../../../../../../../utils/notification";
 import { Spin } from "antd";
-import { PERMISSIONS } from "../../../../../constants/permissions";
-import { usePermission } from "../../../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../../constants/permissions";
+import { usePermission } from "../../../../../../context/PermissionContext";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
   const [duplicatesLoading, setDuplicatesLoading] = useState(true);
   const [metricsLoading, setMetricsLoading] = useState(true);
 
-  const {userHasPermission} = usePermission();
+  const { userHasPermission } = usePermission();
   const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
 
   const navigate = useNavigate();
@@ -60,17 +59,32 @@ const SummaryDashboard = () => {
     let invoiceIdMap: Record<string, DuplicateInvoiceItemResponse> = {};
 
     const fileHashMap = data.duplicates?.reduce(
-      (acc: DuplicateInvoicesFileHashMap, item: DuplicateInvoicesResponse) => {
+      (acc: DuplicateInvoicesFileHashMap, item: any) => {
+        const updatedInvoices = item.invoices
+          .map((invoice: any) => {
+            const { status, ...rest } = invoice;
+            const updatedInvoice = {
+              ...rest,
+              processing_status:
+                status.toLowerCase() === "completed" ? "successful" : status,
+            };
+
+            if (!invoiceIdMap[invoice.id] && invoice.id) {
+              invoiceIdMap[invoice.id] = updatedInvoice;
+            }
+
+            return updatedInvoice;
+          })
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          );
+
         acc[item.file_hash] = {
-          invoices: item.invoices,
+          invoices: updatedInvoices,
           visible: true,
         };
-
-        item.invoices.forEach((invoice) => {
-          if (!invoiceIdMap[invoice.id] && invoice.id) {
-            invoiceIdMap[invoice.id] = invoice;
-          }
-        });
 
         count += item.invoices.length;
         return acc;

@@ -50,13 +50,13 @@ const LabelSetupTemplate = ({
     templateItems,
     setTemplateItems,
     loading: templateLoading,
-    fetchTemplate
+    fetchTemplate,
   } = useTemplate();
   const [editingKey, setEditingKey] = useState<string>("");
 
   useEffect(() => {
-    fetchTemplate()
-  }, [])
+    fetchTemplate();
+  }, []);
 
   const getTableData = (): LabelInfo[] => {
     return templateItems.map((item, index) => ({
@@ -157,12 +157,12 @@ const LabelSetupTemplate = ({
                 disabled={!!editingKey}
                 onClick={() => edit(record)}
               >
-                <FaRegEdit className="text-[18px] text-deep-blue" />
+                {FaRegEdit({ className: "text-[18px] text-deep-blue" })}
               </Typography.Link>
             )}
             {!editable && (
               <Typography.Link onClick={() => deleteRow(record.key)}>
-                <RiDeleteBinLine className="text-[18px] text-[#EA4335]" />
+                {RiDeleteBinLine({ className: "text-[18px] text-[#EA4335]" })}
               </Typography.Link>
             )}
           </div>

@@ -10,6 +10,7 @@ import { invoiceProcessorApi } from "../../../../api/invoice-api";
 import EditRoleModal from "./components/EditRoleModal";
 import { usePermission } from "../../context/PermissionContext";
 import { PERMISSIONS } from "../../constants/permissions";
+import { formatDateTime } from "../../../../utils";
 
 const RolesList = () => {
   const [roles, setRoles] = useState<RoleResponse[]>([]);
@@ -56,19 +57,6 @@ const RolesList = () => {
     toggleModal("edit_role");
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const formatter = new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric",
-    });
-    return formatter.format(date);
-  };
-
   const rolesListColumns: TableColumnsType<RoleResponse> = [
     {
       title: "Role Title",
@@ -82,7 +70,7 @@ const RolesList = () => {
       dataIndex: "created_at",
       render: (text: string) => (
         <span className="text-dark-gray text-[14px] font-normal">
-          {formatDate(text)}
+          {formatDateTime(text)}
         </span>
       ),
     },
@@ -126,7 +114,7 @@ const RolesList = () => {
                 }}
               >
                 <Button
-                  icon={<FaEllipsisVertical className="text-black" />}
+                  icon={FaEllipsisVertical({ className: "text-black" })}
                   type="link"
                   className="py-2 px-3 border border-[#E4E7EC] rounded-lg"
                 />

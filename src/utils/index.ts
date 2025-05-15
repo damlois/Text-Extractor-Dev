@@ -93,96 +93,63 @@ export const requiredRule = (field: string) => ({
   message: `${field} is required`,
 });
 
-export const constructTableColumns = (result: any) => {
-  if (result.length === 0) return [];
-
-  const flattenObject = (obj: any, prefix = "") => {
-    return Object.keys(obj).reduce((acc: any, key: string) => {
-      const value = obj[key];
-      const newKey = prefix ? `${prefix}_${key}` : key;
-
-      if (value && typeof value === "object" && !Array.isArray(value)) {
-        Object.assign(acc, flattenObject(value, newKey));
-      } else {
-        acc[newKey] = value;
-      }
-
-      return acc;
-    }, {});
-  };
-
-  // Get the first result with invoice_data flattened
-  const firstResult = result[0];
-  const flattenedInvoiceData = firstResult.invoice_data
-    ? flattenObject(firstResult.invoice_data)
-    : {};
-
-  // Combine base fields with flattened invoice data fields
-  const baseColumns = [
-    {
-      title: "#",
-      key: "index",
-      render: (_: any, __: any, index: number) => index + 1,
-    },
-    {
-      title: "File Name",
-      dataIndex: "file_name",
-      key: "file_name",
-    },
-    {
-      title: "Status",
-      dataIndex: "processing_status",
-      key: "processing_status",
-    },
-    {
-      title: "Date Created",
-      dataIndex: "created_at",
-      key: "created_at",
-    },
-  ];
-
-  const invoiceDataColumns = Object.keys(flattenedInvoiceData).map((key) => ({
-    title: key
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" "),
-    dataIndex: ["invoice_data", ...key.split("_")],
-    key,
-  }));
-
-  return [...baseColumns, ...invoiceDataColumns];
-};
-
 export const formatExtractionValue = (value: any): string => {
   if (value === null || value === undefined) {
     return "N/A";
   }
 
   if (typeof value === "object") {
+    // Case 1: Array of objects
     if (Array.isArray(value)) {
-      if (value.length === 0) return "N/A";
+      const filtered = value.filter(
+        (item) =>
+          item !== null && typeof item === "object" && !Array.isArray(item)
+      );
 
-      // Check if array contains objects
-      if (value.every((item) => typeof item === "object" && item !== null)) {
-        return value
-          .map(
-            (obj, index) =>
-              `{${index + 1}} ` +
-              Object.entries(obj)
-                .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
-                .join(", ")
-          )
-          .join(" | ");
+      if (filtered.length === 0) {
+        // Fallback: array of primitives
+        return value.join(", ");
       }
 
-      return value.join(", ");
-    } else {
-      return Object.entries(value)
-        .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
-        .join(", ");
+      return filtered
+        .map(
+          (obj, index) =>
+            `{${index + 1}} ` +
+            Object.entries(obj)
+              .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+              .join(", ")
+        )
+        .join(" | ");
     }
+
+    // Case 2: Object with array values of same length
+    const objectValues = Object.values(value);
+    const allArrays = objectValues.every((v) => Array.isArray(v));
+    const sameLength =
+      allArrays &&
+      objectValues.every(
+        (v) =>
+          Array.isArray(v) && v.length === (objectValues[0] as unknown[]).length
+      );
+
+    if (allArrays && sameLength) {
+      const keys = Object.keys(value);
+      const rows = value[keys[0]].map((_: any, i: string | number) =>
+        keys.map((key) => `${key}: ${value[key][i] ?? "N/A"}`).join(", ")
+      );
+
+      return rows
+        .map((row: any, idx: number) => `{${idx + 1}} ${row}`)
+        .join(" | ");
+    }
+
+    // Case 3: Regular object
+    return Object.entries(value)
+      .map(([key, val]) => `${key}: ${val ?? "N/A"}`)
+      .join(", ");
   }
 
+  // Fallback: primitive value
   return value.toString();
 };
 
@@ -201,4 +168,17 @@ export const formatDate = (isoDateString: string): string => {
     year: "numeric",
   };
   return date.toLocaleDateString("en-GB", options);
+};
+
+export const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  });
+  return formatter.format(date);
 };

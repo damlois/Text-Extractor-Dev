@@ -1,3 +1,5 @@
+import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
+
 export type Message = {
   text: string;
   from: "user" | "model" | "loader";
@@ -99,10 +101,17 @@ export type DynamicValue =
   | null
   | boolean
   | DynamicObject
-  | DynamicValue[];
+  | DynamicValue[]
+  | any;
+
 export interface DynamicObject {
   [key: string]: DynamicValue;
 }
+
+export type InvoiceEditor = {
+  full_name: string;
+  user_id: string;
+};
 
 export interface ProcessedInvoice {
   id: string;
@@ -113,10 +122,14 @@ export interface ProcessedInvoice {
   email_metadata: {
     sender: string;
     receiver: string;
+    sender_email: string;
   };
   source?: string;
   processing_status: string;
+  review_status: ReviewStatus;
   created_at: string;
+  updated_at: string;
+  editor: InvoiceEditor;
 }
 
 export interface InvoiceDetailsResponse {
@@ -155,11 +168,12 @@ export interface BreadCrumb {
   path?: string;
 }
 
-export type ExtractionStatus = "Successful" | "Failed" | null;
+export type ExtractionStatus = "Successful" | "Processing" | "Failed";
 
 export interface ExtractionHistoryFilter {
   senders?: string[];
   status?: ExtractionStatus;
+  reviewStatus?: string[];
   dateFrom?: string;
   dateTo?: string;
 }
@@ -266,4 +280,12 @@ export interface RoleResponse {
   name: string;
   permissions: Permission[];
   created_at: string;
+}
+
+export interface ImageDataResponse {
+  image_data: string;
+}
+
+export interface ImagePagesResponse {
+  pages: ImageDataResponse[];
 }

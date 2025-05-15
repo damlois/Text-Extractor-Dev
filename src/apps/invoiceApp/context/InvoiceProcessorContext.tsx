@@ -10,6 +10,8 @@ import { DataSourceDetails, ProcessedInvoice } from "../../../types";
 import {
   DuplicateInvoiceItemResponse,
   DuplicateInvoicesFileHashMap,
+  ItemField,
+  RegularField,
 } from "../pages/application/extractionHistory/types";
 import { invoiceProcessorApi } from "../../../api/invoice-api";
 
@@ -32,6 +34,12 @@ interface InvoiceProcessorContextProps {
   setDuplicatesRefresh: Dispatch<SetStateAction<boolean>>;
   duplicatesCount: number;
   setDuplicatesCount: Dispatch<SetStateAction<number>>;
+  reviewInvoice: ProcessedInvoice | undefined;
+  setReviewInvoice: Dispatch<SetStateAction<ProcessedInvoice | undefined>>;
+  regularFieldsData: RegularField[];
+  itemsFieldsData: ItemField[];
+  setRegularFieldsData: Dispatch<SetStateAction<RegularField[]>>;
+  setItemsFieldsData: Dispatch<SetStateAction<ItemField[]>>;
   loadingDataSource: boolean;
   fetchDataSource: () => Promise<void>;
 }
@@ -60,6 +68,12 @@ export const InvoiceProcessorProvider: React.FC<
     useState<DuplicateInvoicesFileHashMap>({});
   const [duplicatesRefresh, setDuplicatesRefresh] = useState<boolean>(false);
   const [duplicatesCount, setDuplicatesCount] = useState(0);
+  const [reviewInvoice, setReviewInvoice] = useState<
+    ProcessedInvoice | undefined
+  >();
+  const [regularFieldsData, setRegularFieldsData] = useState<RegularField[]>([]);
+  const [itemsFieldsData, setItemsFieldsData] = useState<ItemField[]>([]);
+  
   const [loadingDataSource, setLoadingDataSource] = useState(true);
 
   const fetchDataSource = async () => {
@@ -90,6 +104,12 @@ export const InvoiceProcessorProvider: React.FC<
         setDuplicatesRefresh,
         duplicatesCount,
         setDuplicatesCount,
+        reviewInvoice,
+        setReviewInvoice,
+        itemsFieldsData,
+        setItemsFieldsData,
+        regularFieldsData,
+        setRegularFieldsData,
         loadingDataSource,
         fetchDataSource,
       }}

@@ -9,6 +9,7 @@ interface PageHeaderProps {
   onActionClick?: () => void;
   noBreadCrumb?: boolean;
   pageTitle?: string;
+  showOnlyBreadCrumb?: boolean;
 }
 
 const PageHeader = ({
@@ -18,6 +19,7 @@ const PageHeader = ({
   onActionClick,
   noBreadCrumb,
   pageTitle,
+  showOnlyBreadCrumb,
 }: PageHeaderProps) => {
   const navigate = useNavigate();
 
@@ -48,11 +50,13 @@ const PageHeader = ({
           </div>
         )}
 
-        <div className="flex flex-col items-start w-full">
-          <h1 className="text-black font-medium text-xl">
-            {pageTitle || breadcrumbs[breadcrumbs.length - 1]?.label || ""}
-          </h1>
-        </div>
+        {!showOnlyBreadCrumb && (
+          <div className="flex flex-col items-start w-full">
+            <h1 className="text-black font-medium text-xl">
+              {pageTitle || breadcrumbs[breadcrumbs.length - 1]?.label || ""}
+            </h1>
+          </div>
+        )}
       </div>
 
       {action && (

@@ -74,6 +74,17 @@ export const useRouteConfig = () => {
                 ],
               },
               {
+                key: "review",
+                hideTabAndTitle: true,
+                breadcrumbs: [
+                  {
+                    label: "Extraction History",
+                    path: "/home/invoice-processing/extraction-history",
+                  },
+                  { label: "Review Content" },
+                ],
+              },
+              {
                 key: "generate-insights",
                 label: "Preview of Selected Extraction",
                 breadcrumbs: [
