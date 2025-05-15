@@ -42,14 +42,6 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
           </span>
 
           <div className="flex items-center gap-1">
-            <Tooltip title="Rotate Clockwise">
-              <Button
-                size="small"
-                icon={<ReloadOutlined />}
-                onClick={rotateClockwise}
-                className="mr-1"
-              />
-            </Tooltip>
             <Tooltip title="Zoom Out">
               <Button
                 size="small"
