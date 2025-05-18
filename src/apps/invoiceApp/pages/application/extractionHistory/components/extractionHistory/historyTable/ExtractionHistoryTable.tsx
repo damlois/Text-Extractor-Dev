@@ -39,9 +39,14 @@ const ExtractionHistoryTable = () => {
   const [displayInvoices, setDisplayInvoices] = useState<ProcessedInvoice[]>(
     []
   );
+  // const [pagination, setPagination] = useState({
+  //   current: 5,
+  //   pageSize: 10,
+  //   total: 0,
+  // });
   const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
+    current: 4,
+    pageSize: 11,
     total: 0,
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
@@ -105,7 +110,8 @@ const ExtractionHistoryTable = () => {
     const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
       [...data.invoices].sort(
         (a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          Date.parse(a.created_at.slice(0, 23)) -
+          Date.parse(b.created_at.slice(0, 23))
       )
     );
 
