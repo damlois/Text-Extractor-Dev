@@ -167,7 +167,7 @@ export const invoiceProcessorApi = {
 
     try {
       await fetch(
-        `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+        `${process.env.REACT_APP_DEMO_API_URL}/invoices/${invoiceId}/review-status`,
         {
           method: "PATCH",
           headers: {
