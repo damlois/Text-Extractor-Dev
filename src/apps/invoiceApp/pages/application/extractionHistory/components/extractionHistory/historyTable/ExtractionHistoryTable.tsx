@@ -103,7 +103,10 @@ const ExtractionHistoryTable = () => {
     }
 
     const { formattedInvoices, invoiceMapById } = formatInvoiceAndCreateMap(
-      [...data.invoices].sort((a, b) => b.id - a.id)
+      [...data.invoices].sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      )
     );
 
     setOriginalInvoices(formattedInvoices);
