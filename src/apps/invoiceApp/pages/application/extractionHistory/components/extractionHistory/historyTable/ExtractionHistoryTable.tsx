@@ -24,6 +24,7 @@ import DocumentInReviewModal from "./DocumentInReviewModal";
 import InvoicePreviewModal from "../invoicePreview";
 import { useTemplate } from "../../../../../../context/TemplateContext";
 import keycloakService from "../../../../../../../../service/keycloakService";
+import ReviewButton from "./ReviewButton";
 
 const ExtractionHistoryTable = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -328,25 +329,12 @@ const ExtractionHistoryTable = () => {
       ? [
           {
             title: "",
-            render: (_: any, record: ProcessedInvoice) => {
-              const isDisabled =
-                record.processing_status.toLowerCase() === "processing" ||
-                record.processing_status.toLowerCase() === "failed";
-
-              return (
-                <div
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 border rounded-[4px] w-[77px] transition-colors ${
-                    isDisabled
-                      ? "border-[#BFBFBF] text-[#00000040] cursor-not-allowed bg-[#F5F5F5] pointer-events-none"
-                      : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
-                  }`}
-                  onClick={() => !isDisabled && handleDocumentReview(record)}
-                >
-                  <EditOutlined />
-                  <span className="text-[12px]">Review</span>
-                </div>
-              );
-            },
+            render: (_: any, record: ProcessedInvoice) => (
+              <ReviewButton
+                record={record}
+                handleReview={handleDocumentReview}
+              />
+            ),
           },
         ]
       : []),
