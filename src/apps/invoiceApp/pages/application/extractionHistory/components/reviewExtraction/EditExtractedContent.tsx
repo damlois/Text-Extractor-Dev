@@ -8,6 +8,7 @@ import EditExtractedItemsTable from "./EditExtractedItemsTable";
 import { ItemField, RegularField } from "../../types";
 import ConfidenceBadge from "./ConfidenceBadge";
 
+
 interface EditExtractedContentProps {
   extractedContent: any;
   reviewStatus?: string;
@@ -15,6 +16,7 @@ interface EditExtractedContentProps {
   editTime?: string;
   onEdit: (editedFields: any) => void;
 }
+
 
 const EditExtractedContent = ({
   extractedContent,
@@ -28,6 +30,7 @@ const EditExtractedContent = ({
   >([]);
   const [updatedItemFields, setUpdatedItemsFields] = useState<ItemField[]>([]);
 
+
   const { templateItems, fetchTemplate } = useTemplate();
   const {
     currentDataSource,
@@ -35,6 +38,7 @@ const EditExtractedContent = ({
     regularFieldsData,
     itemsFieldsData,
   } = useInvoiceProcessor();
+
 
   useEffect(() => {
     const handleFetchTemplate = async () => {
@@ -46,13 +50,16 @@ const EditExtractedContent = ({
       }
     };
 
+
     handleFetchTemplate();
   }, []);
+
 
   useEffect(() => {
     setUpdatedRegularFields(regularFieldsData);
     setUpdatedItemsFields(itemsFieldsData);
   }, [regularFieldsData, itemsFieldsData]);
+
 
   useEffect(() => {
     const regularFieldsObject = updatedRegularFields.reduce(
@@ -60,16 +67,19 @@ const EditExtractedContent = ({
       {}
     );
 
+
     const itemFieldsObject = updatedItemFields.reduce((acc, item) => {
       acc[item.label] = item.data;
       return acc;
     }, {} as Record<string, any>);
+
 
     onEdit({
       ...regularFieldsObject,
       ...itemFieldsObject,
     });
   }, [updatedRegularFields, updatedItemFields]);
+
 
   const updateRegularFieldValue = (field: string, value: string) => {
     setUpdatedRegularFields((prevFields) =>
@@ -78,6 +88,7 @@ const EditExtractedContent = ({
       )
     );
   };
+
 
   const updateItemFieldValue = (
     itemIndex: number,
@@ -89,8 +100,10 @@ const EditExtractedContent = ({
       prevItems.map((item, index) => {
         if (index !== itemIndex) return item;
 
+
         const data = item.data;
         let newData: any = [];
+
 
         const isArray = Array.isArray(data);
         const isArrayOfObjects =
@@ -105,9 +118,11 @@ const EditExtractedContent = ({
           typeof data === "object" &&
           Object.keys(data).every((key) => /^\d+$/.test(key));
 
+
         if (isArrayOfObjects) {
           newData = data.map((row: any, rIndex: number) => {
             if (rIndex !== rowIndex) return row;
+
 
             const originalCell = row[key];
             return {
@@ -131,10 +146,12 @@ const EditExtractedContent = ({
           };
         }
 
+
         return { ...item, data: newData };
       })
     );
   };
+
 
   if (!extractedContent || typeof extractedContent !== "object") {
     return (
@@ -143,6 +160,7 @@ const EditExtractedContent = ({
       </div>
     );
   }
+
 
   return (
     <div className="h-full flex flex-col">
@@ -176,6 +194,7 @@ const EditExtractedContent = ({
           )}
       </div>
 
+
       <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh] flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           {updatedRegularFields.map(({ field, value, confidence }) => (
@@ -193,6 +212,7 @@ const EditExtractedContent = ({
           ))}
         </div>
 
+
         <div className="flex flex-col gap-6">
           {updatedItemFields.map((item, itemIndex) => (
             <EditExtractedItemsTable
@@ -203,6 +223,13 @@ const EditExtractedContent = ({
               onCellChange={(rowIndex, key, value) =>
                 updateItemFieldValue(itemIndex, rowIndex, key, value)
               }
+              onDataUpdate={(updatedData) =>
+                setUpdatedItemsFields((prevItems) =>
+                  prevItems.map((itm, idx) =>
+                    idx === itemIndex ? { ...itm, data: updatedData } : itm
+                  )
+                )
+              }
             />
           ))}
         </div>
@@ -210,5 +237,6 @@ const EditExtractedContent = ({
     </div>
   );
 };
+
 
 export default EditExtractedContent;
