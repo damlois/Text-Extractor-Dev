@@ -39,14 +39,9 @@ const ExtractionHistoryTable = () => {
   const [displayInvoices, setDisplayInvoices] = useState<ProcessedInvoice[]>(
     []
   );
-  // const [pagination, setPagination] = useState({
-  //   current: 5,
-  //   pageSize: 10,
-  //   total: 0,
-  // });
   const [pagination, setPagination] = useState({
-    current: 4,
-    pageSize: 11,
+    current: 1,
+    pageSize: 10,
     total: 0,
   });
   const [filters, setFilters] = useState<ExtractionHistoryFilter | null>(null);
