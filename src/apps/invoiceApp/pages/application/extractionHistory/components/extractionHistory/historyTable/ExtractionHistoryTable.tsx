@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Alert, Dropdown, Table, Tooltip } from "antd";
+import { Alert, Dropdown, Table } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../../components/AppButton";
 import { ProcessedInvoice } from "../../../../../../../../types";
