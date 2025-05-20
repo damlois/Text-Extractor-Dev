@@ -39,19 +39,14 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
 
       if (flowType === "ADD_NEW") {
         const response = await invoiceProcessorApi.configureDataSource(data);
-
         setCurrentDataSource(response.data.data);
       }
 
       if (flowType === "UPDATE") {
-        const response = await invoiceProcessorApi.updateDataSource(
+        await invoiceProcessorApi.updateDataSource(
           initialData?.id as string,
           data
         );
-
-        console.log({response});
-
-        // setCurrentDataSource(response.data.data);
       }
 
       if (onSuccessCallback) {
