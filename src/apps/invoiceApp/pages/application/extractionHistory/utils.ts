@@ -38,6 +38,7 @@ export const formatInvoiceAndCreateMap = (invoices: any) => {
         ...extractedContent,
         overall_confidence: overallConfidence,
       },
+      isUnsupportedFile: false,
     };
 
     if (!invoiceMapById[item.id]) {

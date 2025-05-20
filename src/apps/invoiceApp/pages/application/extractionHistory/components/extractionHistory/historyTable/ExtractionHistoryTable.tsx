@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Alert, Dropdown, Table } from "antd";
+import { Alert, Dropdown, Table, Tooltip } from "antd";
 import type { TableColumnsType } from "antd";
 import AppButton from "../../../../../../../../components/AppButton";
 import { ProcessedInvoice } from "../../../../../../../../types";
@@ -21,17 +21,14 @@ import TableHeaderTooltip from "./TableHeaderTooltip";
 import ConfidenceIndicator from "./ConfidenceIndicator";
 import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
-import InvoicePreviewModal from "../invoicePreview";
 import { useTemplate } from "../../../../../../context/TemplateContext";
 import keycloakService from "../../../../../../../../service/keycloakService";
 import ReviewButton from "./ReviewButton";
+import FileName from "./FileName";
 
 const ExtractionHistoryTable = () => {
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] =
-    useState<ProcessedInvoice | null>(null);
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [originalInvoices, setOriginalInvoices] = useState<ProcessedInvoice[]>(
@@ -179,11 +176,6 @@ const ExtractionHistoryTable = () => {
     ).filter(Boolean);
   }, [originalInvoices]);
 
-  const togglePreviewModal = (invoice?: ProcessedInvoice) => {
-    setSelectedInvoice(invoice || null);
-    setShowPreviewModal(!showPreviewModal);
-  };
-
   const toggleFilterModal = () => {
     setShowFilterModal(!showFilterModal);
   };
@@ -234,19 +226,7 @@ const ExtractionHistoryTable = () => {
     {
       title: "File Name",
       dataIndex: "file_name",
-      render: (text: string, record: ProcessedInvoice) => (
-        <button
-          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[12vw] truncate`}
-          style={{ display: "inline-block", verticalAlign: "top" }}
-          title={text}
-          onClick={() => togglePreviewModal(record)}
-        >
-          {text}
-          {duplicatesMapById && duplicatesMapById[record.id] && (
-            <WarningOutlined style={{ color: "#FF4D4F", marginLeft: "8px" }} />
-          )}
-        </button>
-      ),
+      render: (_, record: ProcessedInvoice) => <FileName record={record} />,
     },
     {
       title: "Sender",
@@ -404,11 +384,6 @@ const ExtractionHistoryTable = () => {
           }}
         />
       </div>
-      <InvoicePreviewModal
-        open={showPreviewModal}
-        onCancel={() => togglePreviewModal(undefined)}
-        invoiceDetails={selectedInvoice}
-      />
       <DocumentInReviewModal
         open={showDocInReviewModal}
         onCancel={toggleDocInReviewModal}
