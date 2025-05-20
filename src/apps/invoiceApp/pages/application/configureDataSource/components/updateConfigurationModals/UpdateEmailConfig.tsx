@@ -44,8 +44,9 @@ const UpdateEmailConfig = ({
           </div>
           <EmailConfigTemplate
             className="px-6 pt-6"
-            initialData = {dataSourceDetails}
+            initialData={dataSourceDetails}
             onSuccessCallback={onSuccessCallBack}
+            flowType="UPDATE"
             buttonComponent={({ loading }) => (
               <div className="border-t border-[#f0f0f0]">
                 <div className="flex flex-end gap-2 p-6">
