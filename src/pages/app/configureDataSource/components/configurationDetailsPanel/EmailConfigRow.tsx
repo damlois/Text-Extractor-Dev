@@ -4,6 +4,7 @@ import UpdateEmailConfig from "../updateConfigurationModals/UpdateEmailConfig";
 import { DataSourceDetails } from "../../../../../types";
 import { PERMISSIONS } from "../../../constants/permissions";
 import { usePermission } from "../../../context/PermissionContext";
+import { useApplication } from "../../../../../context/ApplicationContext";
 
 interface EmailConfigRowProps {
   dataSourceDetails: DataSourceDetails | null;
@@ -17,6 +18,7 @@ const EmailConfigRow = ({
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const { userHasPermission } = usePermission();
+  const { currentApp } = useApplication();
 
   const toggleModal = () => {
     setShowUpdateModal(!showUpdateModal);
@@ -30,8 +32,8 @@ const EmailConfigRow = ({
             Email Configuration
           </h2>
           <p className="text-gray font-normal text-[14px] w-[90%]">
-            Email Address used to configure the data source for invoice
-            extraction.
+            Email Address used to configure the data source for{" "}
+            {currentApp?.toLowerCase()} extraction.
           </p>
         </div>
         {userHasPermission(PERMISSIONS.EDIT_DATASOURCE) && (

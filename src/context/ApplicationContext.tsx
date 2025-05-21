@@ -31,8 +31,6 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
   const [currentApp, setCurrentApp] = useState<Application | null>(null);
   const [labels, setLabels] = useState<TemplateItem[] | null>(null);
 
-  console.log({currentApp})
-
   useEffect(() => {
     setCurrentApp(getAppTypeFromStorage());
   }, []);

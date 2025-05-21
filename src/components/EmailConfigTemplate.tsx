@@ -7,6 +7,7 @@ import React from "react";
 import { processorApi } from "../api";
 import { DataSourceDetails } from "../types";
 import { useDocumentProcessor } from "../pages/app/context/DocumentProcessorContext";
+import { useApplication } from "../context/ApplicationContext";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -25,6 +26,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [form] = Form.useForm();
 
   const { setCurrentDataSource } = useDocumentProcessor();
+  const { currentApp } = useApplication();
 
   const onFinish = async (values: any) => {
     try {
@@ -53,9 +55,8 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       name: "username",
       type: "text",
       label: "Mail Username",
-      placeholder: "invoices@company.com",
-      tooltip:
-        "Enter the email address you use to access your mailbox. This will be used to configure the data source for invoice extraction",
+      placeholder: `invoices@company.com`,
+      tooltip: `Enter the email address you use to access your mailbox. This will be used to configure the data source for ${currentApp?.toLowerCase()} extraction`,
       rules: [
         requiredRule("Mail Username"),
         {
@@ -69,8 +70,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       type: "password",
       label: "Mail Password",
       placeholder: "password",
-      tooltip:
-        "Enter the email password you use to access your mailbox. This will be used to configure the data source for invoice extraction",
+      tooltip: `Enter the email password you use to access your mailbox. This will be used to configure the data source for ${currentApp?.toLowerCase()} extraction`,
       rules: [requiredRule("Mail Password")],
     },
     {

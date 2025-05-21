@@ -60,7 +60,7 @@ const ApplicationList = () => {
                   style={{ fontSize: "24px", color: "#fff" }}
                 />
               }
-              onClick={() => handleNavigation("PURCHASE-ORDER")}
+              onClick={() => handleNavigation("PURCHASE ORDER")}
             />
             <ApplicationCard
               title="Receipt"

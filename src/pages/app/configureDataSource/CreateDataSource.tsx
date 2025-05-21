@@ -1,17 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { useApplication } from "../../../context/ApplicationContext";
+import { capitalizeFirstLetter } from "../../../utils";
 
 const CreateDataSource = () => {
   const navigate = useNavigate();
+
+  const { currentApp } = useApplication();
 
   return (
     <div>
       <>
         <div className="w-full text-center">
           <h2 className="text-dark-gray text-[24px] mb-1">
-            Select Your Invoice Source
+            Select Your {capitalizeFirstLetter(currentApp || "")} Source
           </h2>
           <p className="text-gray font-normal text-sm">
-            Choose where to access, configure and extract your invoices
+            Choose where to access, configure and extract your{" "}
+            {currentApp?.toLowerCase()}s
           </p>
         </div>
 

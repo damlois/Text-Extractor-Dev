@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import LabelSetupTemplate from "./templates/LabelSetupTemplate";
 import AppButton from "../../../components/AppButton";
 import { useTemplate } from "../context/TemplateContext";
-import {
-  handleError,
-  showNotification,
-} from "../../../utils/notification";
+import { handleError, showNotification } from "../../../utils/notification";
+import { useApplication } from "../../../context/ApplicationContext";
 
 const SetupLabel: React.FC = () => {
   const navigate = useNavigate();
+
   const { saveTemplate } = useTemplate();
+  const { currentApp } = useApplication();
 
   const handleContinue = async () => {
     try {
@@ -37,8 +37,8 @@ const SetupLabel: React.FC = () => {
             Field Extraction Setup
           </h2>
           <p className="text-gray text-center ">
-            Review the field to extract in your invoice or add for better
-            customization
+            Review the field to extract in your {currentApp?.toLowerCase()} or
+            add for better customization
           </p>
         </div>
       </div>
