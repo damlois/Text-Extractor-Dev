@@ -6,23 +6,23 @@ import {
 } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
 import ApplicationList from "./pages/home/ApplicationList";
-import InvoiceAppTabSelector from "./apps/invoiceApp/pages/application/InvoiceAppTabSelector";
-import ConfigureDataSource from "./apps/invoiceApp/pages/application/configureDataSource";
-import ExtractionHistory from "./apps/invoiceApp/pages/application/extractionHistory";
-import SavedInsights from "./apps/invoiceApp/pages/application/savedInsights";
-import CreateDataSource from "./apps/invoiceApp/pages/application/configureDataSource/CreateDataSource";
-import ConnectEmail from "./apps/invoiceApp/pages/application/configureDataSource/ConnectEmail";
-import SetupLabel from "./apps/invoiceApp/pages/application/configureDataSource/SetUpLabel";
-import GenerateInsights from "./apps/invoiceApp/pages/application/extractionHistory/GenerateInsights";
+import InvoiceAppTabSelector from "./pages/app/TabSelector";
+import ConfigureDataSource from "./pages/app/configureDataSource";
+import ExtractionHistory from "./pages/app/extractionHistory";
+import SavedInsights from "./pages/app/savedInsights";
+import CreateDataSource from "./pages/app/configureDataSource/CreateDataSource";
+import ConnectEmail from "./pages/app/configureDataSource/ConnectEmail";
+import SetupLabel from "./pages/app/configureDataSource/SetUpLabel";
+import GenerateInsights from "./pages/app/extractionHistory/GenerateInsights";
 import { CombinedProviders } from "./context/CombinedProviders";
 import LandingPage from "./pages/landingPage";
 import SetPassword from "./pages/createAccount/SetPassword";
-import UsersList from "./apps/invoiceApp/pages/users";
-import RolesList from "./apps/invoiceApp/pages/roles";
-import ViewDuplicates from "./apps/invoiceApp/pages/application/extractionHistory/components/duplicates/ViewDuplicates";
-import { PERMISSIONS } from "./apps/invoiceApp/constants/permissions";
-import ForbiddenPage from "./apps/invoiceApp/pages/ForbiddenPage";
-import ReviewExtractedContent from "./apps/invoiceApp/pages/application/extractionHistory/components/reviewExtraction";
+import UsersList from "./pages/users";
+import RolesList from "./pages/roles";
+import ViewDuplicates from "./pages/app/extractionHistory/components/duplicates/ViewDuplicates";
+import { PERMISSIONS } from "./pages/app/constants/permissions";
+import ForbiddenPage from "./pages/ForbiddenPage";
+import ReviewExtractedContent from "./pages/app/extractionHistory/components/reviewExtraction";
 import RouteProtector from "./components/RouteProtector";
 
 const router = createBrowserRouter(
@@ -59,7 +59,7 @@ const router = createBrowserRouter(
           }
         />
 
-        <Route path="/home/invoice-processing" element={<InvoiceAppTabSelector />}>
+        <Route path="/home/document-processing" element={<InvoiceAppTabSelector />}>
           <Route
             path="data-source"
             element={

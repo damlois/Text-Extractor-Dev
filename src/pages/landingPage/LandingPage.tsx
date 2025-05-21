@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { invoiceProcessorApi } from "../../api/invoice-api";
+import { processorApi } from "../../api";
 import { handleError } from "../../utils/notification";
 import { Spin } from "antd";
 import keycloakService from "../../service/keycloakService";
@@ -12,7 +12,7 @@ const LandingPage = () => {
   useEffect(() => {
     const checkAdminThenAuth = async () => {
       try {
-        const response = await invoiceProcessorApi.checkOrgHasAdmin();
+        const response = await processorApi.checkOrgHasAdmin();
         const hasAdmin = response.data.data;
 
         if (!hasAdmin) {

@@ -4,7 +4,7 @@ import AppButton from "../../components/AppButton";
 import { setPasswordSchema } from "./validation";
 import { useEffect, useState } from "react";
 import { handleError, showNotification } from "../../utils/notification";
-import { invoiceProcessorApi } from "../../api/invoice-api";
+import { processorApi } from "../../api";
 import { User } from "../../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spin } from "antd";
@@ -34,7 +34,7 @@ const SetPassword = () => {
 
     try {
       setPageLoading(true);
-      const response = await invoiceProcessorApi.checkOrgHasAdmin();
+      const response = await processorApi.checkOrgHasAdmin();
       const hasAdmin = response.data.data;
 
       if (!hasAdmin) {
@@ -74,7 +74,7 @@ const SetPassword = () => {
     };
 
     try {
-      await invoiceProcessorApi.registerAdmin(data);
+      await processorApi.registerAdmin(data);
       showNotification(
         "success",
         "Registration done successfully, Proceed to log in",

@@ -1,14 +1,16 @@
-import { FileDoneOutlined } from "@ant-design/icons";
+import { FileDoneOutlined, FileTextOutlined } from "@ant-design/icons";
 
 interface ApplicationCardProps {
   title: string;
   description: string;
+  icon: JSX.Element;
   onClick: () => void;
 }
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   title,
   description,
+  icon,
   onClick,
 }) => {
   return (
@@ -22,7 +24,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           background: "linear-gradient(270deg, #F25325 -68.36%, #006A94 100%)",
         }}
       >
-        <FileDoneOutlined style={{ fontSize: "24px", color: "#fff" }} />
+        {icon}
       </div>
 
       <div className="w-2/3">

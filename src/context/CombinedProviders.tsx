@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
-import { InvoiceProcessorProvider } from "../apps/invoiceApp/context/InvoiceProcessorContext";
-import { FileProcessorProvider } from "./FileProcessorContext";
-import { TemplateProvider } from "../apps/invoiceApp/context/TemplateContext";
-import { PermissionProvider } from "../apps/invoiceApp/context/PermissionContext";
+import { DocumentProcessorProvider } from "../pages/app/context/DocumentProcessorContext";
+import { ApplicationProvider } from "./ApplicationContext";
+import { TemplateProvider } from "../pages/app/context/TemplateContext";
+import { PermissionProvider } from "../pages/app/context/PermissionContext";
 
 export const CombinedProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <InvoiceProcessorProvider>
-      <FileProcessorProvider>
+    <DocumentProcessorProvider>
+      <ApplicationProvider>
         <PermissionProvider>
           <TemplateProvider>{children}</TemplateProvider>
         </PermissionProvider>
-      </FileProcessorProvider>
-    </InvoiceProcessorProvider>
+      </ApplicationProvider>
+    </DocumentProcessorProvider>
   );
 };

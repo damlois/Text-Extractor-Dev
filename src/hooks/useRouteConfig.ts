@@ -1,5 +1,5 @@
-import { PERMISSIONS } from "../apps/invoiceApp/constants/permissions";
-import { usePermission } from "../apps/invoiceApp/context/PermissionContext";
+import { PERMISSIONS } from "../pages/app/constants/permissions";
+import { usePermission } from "../pages/app/context/PermissionContext";
 
 export const useRouteConfig = () => {
   const { userHasPermission } = usePermission();
@@ -52,7 +52,7 @@ export const useRouteConfig = () => {
               { label: "Home", path: "/home" },
               {
                 label: "Invoice Processing",
-                path: "/home/invoice-processing/data-source",
+                path: "/home/document-processing/data-source",
               },
               { label: "Extraction History" },
             ],
@@ -64,11 +64,11 @@ export const useRouteConfig = () => {
                   { label: "Home", path: "/home" },
                   {
                     label: "Invoice Processing",
-                    path: "/home/invoice-processing/data-source",
+                    path: "/home/document-processing/data-source",
                   },
                   {
                     label: "Extraction History",
-                    path: "/home/invoice-processing/extraction-history",
+                    path: "/home/document-processing/extraction-history",
                   },
                   { label: "Duplicate Invoices" },
                 ],
@@ -79,7 +79,7 @@ export const useRouteConfig = () => {
                 breadcrumbs: [
                   {
                     label: "Extraction History",
-                    path: "/home/invoice-processing/extraction-history",
+                    path: "/home/document-processing/extraction-history",
                   },
                   { label: "Review Content" },
                 ],
@@ -91,11 +91,11 @@ export const useRouteConfig = () => {
                   { label: "Home", path: "/home" },
                   {
                     label: "Invoice Processing",
-                    path: "/home/invoice-processing/data-source",
+                    path: "/home/document-processing/data-source",
                   },
                   {
                     label: "Extraction History",
-                    path: "/home/invoice-processing/extraction-history",
+                    path: "/home/document-processing/extraction-history",
                   },
                   { label: "Preview & Generate Insight" },
                 ],
@@ -113,7 +113,7 @@ export const useRouteConfig = () => {
               { label: "Home", path: "/home" },
               {
                 label: "Invoice Processing",
-                path: "/home/invoice-processing/data-source",
+                path: "/home/document-processing/data-source",
               },
               { label: "Saved Insights" },
             ],

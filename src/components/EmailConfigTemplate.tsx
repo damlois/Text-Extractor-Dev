@@ -4,9 +4,9 @@ import { requiredRule } from "../utils";
 import { useState } from "react";
 import { handleError } from "../utils/notification";
 import React from "react";
-import { invoiceProcessorApi } from "../api/invoice-api";
+import { processorApi } from "../api";
 import { DataSourceDetails } from "../types";
-import { useInvoiceProcessor } from "../apps/invoiceApp/context/InvoiceProcessorContext";
+import { useDocumentProcessor } from "../pages/app/context/DocumentProcessorContext";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -24,12 +24,12 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { setCurrentDataSource } = useInvoiceProcessor();
+  const { setCurrentDataSource } = useDocumentProcessor();
 
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const response = await invoiceProcessorApi.configureDataSource({
+      const response = await processorApi.configureDataSource({
         source_type: "email",
         ...values,
       });
