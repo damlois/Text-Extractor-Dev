@@ -20,6 +20,7 @@ const ConnectEmail = () => {
           Add Your Email Credentials
         </h2>
         <EmailConfigTemplate
+          flowType="ADD_NEW"
           onSuccessCallback={() => {
             showNotification("success", "Email connected Successfully");
             navigate("../data-source/field-extraction-setup");

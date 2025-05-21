@@ -27,6 +27,9 @@ export const invoiceProcessorApi = {
   configureDataSource: (data: DataSourceInfo) =>
     apiClient.post<{ data: DataSourceDetails }>("/invoices/data-sources", data),
 
+  updateDataSource: (dataSourceId: string, data: DataSourceInfo) =>
+    apiClient.put(`/invoices/data-sources/${dataSourceId}`, data),
+
   getTemplate: (dataSourceId?: string) =>
     apiClient.get<TemplateResponse>(
       `/invoices/template?data_source_id=${dataSourceId}`
@@ -47,7 +50,7 @@ export const invoiceProcessorApi = {
     dataSourceId: string,
     status: "active" | "inactive"
   ) =>
-    apiClient.post<ToggleStatusResponse>(
+    apiClient.patch<ToggleStatusResponse>(
       `/invoices/data-sources/${dataSourceId}/toggle-status`,
       { status }
     ),

@@ -13,6 +13,7 @@ interface EmailConfigTemplateProps {
   onSuccessCallback?: (values: Record<string, any>) => void;
   className?: string;
   initialData?: DataSourceDetails | null;
+  flowType: "ADD_NEW" | "UPDATE";
 }
 
 const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
@@ -20,6 +21,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   onSuccessCallback,
   className,
   initialData,
+  flowType,
 }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -27,14 +29,25 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const { setCurrentDataSource } = useInvoiceProcessor();
 
   const onFinish = async (values: any) => {
+    const data = {
+      source_type: "email",
+      ...values,
+    };
+
     try {
       setLoading(true);
-      const response = await invoiceProcessorApi.configureDataSource({
-        source_type: "email",
-        ...values,
-      });
 
-      setCurrentDataSource(response.data.data);
+      if (flowType === "ADD_NEW") {
+        const response = await invoiceProcessorApi.configureDataSource(data);
+        setCurrentDataSource(response.data.data);
+      }
+
+      if (flowType === "UPDATE") {
+        await invoiceProcessorApi.updateDataSource(
+          initialData?.id as string,
+          data
+        );
+      }
 
       if (onSuccessCallback) {
         onSuccessCallback(values);
