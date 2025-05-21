@@ -7,7 +7,7 @@ import {
   AUTH_IFRAME_TIMEOUT_MESSAGE,
   UNAUTHORIZED_MESSAGE,
   FORBIDDEN_MESSAGE,
-} from "../apps/invoiceApp/constants/messages";
+} from "../pages/app/constants/messages";
 
 interface BackendErrorResponse {
   detail?: string;
@@ -104,7 +104,7 @@ const parseDetail = (
         resource === "edit-invoice" &&
         cleanedDetail.includes("must be in 'IN_REVIEW'")
       ) {
-        return "This invoice is not currently under review. To continue editing, please re-open it to return it to review status.";
+        return "This document is not currently under review. To continue editing, please re-open it to return it to review status.";
       }
       return FORBIDDEN_MESSAGE;
     case 404:

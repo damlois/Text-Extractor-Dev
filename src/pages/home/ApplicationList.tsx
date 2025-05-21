@@ -2,16 +2,25 @@ import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useInvoiceProcessor } from "../../apps/invoiceApp/context/InvoiceProcessorContext";
+import { useDocumentProcessor } from "../app/context/DocumentProcessorContext";
+import { FileTextOutlined, FileDoneOutlined } from "@ant-design/icons";
+import { useApplication } from "../../context/ApplicationContext";
+import { Application } from "../../types";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
 
-  const { fetchDataSource } = useInvoiceProcessor();
+  const { fetchDataSource } = useDocumentProcessor();
+  const { setAppType } = useApplication();
 
   useEffect(() => {
     fetchDataSource();
   }, []);
+
+  const handleNavigation = (app: Application) => {
+    setAppType(app);
+    navigate("/home/document-processing/data-source");
+  };
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -35,9 +44,31 @@ const ApplicationList = () => {
               w-full`}
           >
             <ApplicationCard
-              title="Invoice Processing Application"
-              description="Process invoice here"
-              onClick={() => navigate("/home/invoice-processing/data-source")}
+              title="Invoice"
+              description="Process Invoices here"
+              icon={
+                <FileTextOutlined style={{ fontSize: "24px", color: "#fff" }} />
+              }
+              onClick={() => handleNavigation("INVOICE")}
+            />
+            <ApplicationCard
+              title="Purchase Order"
+              description="Process Purchase Orders here"
+              icon={
+                <img
+                  src="/assets/icons/purchase-order-icon.svg"
+                  style={{ fontSize: "24px", color: "#fff" }}
+                />
+              }
+              onClick={() => handleNavigation("PURCHASE ORDER")}
+            />
+            <ApplicationCard
+              title="Receipt"
+              description="Process Receipts here"
+              icon={
+                <FileDoneOutlined style={{ fontSize: "24px", color: "#fff" }} />
+              }
+              onClick={() => handleNavigation("RECEIPT")}
             />
           </div>
         </>

@@ -1,4 +1,6 @@
-import { ReviewStatus } from "../apps/invoiceApp/pages/application/extractionHistory/types";
+import { ReviewStatus } from "../pages/app/extractionHistory/types";
+
+export type Application = "INVOICE" | "PURCHASE ORDER" | "RECEIPT";
 
 export type Message = {
   text: string;
@@ -108,12 +110,12 @@ export interface DynamicObject {
   [key: string]: DynamicValue;
 }
 
-export type InvoiceEditor = {
+export type DocumentEditor = {
   full_name: string;
   user_id: string;
 };
 
-export interface ProcessedInvoice {
+export interface ProcessedDocument {
   id: string;
   file_name: string;
   content: string;
@@ -129,37 +131,37 @@ export interface ProcessedInvoice {
   review_status: ReviewStatus;
   created_at: string;
   updated_at: string;
-  editor: InvoiceEditor;
+  editor: DocumentEditor;
   isUnsupportedFile: boolean;
 }
 
-export interface InvoiceDetailsResponse {
+export interface DocumentDetailsResponse {
   status_code: number;
   status: string;
   message: string;
-  data: ProcessedInvoice;
+  data: ProcessedDocument;
 }
 
-export interface BatchInvoiceDetailsResponse {
+export interface BatchDocumentDetailsResponse {
   status_code: number;
   status: string;
   message: string;
-  data: ProcessedInvoice[];
+  data: ProcessedDocument[];
 }
 
-export interface ProcessedInvoicesResponse {
+export interface ProcessedDocumentsResponse {
   status_code: number;
   status: string;
   message: string;
   data: {
-    invoices: ProcessedInvoice[];
+    invoices: ProcessedDocument[];
     total: number;
     page: number;
     size: number;
   };
 }
 
-export interface ProcessedInvoicesParams {
+export interface ProcessedDocumentsParams {
   page: number;
   size: number;
 }
@@ -216,7 +218,7 @@ export interface SuggestedPromptsResponse {
   };
 }
 
-export interface InvoiceMetricsResponse {
+export interface DocumentMetricsResponse {
   status_code: number;
   status: string;
   message: string;

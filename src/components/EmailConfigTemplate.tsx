@@ -4,9 +4,10 @@ import { requiredRule } from "../utils";
 import { useState } from "react";
 import { handleError } from "../utils/notification";
 import React from "react";
-import { invoiceProcessorApi } from "../api/invoice-api";
+import { processorApi } from "../api";
 import { DataSourceDetails } from "../types";
-import { useInvoiceProcessor } from "../apps/invoiceApp/context/InvoiceProcessorContext";
+import { useDocumentProcessor } from "../pages/app/context/DocumentProcessorContext";
+import { useApplication } from "../context/ApplicationContext";
 
 interface EmailConfigTemplateProps {
   buttonComponent: (props: { loading: boolean }) => React.ReactNode;
@@ -26,7 +27,8 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { setCurrentDataSource } = useInvoiceProcessor();
+  const { setCurrentDataSource } = useDocumentProcessor();
+  const { currentApp } = useApplication();
 
   const onFinish = async (values: any) => {
     const data = {
@@ -36,14 +38,13 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
 
     try {
       setLoading(true);
-
       if (flowType === "ADD_NEW") {
-        const response = await invoiceProcessorApi.configureDataSource(data);
+        const response = await processorApi.configureDataSource(data);
         setCurrentDataSource(response.data.data);
       }
 
       if (flowType === "UPDATE") {
-        await invoiceProcessorApi.updateDataSource(
+        await processorApi.updateDataSource(
           initialData?.id as string,
           data
         );
@@ -66,9 +67,8 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       name: "username",
       type: "text",
       label: "Mail Username",
-      placeholder: "invoices@company.com",
-      tooltip:
-        "Enter the email address you use to access your mailbox. This will be used to configure the data source for invoice extraction",
+      placeholder: `invoices@company.com`,
+      tooltip: `Enter the email address you use to access your mailbox. This will be used to configure the data source for ${currentApp?.toLowerCase()} extraction`,
       rules: [
         requiredRule("Mail Username"),
         {
@@ -82,8 +82,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       type: "password",
       label: "Mail Password",
       placeholder: "password",
-      tooltip:
-        "Enter the email password you use to access your mailbox. This will be used to configure the data source for invoice extraction",
+      tooltip: `Enter the email password you use to access your mailbox. This will be used to configure the data source for ${currentApp?.toLowerCase()} extraction`,
       rules: [requiredRule("Mail Password")],
     },
     {
