@@ -130,6 +130,7 @@ export interface ProcessedInvoice {
   created_at: string;
   updated_at: string;
   editor: InvoiceEditor;
+  isUnsupportedFile: boolean;
 }
 
 export interface InvoiceDetailsResponse {
