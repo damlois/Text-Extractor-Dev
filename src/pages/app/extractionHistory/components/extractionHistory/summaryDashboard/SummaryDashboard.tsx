@@ -60,7 +60,7 @@ const SummaryDashboard = () => {
 
     const fileHashMap = data.duplicates?.reduce(
       (acc: DuplicateDocumentsFileHashMap, item: any) => {
-        const updatedDocuments = item.documents
+        const updatedDocuments = item.invoices
           .map((document: any) => {
             const { status, ...rest } = document;
             const updatedDocument = {
@@ -86,7 +86,7 @@ const SummaryDashboard = () => {
           visible: true,
         };
 
-        count += item.documents.length;
+        count += item.invoices.length;
         return acc;
       },
       {}

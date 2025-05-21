@@ -5,12 +5,14 @@ import React, {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 import { Application, TemplateItem } from "../types";
+import { getAppTypeFromStorage, setAppTypeInStorage } from "../utils/storage";
 
 interface ApplicationContextProps {
   currentApp: Application | null;
-  setCurrentApp: Dispatch<SetStateAction<Application | null>>;
+  setAppType: (app: Application) => void;
   labels: TemplateItem[] | null;
   setLabels: Dispatch<SetStateAction<TemplateItem[] | null>>;
 }
@@ -29,13 +31,24 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
   const [currentApp, setCurrentApp] = useState<Application | null>(null);
   const [labels, setLabels] = useState<TemplateItem[] | null>(null);
 
+  console.log({currentApp})
+
+  useEffect(() => {
+    setCurrentApp(getAppTypeFromStorage());
+  }, []);
+
+  const setAppType = (app: Application) => {
+    setCurrentApp(app);
+    setAppTypeInStorage(app);
+  };
+
   return (
     <ApplicationContext.Provider
       value={{
         currentApp,
-        setCurrentApp,
         labels,
         setLabels,
+        setAppType,
       }}
     >
       {children}

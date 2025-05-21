@@ -4,19 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDocumentProcessor } from "../app/context/DocumentProcessorContext";
 import { FileTextOutlined, FileDoneOutlined } from "@ant-design/icons";
+import { useApplication } from "../../context/ApplicationContext";
+import { Application } from "../../types";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
 
   const { fetchDataSource } = useDocumentProcessor();
+  const { setAppType } = useApplication();
 
   useEffect(() => {
     fetchDataSource();
   }, []);
 
-  const handleNavigation = () => {
-
-  }
+  const handleNavigation = (app: Application) => {
+    setAppType(app);
+    navigate("/home/document-processing/data-source");
+  };
 
   return (
     <div className="flex flex-col items-start font-inter">
@@ -45,7 +49,7 @@ const ApplicationList = () => {
               icon={
                 <FileTextOutlined style={{ fontSize: "24px", color: "#fff" }} />
               }
-              onClick={() => navigate("/home/document-processing/data-source")}
+              onClick={() => handleNavigation("INVOICE")}
             />
             <ApplicationCard
               title="Purchase Order"
@@ -56,7 +60,7 @@ const ApplicationList = () => {
                   style={{ fontSize: "24px", color: "#fff" }}
                 />
               }
-              onClick={() => navigate("/home/document-processing/data-source")}
+              onClick={() => handleNavigation("PURCHASE-ORDER")}
             />
             <ApplicationCard
               title="Receipt"
@@ -64,7 +68,7 @@ const ApplicationList = () => {
               icon={
                 <FileDoneOutlined style={{ fontSize: "24px", color: "#fff" }} />
               }
-              onClick={() => navigate("/home/document-processing/data-source")}
+              onClick={() => handleNavigation("RECEIPT")}
             />
           </div>
         </>
