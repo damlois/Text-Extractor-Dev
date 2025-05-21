@@ -7,10 +7,12 @@ import { ReviewStatus } from "../../../types";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import ConfidenceBadge from "../../reviewExtraction/ConfidenceBadge";
+import FailedExtraction from "./FailedExtraction";
 
 interface ExtractedContentProps {
   extractedContent: any;
   reviewStatus?: ReviewStatus;
+  extractionStatus?: string;
   editorName?: string;
   editTime?: string;
 }
@@ -32,6 +34,7 @@ const ExtractedItem = ({ field, value }: ExtractedItemDisplayProps) => {
 const ExtractedContent = ({
   extractedContent,
   reviewStatus,
+  extractionStatus,
   editorName,
   editTime,
 }: ExtractedContentProps) => {
@@ -111,36 +114,42 @@ const ExtractedContent = ({
             </div>
           )}
       </div>
-      {!extractedContent ||
-      typeof extractedContent !== "object" ||
-      Object.keys(extractedContent).length === 0 ? (
-        <div className="text-gray text-[12px] p-6">
-          No extracted content available.
-        </div>
+      {extractionStatus?.toLowerCase() === "failed" ? (
+        <FailedExtraction />
       ) : (
-        <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh]">
-          <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
-            {regularFieldsData.map((item) => (
-              <ExtractedItem
-                key={item.field}
-                field={item.field}
-                value={item.value}
-              />
-            ))}
-          </div>
+        <>
+          {!extractedContent ||
+          typeof extractedContent !== "object" ||
+          Object.keys(extractedContent).length === 0 ? (
+            <div className="text-gray text-[12px] p-6">
+              No extracted content available.
+            </div>
+          ) : (
+            <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh]">
+              <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+                {regularFieldsData.map((item) => (
+                  <ExtractedItem
+                    key={item.field}
+                    field={item.field}
+                    value={item.value}
+                  />
+                ))}
+              </div>
 
-          {itemsFieldsData.length > 0 && (
-            <div className="mt-6 flex flex-col gap-6">
-              {itemsFieldsData.map((itemField, idx) => (
-                <ExtractedItemsTable
-                  key={idx}
-                  label={itemField.label}
-                  itemsFieldData={itemField.data}
-                />
-              ))}
+              {itemsFieldsData.length > 0 && (
+                <div className="mt-6 flex flex-col gap-6">
+                  {itemsFieldsData.map((itemField, idx) => (
+                    <ExtractedItemsTable
+                      key={idx}
+                      label={itemField.label}
+                      itemsFieldData={itemField.data}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

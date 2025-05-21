@@ -132,6 +132,7 @@ export interface ProcessedDocument {
   created_at: string;
   updated_at: string;
   editor: DocumentEditor;
+  isUnsupportedFile: boolean;
 }
 
 export interface DocumentDetailsResponse {

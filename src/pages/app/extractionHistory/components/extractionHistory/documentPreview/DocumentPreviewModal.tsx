@@ -69,6 +69,7 @@ const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
           <div className="border border-[#F1F1F1]">
             <ExtractedConetnt
               extractedContent={documentDetails.extracted_content}
+              extractionStatus={documentDetails.processing_status}
               reviewStatus={documentDetails.review_status}
               editorName={documentDetails.editor?.full_name}
               editTime={documentDetails.editor?.updated_at}

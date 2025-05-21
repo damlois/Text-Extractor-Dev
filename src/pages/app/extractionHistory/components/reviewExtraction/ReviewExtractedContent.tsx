@@ -237,6 +237,7 @@ const ReviewExtractedContent = () => {
                   <ExtractedContent
                     extractedContent={extractedContent}
                     reviewStatus={reviewDocument?.review_status}
+                    extractionStatus={reviewDocument?.processing_status}
                     editorName={reviewDocument?.editor?.full_name}
                     editTime={reviewDocument?.updated_at}
                   />

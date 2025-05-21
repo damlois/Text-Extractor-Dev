@@ -26,10 +26,9 @@ import DocumentInReviewModal from "./DocumentInReviewModal";
 import { useTemplate } from "../../../../context/TemplateContext";
 import keycloakService from "../../../../../../service/keycloakService";
 import ReviewButton from "./ReviewButton";
-import DocumentPreviewModal from "../documentPreview/DocumentPreviewModal";
+import FileName from "./FileName";
 
 const ExtractionHistoryTable = () => {
-  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
   const [selectedDocument, setSelectedDocument] =
@@ -183,11 +182,6 @@ const ExtractionHistoryTable = () => {
     ).filter(Boolean);
   }, [originalDocuments]);
 
-  const togglePreviewModal = (document?: ProcessedDocument) => {
-    setSelectedDocument(document || null);
-    setShowPreviewModal(!showPreviewModal);
-  };
-
   const toggleFilterModal = () => {
     setShowFilterModal(!showFilterModal);
   };
@@ -238,19 +232,7 @@ const ExtractionHistoryTable = () => {
     {
       title: "File Name",
       dataIndex: "file_name",
-      render: (text: string, record: ProcessedDocument) => (
-        <button
-          className={`text-dark-gray text-[14px] font-medium underline text-left max-w-[12vw] truncate`}
-          style={{ display: "inline-block", verticalAlign: "top" }}
-          title={text}
-          onClick={() => togglePreviewModal(record)}
-        >
-          {text}
-          {duplicatesMapById && duplicatesMapById[record.id] && (
-            <WarningOutlined style={{ color: "#FF4D4F", marginLeft: "8px" }} />
-          )}
-        </button>
-      ),
+      render: (_, record: ProcessedDocument) => <FileName record={record} />,
     },
     {
       title: "Sender",
@@ -408,11 +390,6 @@ const ExtractionHistoryTable = () => {
           }}
         />
       </div>
-      <DocumentPreviewModal
-        open={showPreviewModal}
-        onCancel={() => togglePreviewModal(undefined)}
-        documentDetails={selectedDocument}
-      />
       <DocumentInReviewModal
         open={showDocInReviewModal}
         onCancel={toggleDocInReviewModal}
