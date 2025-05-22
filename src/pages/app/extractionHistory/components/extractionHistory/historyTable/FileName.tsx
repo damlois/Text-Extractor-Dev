@@ -3,6 +3,7 @@ import { useState } from "react";
 import DocumentPreviewModal from "../documentPreview";
 import { WarningOutlined } from "@ant-design/icons";
 import { ProcessedDocument } from "../../../../../../types";
+import { useDocumentProcessor } from "../../../../context/DocumentProcessorContext";
 
 interface FileNameProps {
   record: ProcessedDocument;
@@ -13,7 +14,7 @@ const FileName = ({ record }: FileNameProps) => {
   const [selectedDocument, setSelectedDocument] =
     useState<ProcessedDocument | null>(null);
 
-  const { duplicatesMapById } = useDocuemntProcessor();
+  const { duplicatesMapById } = useDocumentProcessor();
 
   const togglePreviewModal = (document?: ProcessedDocument) => {
     setSelectedDocument(document || null);
@@ -58,7 +59,3 @@ const FileName = ({ record }: FileNameProps) => {
 };
 
 export default FileName;
-function useDocuemntProcessor(): { duplicatesMapById: any; } {
-  throw new Error("Function not implemented.");
-}
-

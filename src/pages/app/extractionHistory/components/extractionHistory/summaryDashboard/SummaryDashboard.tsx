@@ -125,7 +125,7 @@ const SummaryDashboard = () => {
               <MetricCard
                 key={"duplicate"}
                 iconUrl={"/assets/icons/dashboard-failed-icon.svg"}
-                status={"Duplicate Documents"}
+                status={"Duplicates"}
                 count={String(duplicatesCount)}
                 onClick={
                   duplicatesCount > 0
@@ -144,7 +144,10 @@ const SummaryDashboard = () => {
                   key.includes("fail") ? "failed" : "success"
                 }-icon.svg`}
                 status={
-                  key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")
+                  (
+                    key.charAt(0).toUpperCase() +
+                    key.slice(1).replace(/_/g, " ")
+                  ).split(" ")[0]
                 }
                 count={value.toString()}
               />
