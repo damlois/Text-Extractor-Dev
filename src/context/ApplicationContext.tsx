@@ -7,11 +7,12 @@ import React, {
   SetStateAction,
   useEffect,
 } from "react";
-import { Application, TemplateItem } from "../types";
+import { Application, DocumentType, TemplateItem } from "../types";
 import { getAppTypeFromStorage, setAppTypeInStorage } from "../utils/storage";
 
 interface ApplicationContextProps {
   currentApp: Application | null;
+  documentType: DocumentType | null;
   setAppType: (app: Application) => void;
   labels: TemplateItem[] | null;
   setLabels: Dispatch<SetStateAction<TemplateItem[] | null>>;
@@ -31,6 +32,9 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
   const [currentApp, setCurrentApp] = useState<Application | null>(null);
   const [labels, setLabels] = useState<TemplateItem[] | null>(null);
 
+  const documentType =
+    currentApp === "PURCHASE ORDER" ? "PURCHASE_ORDER" : currentApp;
+
   useEffect(() => {
     setCurrentApp(getAppTypeFromStorage());
   }, []);
@@ -44,6 +48,7 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
     <ApplicationContext.Provider
       value={{
         currentApp,
+        documentType,
         labels,
         setLabels,
         setAppType,

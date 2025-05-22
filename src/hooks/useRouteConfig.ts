@@ -1,8 +1,13 @@
+import { useApplication } from "../context/ApplicationContext";
 import { PERMISSIONS } from "../pages/app/constants/permissions";
 import { usePermission } from "../pages/app/context/PermissionContext";
+import { capitalizeEveryWord } from "../utils";
 
 export const useRouteConfig = () => {
   const { userHasPermission } = usePermission();
+
+  const { currentApp } = useApplication();
+  const caplitalizedCurrentApp = capitalizeEveryWord(currentApp);
 
   const routeConfig = [
     ...(userHasPermission(PERMISSIONS.VIEW_DATASOURCE)
@@ -51,7 +56,7 @@ export const useRouteConfig = () => {
             breadcrumbs: [
               { label: "Home", path: "/home" },
               {
-                label: "Invoice Processing",
+                label: `${caplitalizedCurrentApp} Processing`,
                 path: "/home/document-processing/data-source",
               },
               { label: "Extraction History" },
@@ -59,18 +64,18 @@ export const useRouteConfig = () => {
             nestedRoutes: [
               {
                 key: "duplicates",
-                label: "Duplicate Invoices",
+                label: `Duplicate ${caplitalizedCurrentApp}s`,
                 breadcrumbs: [
                   { label: "Home", path: "/home" },
                   {
-                    label: "Invoice Processing",
+                    label: `${caplitalizedCurrentApp} Processing`,
                     path: "/home/document-processing/data-source",
                   },
                   {
                     label: "Extraction History",
                     path: "/home/document-processing/extraction-history",
                   },
-                  { label: "Duplicate Invoices" },
+                  { label: `Duplicate ${caplitalizedCurrentApp}s` },
                 ],
               },
               {
@@ -90,7 +95,7 @@ export const useRouteConfig = () => {
                 breadcrumbs: [
                   { label: "Home", path: "/home" },
                   {
-                    label: "Invoice Processing",
+                    label: `${caplitalizedCurrentApp} Processing`,
                     path: "/home/document-processing/data-source",
                   },
                   {
@@ -112,7 +117,7 @@ export const useRouteConfig = () => {
             breadcrumbs: [
               { label: "Home", path: "/home" },
               {
-                label: "Invoice Processing",
+                label: `${caplitalizedCurrentApp} Processing`,
                 path: "/home/document-processing/data-source",
               },
               { label: "Saved Insights" },
