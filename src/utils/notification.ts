@@ -88,7 +88,7 @@ export const handleError = (error: any, resource?: string): string | null => {
 };
 
 const parseDetail = (
-  detail: string | string[],
+  detail: any,
   resource: string,
   statusCode?: number
 ): string => {
