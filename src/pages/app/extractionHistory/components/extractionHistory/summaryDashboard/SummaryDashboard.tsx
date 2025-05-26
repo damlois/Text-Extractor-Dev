@@ -41,7 +41,7 @@ const SummaryDashboard = () => {
 
     setMetricsLoading(true);
     try {
-      const response = await processorApi.getDocumentMetrics();
+      const response = await processorApi.getDocumentMetrics(documentType);
       setMetrics(response.data.data);
     } catch (error) {
       console.error("Error fetching metrics:", error);

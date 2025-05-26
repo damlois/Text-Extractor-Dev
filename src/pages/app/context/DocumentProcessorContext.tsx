@@ -14,6 +14,7 @@ import {
   RegularField,
 } from "../extractionHistory/types";
 import { processorApi } from "../../../api";
+import { useApplication } from "../../../context/ApplicationContext";
 
 interface DocumentProcessorContextProps {
   currentDataSource: DataSourceDetails | undefined;
@@ -78,10 +79,12 @@ export const DocumentProcessorProvider: React.FC<
 
   const [loadingDataSource, setLoadingDataSource] = useState(true);
 
+  const { documentType } = useApplication();
+
   const fetchDataSource = async () => {
     try {
       setLoadingDataSource(true);
-      const response = await processorApi.getDataSourceDetails();
+      const response = await processorApi.getDataSourceDetails(documentType);
       const data = response.data.data;
       setCurrentDataSource(data[data.length - 1]);
     } catch (error) {

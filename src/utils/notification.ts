@@ -88,10 +88,14 @@ export const handleError = (error: any, resource?: string): string | null => {
 };
 
 const parseDetail = (
-  detail: string,
+  detail: string | string[],
   resource: string,
   statusCode?: number
 ): string => {
+  if (Array.isArray(detail)) {
+    return "Validation error occurred. Please check the input fields.";
+  }
+
   const cleanedDetail = detail.trim().replace(/^(\d{3}):\s*/, "");
 
   switch (statusCode) {

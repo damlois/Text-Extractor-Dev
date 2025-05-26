@@ -41,8 +41,10 @@ export const processorApi = {
   updateDocumentStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
 
-  getDataSourceDetails: () =>
-    apiClient.get<DataSourceResponse>(`/invoices/data-sources`),
+  getDataSourceDetails: (documentType: string | null) =>
+    apiClient.get<DataSourceResponse>(
+      `/invoices/data-sources?document_type=${documentType}`
+    ),
 
   toggleDataSourceStatus: (
     dataSourceId: string,
@@ -59,11 +61,15 @@ export const processorApi = {
   getChatSession: (sessionId: string) =>
     apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
 
-  getChatSessions: () =>
-    apiClient.get<ChatSessionsResponse>("/invoices/chat-sessions"),
+  getChatSessions: (documentType: string | null) =>
+    apiClient.get<ChatSessionsResponse>(
+      `/invoices/chat-sessions?document_type=${documentType}`
+    ),
 
-  getDocumentMetrics: () =>
-    apiClient.get<DocumentMetricsResponse>("/invoices/invoice-metrics"),
+  getDocumentMetrics: (documentType: string | null) =>
+    apiClient.get<DocumentMetricsResponse>(
+      `/invoices/invoice-metrics?document_type=${documentType}`
+    ),
 
   getDocumentDetails: async (invoiceId: string) => {
     try {

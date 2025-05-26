@@ -33,7 +33,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const onFinish = async (values: any) => {
     const data = {
       source_type: "email",
-      documnent_type: documentType,
+      document_type: documentType,
       ...values,
     };
 

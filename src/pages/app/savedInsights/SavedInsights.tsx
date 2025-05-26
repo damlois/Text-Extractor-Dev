@@ -7,6 +7,7 @@ import { processorApi } from "../../../api";
 import { ChatSessionSummary } from "../../../types";
 import { useNavigate } from "react-router-dom";
 import { handleError } from "../../../utils/notification";
+import { useApplication } from "../../../context/ApplicationContext";
 
 const SavedInsights = () => {
   const navigate = useNavigate();
@@ -17,10 +18,12 @@ const SavedInsights = () => {
     {}
   );
 
+  const { documentType } = useApplication();
+
   const fetchSavedInsights = async () => {
     setLoading(true);
     try {
-      const response = await processorApi.getChatSessions();
+      const response = await processorApi.getChatSessions(documentType);
       setAllInsights(response.data.data);
     } catch (error) {
       handleError(error);
