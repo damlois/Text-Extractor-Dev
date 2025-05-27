@@ -27,6 +27,7 @@ import { useTemplate } from "../../../../context/TemplateContext";
 import keycloakService from "../../../../../../service/keycloakService";
 import ReviewButton from "./ReviewButton";
 import FileName from "./FileName";
+import { useApplication } from "../../../../../../context/ApplicationContext";
 
 const ExtractionHistoryTable = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -76,6 +77,8 @@ const ExtractionHistoryTable = () => {
     setReviewDocument,
     fetchDataSource,
   } = useDocumentProcessor();
+
+  const { documentType } = useApplication();
 
   const { templateItems, fetchTemplate } = useTemplate();
 
@@ -138,7 +141,7 @@ const ExtractionHistoryTable = () => {
   useEffect(() => {
     if (!sseRef.current) {
       sseRef.current = manageSSE(
-        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}`,
+        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}&document_type=${documentType}`,
         handleSSEMessage
       );
     }

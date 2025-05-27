@@ -28,11 +28,12 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
   const [form] = Form.useForm();
 
   const { setCurrentDataSource } = useDocumentProcessor();
-  const { currentApp } = useApplication();
+  const { currentApp, documentType } = useApplication();
 
   const onFinish = async (values: any) => {
     const data = {
       source_type: "email",
+      document_type: documentType,
       ...values,
     };
 
@@ -44,10 +45,7 @@ const EmailConfigTemplate: React.FC<EmailConfigTemplateProps> = ({
       }
 
       if (flowType === "UPDATE") {
-        await processorApi.updateDataSource(
-          initialData?.id as string,
-          data
-        );
+        await processorApi.updateDataSource(initialData?.id as string, data);
       }
 
       if (onSuccessCallback) {

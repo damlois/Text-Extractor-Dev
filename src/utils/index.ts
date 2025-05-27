@@ -183,8 +183,18 @@ export const formatDateTime = (dateString: string) => {
   return formatter.format(date);
 };
 
-export const capitalizeFirstLetter = (value?: string) => {
+export const capitalizeFirstLetter = (value?: string | null) => {
   return value
     ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+    : "";
+};
+
+export const capitalizeEveryWord = (value?: string | null): string => {
+  return value
+    ? value
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
     : "";
 };

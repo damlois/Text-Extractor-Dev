@@ -6,12 +6,12 @@ import { PermissionProvider } from "../pages/app/context/PermissionContext";
 
 export const CombinedProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <DocumentProcessorProvider>
-      <ApplicationProvider>
+    <ApplicationProvider>
+      <DocumentProcessorProvider>
         <PermissionProvider>
           <TemplateProvider>{children}</TemplateProvider>
         </PermissionProvider>
-      </ApplicationProvider>
-    </DocumentProcessorProvider>
+      </DocumentProcessorProvider>
+    </ApplicationProvider>
   );
 };

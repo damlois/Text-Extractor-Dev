@@ -12,6 +12,7 @@ import { showNotification } from "../../../../../../utils/notification";
 import { Spin } from "antd";
 import { PERMISSIONS } from "../../../../constants/permissions";
 import { usePermission } from "../../../../context/PermissionContext";
+import { useApplication } from "../../../../../../context/ApplicationContext";
 
 const SummaryDashboard = () => {
   const [metrics, setMetrics] = useState<Record<string, number>>({});
@@ -29,6 +30,8 @@ const SummaryDashboard = () => {
     setDuplicatesCount,
   } = useDocumentProcessor();
 
+  const { documentType } = useApplication();
+
   const metricsFetched = useRef(false);
   const sseRef = useRef<{ stop: () => void } | null>(null);
 
@@ -38,7 +41,7 @@ const SummaryDashboard = () => {
 
     setMetricsLoading(true);
     try {
-      const response = await processorApi.getDocumentMetrics();
+      const response = await processorApi.getDocumentMetrics(documentType);
       setMetrics(response.data.data);
     } catch (error) {
       console.error("Error fetching metrics:", error);
@@ -101,7 +104,7 @@ const SummaryDashboard = () => {
     fetchMetrics();
     if (!sseRef.current) {
       sseRef.current = manageSSE(
-        "/invoices/duplicate-stream",
+        `/invoices/duplicate-stream?document_type=${documentType}`,
         handleSSEMessage
       );
     }

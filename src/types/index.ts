@@ -1,6 +1,7 @@
 import { ReviewStatus } from "../pages/app/extractionHistory/types";
 
 export type Application = "INVOICE" | "PURCHASE ORDER" | "RECEIPT";
+export type DocumentType = "INVOICE" | "PURCHASE_ORDER" | "RECEIPT";
 
 export type Message = {
   text: string;
