@@ -33,7 +33,8 @@ const ReviewButton = ({
         : "border-[#006A94] text-[#006A94] hover:bg-[#E6F7FF] cursor-pointer"
     }`;
 
-  const determineTooltipTitle = () => {
+  const determineRetryTooltipTitle = () => {
+    if (!canRetry) return "You do not have permission to retry extraction";
     if (maxRetryReached) return "Maximum retry attempt reached";
     if (isUnsupportedFile) return "Cannot retry: Incompatible document type.";
     return null;
@@ -42,15 +43,25 @@ const ReviewButton = ({
   return (
     <>
       {processing_status.toLowerCase() !== "failed" ? (
-        <div
-          className={getClassName(isReviewDisabled)}
-          onClick={() => handleReview(record)}
+        <Tooltip
+          title={
+            !canEdit
+              ? "You do not have permission to review documents"
+              : undefined
+          }
         >
-          <EditOutlined />
-          <span className="text-[12px]">Review</span>
-        </div>
+          <span>
+            <div
+              className={getClassName(isReviewDisabled)}
+              onClick={() => handleReview(record)}
+            >
+              <EditOutlined />
+              <span className="text-[12px]">Review</span>
+            </div>
+          </span>
+        </Tooltip>
       ) : (
-        <Tooltip title={determineTooltipTitle()}>
+        <Tooltip title={determineRetryTooltipTitle()}>
           <span>
             <div className={getClassName(isRetryDisabled)}>
               <ReloadOutlined />
