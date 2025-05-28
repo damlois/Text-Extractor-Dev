@@ -1,6 +1,6 @@
 import { useApplication } from "../context/ApplicationContext";
-import { PERMISSIONS } from "../pages/app/constants/permissions";
-import { usePermission } from "../pages/app/context/PermissionContext";
+import { PERMISSIONS } from "../constants/permissions";
+import { usePermission } from "../context/PermissionContext";
 import { capitalizeEveryWord } from "../utils";
 
 export const useRouteConfig = () => {

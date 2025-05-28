@@ -6,15 +6,15 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceDetails, ProcessedDocument } from "../../../types";
+import { DataSourceDetails, ProcessedDocument } from "../types";
 import {
   DuplicateDocumentItemResponse,
   DuplicateDocumentsFileHashMap,
   ItemField,
   RegularField,
-} from "../extractionHistory/types";
-import { processorApi } from "../../../api";
-import { useApplication } from "../../../context/ApplicationContext";
+} from "../pages/app/extractionHistory/types";
+import { processorApi } from "../api";
+import { useApplication } from "./ApplicationContext";
 
 interface DocumentProcessorContextProps {
   currentDataSource: DataSourceDetails | undefined;

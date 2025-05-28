@@ -9,8 +9,8 @@ import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
 import { processorApi } from "../../api";
 import { handleError } from "../../utils/notification";
-import { PERMISSIONS } from "../app/constants/permissions";
-import { usePermission } from "../app/context/PermissionContext";
+import { PERMISSIONS } from "../../constants/permissions";
+import { usePermission } from "../../context/PermissionContext";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);

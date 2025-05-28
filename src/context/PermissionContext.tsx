@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { processorApi } from "../../../api";
-import { handleError } from "../../../utils/notification";
+import { processorApi } from "../api";
+import { handleError } from "../utils/notification";
 
 interface PermissionContextProps {
   permissionOptions: string[];

@@ -7,9 +7,9 @@ import IgnoreDuplicatesModal from "./IgnoreDuplicatesModal";
 import ArchiveDuplicatesModal from "./ArchiveDuplicatesModal";
 import { ModalType } from "../../types";
 import DuplicatesTable from "./DuplicatesTable";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
-import { PERMISSIONS } from "../../../constants/permissions";
-import { usePermission } from "../../../context/PermissionContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
+import { PERMISSIONS } from "../../../../../constants/permissions";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const ViewDuplicates = () => {
   const [actionModal, setActionModal] = useState<

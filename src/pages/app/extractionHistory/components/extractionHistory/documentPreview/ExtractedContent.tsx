@@ -1,7 +1,7 @@
-import { useTemplate } from "../../../../context/TemplateContext";
+import { useTemplate } from "../../../../../../context/TemplateContext";
 import { processExtractedContent } from "../../../utils";
 import ExtractedItemsTable from "./ExtractedItemsTable";
-import { useDocumentProcessor } from "../../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../../context/DocumentProcessorContext";
 import { useEffect } from "react";
 import { ReviewStatus } from "../../../types";
 import { InfoCircleOutlined } from "@ant-design/icons";

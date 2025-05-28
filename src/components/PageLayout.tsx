@@ -12,8 +12,8 @@ import {
 import keycloakService from "../service/keycloakService";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SignOutModal from "./SignOutModal";
-import { PERMISSIONS } from "../pages/app/constants/permissions";
-import { usePermission } from "../pages/app/context/PermissionContext";
+import { PERMISSIONS } from "../constants/permissions";
+import { usePermission } from "../context/PermissionContext";
 
 const { Sider, Content } = Layout;
 

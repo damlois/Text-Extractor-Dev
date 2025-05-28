@@ -3,7 +3,7 @@ import SuccessModal from "../../../../../components/SuccessModal";
 import { Modal } from "antd";
 import LabelSetupTemplate from "../../templates/LabelSetupTemplate";
 import AppButton from "../../../../../components/AppButton";
-import { useTemplate } from "../../../context/TemplateContext";
+import { useTemplate } from "../../../../../context/TemplateContext";
 import { handleError } from "../../../../../utils/notification";
 
 interface UpdateLabelSetupProps {

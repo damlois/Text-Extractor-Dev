@@ -20,7 +20,7 @@ import SetPassword from "./pages/createAccount/SetPassword";
 import UsersList from "./pages/users";
 import RolesList from "./pages/roles";
 import ViewDuplicates from "./pages/app/extractionHistory/components/duplicates/ViewDuplicates";
-import { PERMISSIONS } from "./pages/app/constants/permissions";
+import { PERMISSIONS } from "./constants/permissions";
 import ForbiddenPage from "./pages/ForbiddenPage";
 import ReviewExtractedContent from "./pages/app/extractionHistory/components/reviewExtraction";
 import RouteProtector from "./components/RouteProtector";

@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { processorApi } from "../../../api";
-import { TemplateItem } from "../../../types";
-import { handleError } from "../../../utils/notification";
+import { processorApi } from "../api";
+import { TemplateItem } from "../types";
+import { handleError } from "../utils/notification";
 import { useDocumentProcessor } from "./DocumentProcessorContext";
 
 interface TemplateContextProps {
