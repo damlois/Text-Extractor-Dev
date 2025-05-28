@@ -1,7 +1,7 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { Tabs } from "antd";
 import PageHeader from "../../components/PageHeader";
-import { useDocumentProcessor } from "./context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../context/DocumentProcessorContext";
 import { useRouteConfig } from "../../hooks/useRouteConfig";
 
 const TabSelector = () => {

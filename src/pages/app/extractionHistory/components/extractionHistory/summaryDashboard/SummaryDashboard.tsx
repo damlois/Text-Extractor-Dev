@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import MetricCard from "../../../../../../components/MetricCard";
 import { processorApi } from "../../../../../../api";
 import { useNavigate } from "react-router-dom";
-import { useDocumentProcessor } from "../../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../../context/DocumentProcessorContext";
 import {
   DuplicateDocumentItemResponse,
   DuplicateDocumentsFileHashMap,
@@ -10,8 +10,8 @@ import {
 import { manageSSE } from "../../../../../../service/sseClient";
 import { showNotification } from "../../../../../../utils/notification";
 import { Spin } from "antd";
-import { PERMISSIONS } from "../../../../constants/permissions";
-import { usePermission } from "../../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../../constants/permissions";
+import { usePermission } from "../../../../../../context/PermissionContext";
 import { useApplication } from "../../../../../../context/ApplicationContext";
 
 const SummaryDashboard = () => {

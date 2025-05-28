@@ -10,12 +10,12 @@ import {
   ProcessedDocument,
 } from "../../../../../../types";
 import { WarningOutlined } from "@ant-design/icons";
-import { useDocumentProcessor } from "../../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../../context/DocumentProcessorContext";
 import { showNotification } from "../../../../../../utils/notification";
 import { manageSSE } from "../../../../../../service/sseClient";
 import { formatDocumentAndCreateMap } from "../../../utils";
-import { PERMISSIONS } from "../../../../constants/permissions";
-import { usePermission } from "../../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../../constants/permissions";
+import { usePermission } from "../../../../../../context/PermissionContext";
 import { formatDateTime } from "../../../../../../utils";
 import ExtractionStatusItem from "./ExtractionStatusItem";
 import { StatusType } from "../../../types";
@@ -23,7 +23,7 @@ import TableHeaderTooltip from "./TableHeaderTooltip";
 import ConfidenceIndicator from "./ConfidenceIndicator";
 import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
-import { useTemplate } from "../../../../context/TemplateContext";
+import { useTemplate } from "../../../../../../context/TemplateContext";
 import keycloakService from "../../../../../../service/keycloakService";
 import ReviewButton from "./ReviewButton";
 import FileName from "./FileName";
@@ -32,8 +32,6 @@ import { useApplication } from "../../../../../../context/ApplicationContext";
 const ExtractionHistoryTable = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
-  const [selectedDocument, setSelectedDocument] =
-    useState<ProcessedDocument | null>(null);
   const [selectedDocumentIds, setSelectedDocumentIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [originalDocuments, setOriginalDocuments] = useState<
@@ -60,6 +58,9 @@ const ExtractionHistoryTable = () => {
   const canViewDuplicates = userHasPermission(PERMISSIONS.VIEW_DUPLICATE);
   const canGenerateInsights = userHasPermission(PERMISSIONS.GENERATE_INSIGHT);
   const canEditExtraction = userHasPermission(PERMISSIONS.EDIT_EXTRACTION);
+  const canRetryExtraction = userHasPermission(PERMISSIONS.RETRY_EXTRACTION);
+
+  const canPerformAction = canEditExtraction || canRetryExtraction;
 
   const sseRef = useRef<{ stop: () => void } | null>(null);
   const confidenceSortOptions = [
@@ -314,7 +315,7 @@ const ExtractionHistoryTable = () => {
         </div>
       ),
     },
-    ...(canEditExtraction
+    ...(canPerformAction
       ? [
           {
             title: "",
@@ -322,6 +323,8 @@ const ExtractionHistoryTable = () => {
               <ReviewButton
                 record={record}
                 handleReview={handleDocumentReview}
+                canEdit={canEditExtraction}
+                canRetry={canRetryExtraction}
               />
             ),
           },

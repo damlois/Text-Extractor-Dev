@@ -2,7 +2,7 @@ import { UpOutlined, DownOutlined } from "@ant-design/icons";
 import { TableColumnsType, Table } from "antd";
 import { useState } from "react";
 import DocumentPreviewModal from "../extractionHistory/documentPreview/DocumentPreviewModal";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 import { DuplicateDocumentItemResponse, StatusType } from "../../types";
 import { formatDateTime } from "../../../../../utils";
 import TableHeaderTooltip from "../extractionHistory/historyTable/TableHeaderTooltip";

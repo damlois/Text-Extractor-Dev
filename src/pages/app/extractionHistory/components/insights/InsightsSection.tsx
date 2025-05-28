@@ -7,8 +7,8 @@ import { processorApi } from "../../../../../api";
 import { ChatSession, chatHistoryRecord } from "../../../../../types";
 import ChatHistorySection from "./ChatHistorySection";
 import { handleError } from "../../../../../utils/notification";
-import { PERMISSIONS } from "../../../constants/permissions";
-import { usePermission } from "../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../constants/permissions";
+import { usePermission } from "../../../../../context/PermissionContext";
 
 const InsightsSection = () => {
   const [prompt, setPrompt] = useState("");

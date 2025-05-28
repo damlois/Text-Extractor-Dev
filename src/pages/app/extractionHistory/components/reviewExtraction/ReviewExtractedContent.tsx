@@ -7,7 +7,7 @@ import {
   showNotification,
 } from "../../../../../utils/notification";
 import OriginalDocument from "../extractionHistory/documentPreview/OriginalDocument";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import EditExtractedContent from "./EditExtractedContent";
 import { useBlocker, useNavigate } from "react-router-dom";

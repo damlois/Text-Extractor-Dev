@@ -3,7 +3,7 @@ import { useState } from "react";
 import DocumentPreviewModal from "../documentPreview";
 import { WarningOutlined } from "@ant-design/icons";
 import { ProcessedDocument } from "../../../../../../types";
-import { useDocumentProcessor } from "../../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../../context/DocumentProcessorContext";
 
 interface FileNameProps {
   record: ProcessedDocument;
