@@ -1,7 +1,7 @@
 import { Spin } from "antd";
 import { useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { usePermission } from "../pages/app/context/PermissionContext";
+import { usePermission } from "../context/PermissionContext";
 import { handleError } from "../utils/notification";
 import { ReactNode } from "react";
 

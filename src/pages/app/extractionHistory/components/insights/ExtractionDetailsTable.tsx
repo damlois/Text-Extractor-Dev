@@ -4,9 +4,9 @@ import CustomTable from "../../../../../components/CustomTable";
 import { useEffect, useState, useMemo } from "react";
 import { formatExtractionValue } from "../../../../../utils";
 import { camelCase } from "lodash";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 import DocumentPreviewModal from "../extractionHistory/documentPreview/DocumentPreviewModal";
-import { useTemplate } from "../../../context/TemplateContext";
+import { useTemplate } from "../../../../../context/TemplateContext";
 import {
   extractCsvData,
   extractJsonData,

@@ -7,7 +7,7 @@ import {
   handleError,
   showNotification,
 } from "../../../utils/notification";
-import { usePermission } from "../../app/context/PermissionContext";
+import { usePermission } from "../../../context/PermissionContext";
 
 interface CreateRoleModalProps {
   open: boolean;

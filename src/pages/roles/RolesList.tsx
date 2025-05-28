@@ -8,8 +8,8 @@ import { RoleModalConfig, RoleModalType } from "./types";
 import CreateRoleModal from "./components/CreateRoleModal";
 import { processorApi } from "../../api";
 import EditRoleModal from "./components/EditRoleModal";
-import { usePermission } from "../app/context/PermissionContext";
-import { PERMISSIONS } from "../app/constants/permissions";
+import { usePermission } from "../../context/PermissionContext";
+import { PERMISSIONS } from "../../constants/permissions";
 import { formatDateTime } from "../../utils";
 
 const RolesList = () => {

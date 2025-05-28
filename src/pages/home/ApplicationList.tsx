@@ -2,7 +2,7 @@ import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useDocumentProcessor } from "../app/context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../context/DocumentProcessorContext";
 import { FileTextOutlined, FileDoneOutlined } from "@ant-design/icons";
 import { useApplication } from "../../context/ApplicationContext";
 import { Application } from "../../types";

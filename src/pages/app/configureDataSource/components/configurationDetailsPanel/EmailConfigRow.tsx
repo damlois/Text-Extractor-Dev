@@ -2,8 +2,8 @@ import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import UpdateEmailConfig from "../updateConfigurationModals/UpdateEmailConfig";
 import { DataSourceDetails } from "../../../../../types";
-import { PERMISSIONS } from "../../../constants/permissions";
-import { usePermission } from "../../../context/PermissionContext";
+import { PERMISSIONS } from "../../../../../constants/permissions";
+import { usePermission } from "../../../../../context/PermissionContext";
 import { useApplication } from "../../../../../context/ApplicationContext";
 
 interface EmailConfigRowProps {

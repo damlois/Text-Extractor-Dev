@@ -6,7 +6,7 @@ import { handleError } from "../utils/notification";
 import React from "react";
 import { processorApi } from "../api";
 import { DataSourceDetails } from "../types";
-import { useDocumentProcessor } from "../pages/app/context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../context/DocumentProcessorContext";
 import { useApplication } from "../context/ApplicationContext";
 
 interface EmailConfigTemplateProps {

@@ -8,7 +8,7 @@ import {
   showNotification,
 } from "../../../utils/notification";
 import { RoleResponse } from "../../../types";
-import { usePermission } from "../../app/context/PermissionContext";
+import { usePermission } from "../../../context/PermissionContext";
 
 interface EditRoleModalProps {
   open: boolean;

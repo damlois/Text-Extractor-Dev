@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-import { DocumentProcessorProvider } from "../pages/app/context/DocumentProcessorContext";
+import { DocumentProcessorProvider } from "./DocumentProcessorContext";
 import { ApplicationProvider } from "./ApplicationContext";
-import { TemplateProvider } from "../pages/app/context/TemplateContext";
-import { PermissionProvider } from "../pages/app/context/PermissionContext";
+import { TemplateProvider } from "./TemplateContext";
+import { PermissionProvider } from "./PermissionContext";
 
 export const CombinedProviders = ({ children }: { children: ReactNode }) => {
   return (

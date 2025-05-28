@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
-import { useTemplate } from "../../../context/TemplateContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
+import { useTemplate } from "../../../../../context/TemplateContext";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import AppInput from "../../../../../components/AppInput";

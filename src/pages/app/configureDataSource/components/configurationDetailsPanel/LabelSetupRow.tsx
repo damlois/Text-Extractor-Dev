@@ -5,7 +5,7 @@ import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
 import { processorApi } from "../../../../../api";
 import { Spin } from "antd";
 import { useApplication } from "../../../../../context/ApplicationContext";
-import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 
 interface LabelSetupRowProps {
   refreshPage: () => void;

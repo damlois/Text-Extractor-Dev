@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Spin } from "antd";
 import NoDataSource from "./components/NoDataSource";
 import ViewDataSourceDetails from "./ViewDataSourceDetails";
-import { useDocumentProcessor } from "../context/DocumentProcessorContext";
+import { useDocumentProcessor } from "../../../context/DocumentProcessorContext";
 
 const ConfigureDataSource = () => {
   const [pageRefresh, setPageRefresh] = useState(false);
