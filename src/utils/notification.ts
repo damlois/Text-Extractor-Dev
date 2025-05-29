@@ -7,6 +7,7 @@ import {
   AUTH_IFRAME_TIMEOUT_MESSAGE,
   UNAUTHORIZED_MESSAGE,
   FORBIDDEN_MESSAGE,
+  SERVER_ERROR_MESSAGE,
 } from "../constants/messages";
 
 interface BackendErrorResponse {
@@ -113,6 +114,8 @@ const parseDetail = (
       return FORBIDDEN_MESSAGE;
     case 404:
       return cleanedDetail;
+    case 500:
+      return SERVER_ERROR_MESSAGE;
     default:
       return detail || DEFAULT_ERROR_MESSAGE;
   }

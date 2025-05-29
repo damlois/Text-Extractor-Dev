@@ -16,6 +16,7 @@ import {
   DataSourceDetails,
   PermissionGroup,
   ImagePagesResponse,
+  RetryRequest,
 } from "../types";
 import apiClient from "../service/apiClient";
 import { ReviewStatus } from "../pages/app/extractionHistory/types";
@@ -159,6 +160,9 @@ export const processorApi = {
 
   editDocumentExtraction: async (invoiceId: string, data: any) =>
     await apiClient.put(`/invoices/${invoiceId}/edit`, data),
+
+  retryExtraction: async (invoiceId: string, data: RetryRequest) =>
+    await apiClient.post(`/invoices/${invoiceId}/retry`, data),
 
   updateReviewStatus: async (
     invoiceId: string,

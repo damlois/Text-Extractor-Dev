@@ -133,7 +133,7 @@ export interface ProcessedDocument {
   created_at: string;
   updated_at: string;
   editor: DocumentEditor;
-  isUnsupportedFile: boolean;
+  is_unsupported_file: boolean;
   retry_status: boolean;
 }
 
@@ -293,4 +293,10 @@ export interface ImageDataResponse {
 
 export interface ImagePagesResponse {
   pages: ImageDataResponse[];
+}
+
+export interface RetryRequest {
+  invoice_id: string;
+  max_retries: number;
+  comment?: string;
 }

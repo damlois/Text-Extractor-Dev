@@ -25,18 +25,18 @@ const FileName = ({ record }: FileNameProps) => {
     <>
       <Tooltip
         title={
-          record.isUnsupportedFile ? "Incompatible document type" : undefined
+          record.is_unsupported_file ? "Incompatible document type" : undefined
         }
       >
         <span>
           <button
             className={`text-dark-gray text-[14px] font-medium ${
-              !record.isUnsupportedFile && "underline"
+              !record.is_unsupported_file && "underline"
             } text-left max-w-[12vw] truncate`}
             style={{
               display: "inline-block",
               verticalAlign: "top",
-              pointerEvents: record.isUnsupportedFile ? "none" : "auto",
+              pointerEvents: record.is_unsupported_file ? "none" : "auto",
             }}
             onClick={() => togglePreviewModal(record)}
           >

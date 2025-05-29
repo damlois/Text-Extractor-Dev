@@ -38,7 +38,8 @@ export const formatDocumentAndCreateMap = (documents: any) => {
         ...extractedContent,
         overall_confidence: overallConfidence,
       },
-      isUnsupportedFile: false,
+      is_unsupported_file: false,
+      retry_status: true
     };
 
     if (!documentMapById[item.id]) {
