@@ -116,6 +116,8 @@ export type DocumentEditor = {
   user_id: string;
 };
 
+export type RetryStatus = "CAN_RETRY" | "CANNOT_RETRY" | null;
+
 export interface ProcessedDocument {
   id: string;
   file_name: string;
@@ -133,8 +135,9 @@ export interface ProcessedDocument {
   created_at: string;
   updated_at: string;
   editor: DocumentEditor;
+  failure_reason: string;
   is_unsupported_file: boolean;
-  retry_status: boolean;
+  retry_status: RetryStatus;
 }
 
 export interface DocumentDetailsResponse {

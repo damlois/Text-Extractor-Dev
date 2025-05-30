@@ -7,15 +7,15 @@ import { useState } from "react";
 
 interface ReviewButtonProps {
   record: ProcessedDocument;
-  canEdit: boolean;
-  canRetry: boolean;
+  hasEditPermission: boolean;
+  hasRetryPermission: boolean;
   handleReview: (record: ProcessedDocument) => void;
 }
 
 const ReviewButton = ({
   record,
-  canEdit,
-  canRetry,
+  hasEditPermission,
+  hasRetryPermission,
   handleReview,
 }: ReviewButtonProps) => {
   const { processing_status, is_unsupported_file, retry_status } = record;
@@ -24,9 +24,12 @@ const ReviewButton = ({
   const isProcessing = processing_status.toLowerCase() === "processing";
 
   const isRetryDisabled =
-    isProcessing || is_unsupported_file || !retry_status || !canRetry;
+    isProcessing ||
+    is_unsupported_file ||
+    retry_status !== "CAN_RETRY" ||
+    !hasRetryPermission;
 
-  const isReviewDisabled = isProcessing || !canEdit;
+  const isReviewDisabled = isProcessing || !hasEditPermission;
 
   const getClassName = (isDisabled: boolean) =>
     `inline-flex items-center justify-center gap-1 px-2 py-0.5 border rounded-[4px] w-[77px] transition-colors ${
@@ -36,7 +39,8 @@ const ReviewButton = ({
     }`;
 
   const determineRetryTooltipTitle = () => {
-    if (!canRetry) return "You do not have permission to retry extraction";
+    if (!hasRetryPermission)
+      return "You do not have permission to retry extraction";
     if (is_unsupported_file) return "Cannot retry: Incompatible document type.";
     if (!retry_status) return "Maximum retry attempt reached";
     return null;
@@ -62,7 +66,7 @@ const ReviewButton = ({
       {processing_status.toLowerCase() !== "failed" ? (
         <Tooltip
           title={
-            !canEdit
+            !hasEditPermission
               ? "You do not have permission to review documents"
               : undefined
           }

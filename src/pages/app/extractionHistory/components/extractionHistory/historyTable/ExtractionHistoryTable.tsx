@@ -324,8 +324,8 @@ const ExtractionHistoryTable = () => {
               <ReviewButton
                 record={record}
                 handleReview={handleDocumentReview}
-                canEdit={canEditExtraction}
-                canRetry={canRetryExtraction}
+                hasEditPermission={canEditExtraction}
+                hasRetryPermission={canRetryExtraction}
               />
             ),
           },
