@@ -17,6 +17,7 @@ import {
   PermissionGroup,
   ImagePagesResponse,
   RetryRequest,
+  DocumentType,
 } from "../types";
 import apiClient from "../service/apiClient";
 import { ReviewStatus } from "../pages/app/extractionHistory/types";
@@ -42,7 +43,7 @@ export const processorApi = {
   updateDocumentStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
 
-  getDataSourceDetails: (documentType: string | null) =>
+  getDataSourceDetails: (documentType?: DocumentType | null) =>
     apiClient.get<DataSourceResponse>(
       `/invoices/data-sources?document_type=${documentType}`
     ),
@@ -62,12 +63,12 @@ export const processorApi = {
   getChatSession: (sessionId: string) =>
     apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
 
-  getChatSessions: (documentType: string | null) =>
+  getChatSessions: (documentType: DocumentType | null) =>
     apiClient.get<ChatSessionsResponse>(
       `/invoices/chat-sessions?document_type=${documentType}`
     ),
 
-  getDocumentMetrics: (documentType: string | null) =>
+  getDocumentMetrics: (documentType: DocumentType | null) =>
     apiClient.get<DocumentMetricsResponse>(
       `/invoices/invoice-metrics?document_type=${documentType}`
     ),

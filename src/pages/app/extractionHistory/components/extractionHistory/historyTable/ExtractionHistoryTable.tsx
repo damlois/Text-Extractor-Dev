@@ -33,7 +33,7 @@ const ExtractionHistoryTable = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
   const [selectedDocumentIds, setSelectedDocumentIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [originalDocuments, setOriginalDocuments] = useState<
     ProcessedDocument[]
   >([]);
@@ -141,6 +141,7 @@ const ExtractionHistoryTable = () => {
 
   useEffect(() => {
     if (!sseRef.current) {
+      setLoading(true);
       sseRef.current = manageSSE(
         `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}&document_type=${documentType}`,
         handleSSEMessage

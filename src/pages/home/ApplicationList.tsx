@@ -1,24 +1,24 @@
 import { Image } from "antd";
 import ApplicationCard from "../../components/ApplicationCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useDocumentProcessor } from "../../context/DocumentProcessorContext";
 import { FileTextOutlined, FileDoneOutlined } from "@ant-design/icons";
 import { useApplication } from "../../context/ApplicationContext";
 import { Application } from "../../types";
+import { determineDocumentType } from "../../utils";
+import { useTemplate } from "../../context/TemplateContext";
 
 const ApplicationList = () => {
   const navigate = useNavigate();
 
-  const { fetchDataSource } = useDocumentProcessor();
   const { setAppType } = useApplication();
-
-  useEffect(() => {
-    fetchDataSource();
-  }, []);
+  const { fetchDataSource } = useDocumentProcessor();
+  const { fetchTemplate } = useTemplate();
 
   const handleNavigation = (app: Application) => {
     setAppType(app);
+    fetchDataSource(determineDocumentType(app));
+    fetchTemplate();
     navigate("/home/document-processing/data-source");
   };
 

@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Application } from "../types";
 
 interface ExtractionResult {
   [key: string]: string | null;
@@ -198,3 +199,6 @@ export const capitalizeEveryWord = (value?: string | null): string => {
         .join(" ")
     : "";
 };
+
+export const determineDocumentType = (app: Application | null) =>
+  app === "PURCHASE ORDER" ? "PURCHASE_ORDER" : app;
