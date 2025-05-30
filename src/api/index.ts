@@ -43,7 +43,7 @@ export const processorApi = {
   updateDocumentStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
 
-  getDataSourceDetails: (documentType?: DocumentType | null) =>
+  getDataSourceDetails: (documentType: DocumentType | null) =>
     apiClient.get<DataSourceResponse>(
       `/invoices/data-sources?document_type=${documentType}`
     ),
