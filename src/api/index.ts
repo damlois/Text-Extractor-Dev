@@ -179,7 +179,7 @@ export const processorApi = {
 
     try {
       await fetch(
-        `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+        `${process.env.REACT_APP_API_URL}/invoices/${invoiceId}/review-status`,
         {
           method: "PATCH",
           headers: {
