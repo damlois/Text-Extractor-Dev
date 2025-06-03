@@ -21,7 +21,7 @@ const ReviewButton = ({
   const { processing_status, is_unsupported_file, retry_status } = record;
   const [loading, setLoading] = useState(false);
 
-  const isProcessing = processing_status.toLowerCase() === "processing";
+  const isProcessing = processing_status.toLowerCase() === "processing" || processing_status.toLowerCase() === "retry_in_progress";
 
   const isRetryDisabled =
     isProcessing ||

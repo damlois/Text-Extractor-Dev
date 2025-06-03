@@ -228,7 +228,8 @@ const ExtractionHistoryTable = () => {
         getCheckboxProps: ({ processing_status }: ProcessedDocument) => ({
           disabled:
             processing_status.toLowerCase() === "processing" ||
-            processing_status.toLowerCase() === "failed",
+            processing_status.toLowerCase() === "failed" ||
+            processing_status.toLowerCase() === "retry_in_progress",
         }),
       }
     : undefined;
@@ -389,7 +390,8 @@ const ExtractionHistoryTable = () => {
             }
             if (
               processing_status.toLowerCase() === "processing" ||
-              processing_status.toLowerCase() === "failed"
+              processing_status.toLowerCase() === "failed" ||
+              processing_status.toLowerCase() === "retry_in_progress"
             ) {
               rowClasses.push("disabled-row");
             }
