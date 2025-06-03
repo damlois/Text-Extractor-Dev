@@ -1,13 +1,14 @@
 import Keycloak from "keycloak-js";
 
 const getKeycloakConfig = () => {
-  const environment = process.env.REACT_APP_ENV;
-  const configMap = {
-    dev: "/keycloak.dev.json",
-    demo: "/keycloak.demo.json",
+  return {
+    url: process.env.REACT_APP_KEYCLOAK_AUTH_URL,
+    realm: process.env.REACT_APP_KEYCLOAK_REALM,
+    clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
+    'ssl-required': 'external',
+    'public-client': true,
+    'confidential-port': 0
   };
-
-  return configMap[environment] || configMap.dev;
 };
 
 const _kc = new Keycloak(getKeycloakConfig());
@@ -21,9 +22,10 @@ const initKeycloak = (onAuthenticatedCallback) => {
   _kc
     .init({
       onLoad: "check-sso",
-      silentCheckSsoRedirectUri:
-        window.location.origin + "/silent-check-sso.html",
+      silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html",
       pkceMethod: "S256",
+      checkLoginIframe: false, 
+      enableLogging: false 
     })
     .then((authenticated) => {
       if (authenticated) {
@@ -42,6 +44,9 @@ const initKeycloak = (onAuthenticatedCallback) => {
           doLogin();
         }
       }
+    })
+    .catch((error) => {
+      console.error('Keycloak initialization error:', error);
     });
 };
 
