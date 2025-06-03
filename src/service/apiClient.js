@@ -2,7 +2,7 @@ import axios from "axios";
 import keycloakService from "./keycloakService";
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_DEMO_API_URL,
+  baseURL: process.env.REACT_APP_API_URL,
   timeout: 60000
 });
 
