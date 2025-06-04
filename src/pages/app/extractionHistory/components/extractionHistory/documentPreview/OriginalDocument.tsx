@@ -5,6 +5,7 @@ import {
 } from "@ant-design/icons";
 import { Tooltip, Button } from "antd";
 import { useState, useRef } from "react";
+import FailedExtraction from "./FailedExtraction";
 
 const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
   const [zoom, setZoom] = useState(1);
@@ -14,7 +15,6 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
 
   const zoomIn = () => setZoom((prev) => Math.min(prev + 0.1, 3));
   const zoomOut = () => setZoom((prev) => Math.max(prev - 0.1, 0.1));
-  const rotateClockwise = () => setRotation((prev) => (prev + 90) % 360);
 
   const handleScroll = () => {
     if (containerRef.current) {
@@ -64,26 +64,30 @@ const OriginalDocument = ({ pages }: { pages: { image_data: string }[] }) => {
         onScroll={handleScroll}
         className="p-[12px] border border-[#F1F1F1] overflow-auto h-[80vh]"
       >
-        <div style={{ width: "max-content" }}>
-          {pages.map((page, idx) => (
-            <div key={idx} className="mb-6">
-              <img
-                src={`data:image/jpeg;base64,${page.image_data}`}
-                alt={`Page ${idx + 1}`}
-                style={{
-                  transform: `
+        {pages.length > 0 ? (
+          <div style={{ width: "max-content" }}>
+            {pages.map((page, idx) => (
+              <div key={idx} className="mb-6">
+                <img
+                  src={`data:image/jpeg;base64,${page.image_data}`}
+                  alt={`Page ${idx + 1}`}
+                  style={{
+                    transform: `
                     scale(${zoom})
                     rotate(${rotation}deg)
                   `,
-                  transformOrigin: "top left",
-                  transition: "transform 0.3s ease",
-                  display: "block",
-                }}
-                className="rounded"
-              />
-            </div>
-          ))}
-        </div>
+                    transformOrigin: "top left",
+                    transition: "transform 0.3s ease",
+                    display: "block",
+                  }}
+                  className="rounded"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <FailedExtraction message="Unable to preview original document" />
+        )}
       </div>
     </div>
   );

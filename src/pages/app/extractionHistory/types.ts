@@ -38,7 +38,7 @@ export type DuplicateDocumentsFileHashMap = Record<
   { documents: DuplicateDocumentItemResponse[]; visible: boolean }
 >;
 
-export type StatusType = "successful" | "processing" | "failed";
+export type StatusType = "successful" | "processing" | "failed" | "retry_in_progress";
 
 export type Header = "processing_status" | "confidence" | "review_status";
 

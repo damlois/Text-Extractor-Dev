@@ -1,4 +1,4 @@
-import { ClockCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, WarningOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import { StatusType } from "../../../types";
 
@@ -8,18 +8,25 @@ const statusMap: Record<
 > = {
   successful: {
     dotColor: "#006A94",
-    icon: <img src="/assets/icons/custom-check-circle.svg" />,
+    icon: (
+      <img src="/assets/icons/custom-check-circle.svg" alt="success-icon" />
+    ),
     label: "Extraction Successful",
   },
   processing: {
     dotColor: "#FAAD14",
-    icon: <ClockCircleOutlined className="text-[#FAAD14]" />,
+    icon: <ClockCircleOutlined className="text-[#FAAD14] animate-spin" />,
     label: "Processing",
   },
   failed: {
     dotColor: "#F5222D",
     icon: <WarningOutlined className="text-[#F5222D]" />,
     label: "Extraction Failed",
+  },
+  retry_in_progress: {
+    dotColor: "#14dffa",
+    icon: <ReloadOutlined className="text-[#14dffa] animate-spin" />,
+    label: "Retry in Progress",
   },
 };
 

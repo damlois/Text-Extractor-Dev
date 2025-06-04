@@ -21,24 +21,34 @@ const FileName = ({ record }: FileNameProps) => {
     setShowPreviewModal(!showPreviewModal);
   };
 
+  const docIsProcessing =
+    record.processing_status.toLowerCase() === "processing";
+
+  const canViewDocument = !record.is_unsupported_file && !docIsProcessing;
   return (
     <>
       <Tooltip
         title={
-          record.isUnsupportedFile ? "Incompatible document type" : undefined
+          docIsProcessing
+            ? "Cannot view: document is still being processed"
+            : record.is_unsupported_file
+            ? "Incompatible document type"
+            : undefined
         }
       >
         <span>
           <button
             className={`text-dark-gray text-[14px] font-medium ${
-              !record.isUnsupportedFile && "underline"
+              canViewDocument && "underline"
             } text-left max-w-[12vw] truncate`}
             style={{
               display: "inline-block",
               verticalAlign: "top",
-              pointerEvents: record.isUnsupportedFile ? "none" : "auto",
+              pointerEvents: !canViewDocument ? "none" : "auto",
             }}
-            onClick={() => togglePreviewModal(record)}
+            onClick={() =>
+              canViewDocument ? togglePreviewModal(record) : () => {}
+            }
           >
             {record.file_name}
             {duplicatesMapById && duplicatesMapById[record.id] && (

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import PageLayout from "./components/PageLayout";
 import ApplicationList from "./pages/home/ApplicationList";
-import InvoiceAppTabSelector from "./pages/app/TabSelector";
+import TabSelector from "./pages/app/TabSelector";
 import ConfigureDataSource from "./pages/app/configureDataSource";
 import ExtractionHistory from "./pages/app/extractionHistory";
 import SavedInsights from "./pages/app/savedInsights";
@@ -59,7 +59,7 @@ const router = createBrowserRouter(
           }
         />
 
-        <Route path="/home/document-processing" element={<InvoiceAppTabSelector />}>
+        <Route path="/home/document-processing" element={<TabSelector />}>
           <Route
             path="data-source"
             element={

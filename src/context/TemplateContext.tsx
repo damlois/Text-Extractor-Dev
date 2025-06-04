@@ -27,10 +27,11 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
   const fetchTemplate = async () => {
     try {
       setLoading(true);
-      const response = await processorApi.getTemplate(
-        currentDataSource?.id
-      );
-      setTemplateItems(response.data.data.items);
+
+      if (currentDataSource?.id) {
+        const response = await processorApi.getTemplate(currentDataSource?.id);
+        setTemplateItems(response.data.data.items);
+      }
     } catch (error) {
       handleError(error, "Template");
     } finally {
@@ -41,10 +42,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
   const saveTemplate = async () => {
     try {
       setLoading(true);
-      await processorApi.updateTemplate(
-        currentDataSource?.id,
-        templateItems
-      );
+      await processorApi.updateTemplate(currentDataSource?.id, templateItems);
     } catch (error) {
       handleError("error", "Template");
     } finally {

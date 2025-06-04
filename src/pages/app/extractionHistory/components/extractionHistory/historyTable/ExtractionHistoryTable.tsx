@@ -33,7 +33,7 @@ const ExtractionHistoryTable = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDocInReviewModal, setShowDocInReviewModal] = useState(false);
   const [selectedDocumentIds, setSelectedDocumentIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [originalDocuments, setOriginalDocuments] = useState<
     ProcessedDocument[]
   >([]);
@@ -141,6 +141,7 @@ const ExtractionHistoryTable = () => {
 
   useEffect(() => {
     if (!sseRef.current) {
+      setLoading(true);
       sseRef.current = manageSSE(
         `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}&document_type=${documentType}`,
         handleSSEMessage
@@ -227,7 +228,8 @@ const ExtractionHistoryTable = () => {
         getCheckboxProps: ({ processing_status }: ProcessedDocument) => ({
           disabled:
             processing_status.toLowerCase() === "processing" ||
-            processing_status.toLowerCase() === "failed",
+            processing_status.toLowerCase() === "failed" ||
+            processing_status.toLowerCase() === "retry_in_progress",
         }),
       }
     : undefined;
@@ -323,8 +325,8 @@ const ExtractionHistoryTable = () => {
               <ReviewButton
                 record={record}
                 handleReview={handleDocumentReview}
-                canEdit={canEditExtraction}
-                canRetry={canRetryExtraction}
+                hasEditPermission={canEditExtraction}
+                hasRetryPermission={canRetryExtraction}
               />
             ),
           },
@@ -388,7 +390,8 @@ const ExtractionHistoryTable = () => {
             }
             if (
               processing_status.toLowerCase() === "processing" ||
-              processing_status.toLowerCase() === "failed"
+              processing_status.toLowerCase() === "failed" ||
+              processing_status.toLowerCase() === "retry_in_progress"
             ) {
               rowClasses.push("disabled-row");
             }

@@ -16,6 +16,8 @@ import {
   DataSourceDetails,
   PermissionGroup,
   ImagePagesResponse,
+  RetryRequest,
+  DocumentType,
 } from "../types";
 import apiClient from "../service/apiClient";
 import { ReviewStatus } from "../pages/app/extractionHistory/types";
@@ -41,7 +43,7 @@ export const processorApi = {
   updateDocumentStatus: (status: string, invoiceIds: string[]) =>
     apiClient.patch(`invoices/status?status=${status}`, invoiceIds),
 
-  getDataSourceDetails: (documentType: string | null) =>
+  getDataSourceDetails: (documentType: DocumentType | null) =>
     apiClient.get<DataSourceResponse>(
       `/invoices/data-sources?document_type=${documentType}`
     ),
@@ -61,12 +63,12 @@ export const processorApi = {
   getChatSession: (sessionId: string) =>
     apiClient.get<ChatResponse>(`/invoices/chat-sessions/${sessionId}`),
 
-  getChatSessions: (documentType: string | null) =>
+  getChatSessions: (documentType: DocumentType | null) =>
     apiClient.get<ChatSessionsResponse>(
       `/invoices/chat-sessions?document_type=${documentType}`
     ),
 
-  getDocumentMetrics: (documentType: string | null) =>
+  getDocumentMetrics: (documentType: DocumentType | null) =>
     apiClient.get<DocumentMetricsResponse>(
       `/invoices/invoice-metrics?document_type=${documentType}`
     ),
@@ -160,6 +162,9 @@ export const processorApi = {
   editDocumentExtraction: async (invoiceId: string, data: any) =>
     await apiClient.put(`/invoices/${invoiceId}/edit`, data),
 
+  retryExtraction: async (invoiceId: string, data: RetryRequest) =>
+    await apiClient.post(`/invoices/${invoiceId}/retry`, data),
+
   updateReviewStatus: async (
     invoiceId: string,
     data: { status: ReviewStatus }
@@ -174,7 +179,7 @@ export const processorApi = {
 
     try {
       await fetch(
-        `${process.env.REACT_APP_DEV_API_URL}/invoices/${invoiceId}/review-status`,
+        `${process.env.REACT_APP_API_URL}/invoices/${invoiceId}/review-status`,
         {
           method: "PATCH",
           headers: {

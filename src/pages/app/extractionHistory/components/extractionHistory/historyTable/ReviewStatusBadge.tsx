@@ -46,7 +46,7 @@ const statusMap: Record<
   },
   not_applicable: {
     label: "N/A",
-    info: "Unable to review. Docuemnt failed to extract or is still processing",
+    info: "Unable to review. Document failed to extract or is still processing",
     icon: <WarningOutlined />,
     bgColor: "bg-[#F0F0F0]",
     textColor: "text-[#00000073]",
