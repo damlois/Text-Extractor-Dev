@@ -19,8 +19,19 @@ export const filterDocuments = (
 
     // Filter by review status
     if (filters.reviewStatus?.length) {
-      const currentReviewStatus = document.review_status.replace(/_/g, " ");
-      if (!filters.reviewStatus.some(status => status.toLowerCase() === currentReviewStatus.toLowerCase())) {
+      let currentReviewStatus = filters.reviewStatus.map(status => {
+        if (status === "Pending") {
+          return "pending"
+        } else if (status === "In Review") {
+          return "in_review"
+        } else if (status === "QA Passed") {
+          return "reviewed"
+        } else if (status === "N/A") {
+          return "n_a"
+        }
+        return status
+      }) 
+      if (!currentReviewStatus.some(status => status === document.review_status)) {
         return false;
       }
     }
