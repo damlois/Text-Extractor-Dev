@@ -21,7 +21,9 @@ const ReviewButton = ({
   const { processing_status, is_unsupported_file, retry_status } = record;
   const [loading, setLoading] = useState(false);
 
-  const isProcessing = processing_status.toLowerCase() === "processing" || processing_status.toLowerCase() === "retry_in_progress";
+  const isProcessing =
+    processing_status.toLowerCase() === "processing" ||
+    processing_status.toLowerCase() === "retry_in_progress";
 
   const isRetryDisabled =
     isProcessing ||
@@ -42,7 +44,7 @@ const ReviewButton = ({
     if (!hasRetryPermission)
       return "You do not have permission to retry extraction";
     if (is_unsupported_file) return "Cannot retry: Incompatible document type.";
-    if (!retry_status) return "Maximum retry attempt reached";
+    if (retry_status === "MAX_RETRIES") return "Maximum retry attempt reached";
     return null;
   };
 

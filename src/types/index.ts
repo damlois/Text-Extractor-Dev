@@ -116,7 +116,7 @@ export type DocumentEditor = {
   user_id: string;
 };
 
-export type RetryStatus = "CAN_RETRY" | "CANNOT_RETRY" | null;
+export type RetryStatus = "CAN_RETRY" | "MAX_RETRIES" | null;
 
 export interface ProcessedDocument {
   id: string;
