@@ -38,7 +38,7 @@ export const formatDocumentAndCreateMap = (documents: any) => {
         ...extractedContent,
         overall_confidence: overallConfidence,
       },
-      isUnsupportedFile: false,
+      is_unsupported_file: item.failure_reason === "INCOMPATIBLE_FILE",
     };
 
     if (!documentMapById[item.id]) {
@@ -107,7 +107,8 @@ export const processExtractedContent = (
 
 export const extractJsonData = (documents: any[], templateItems: any[]) => {
   return documents.map((document) => {
-    const { rawData, confidence, overallConfidence, ...filteredData } = document;
+    const { rawData, confidence, overallConfidence, ...filteredData } =
+      document;
 
     const filteredResult = templateItems?.reduce<Record<string, any>>(
       (acc, { label }) => {

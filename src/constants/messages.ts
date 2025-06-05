@@ -8,3 +8,5 @@ export const UNAUTHORIZED_MESSAGE =
   "You are unauthorized to perform this action.";
 export const FORBIDDEN_MESSAGE =
   "You do not have permission to perform this action.";
+export const SERVER_ERROR_MESSAGE =
+  "An error occured on the server. Please try again later";

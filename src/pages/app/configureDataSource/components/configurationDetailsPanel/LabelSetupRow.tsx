@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import UpdateLabelSetup from "../updateConfigurationModals/UpdateLabelSetup";
 import { processorApi } from "../../../../../api";
 import { Spin } from "antd";
-import { useApplication } from "../../../../../context/ApplicationContext";
 import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
+import { useTemplate } from "../../../../../context/TemplateContext";
 
 interface LabelSetupRowProps {
   refreshPage: () => void;
@@ -14,18 +14,15 @@ interface LabelSetupRowProps {
 const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const { labels, setLabels } = useApplication();
+  const { templateItems, setTemplateItems } = useTemplate();
   const { currentDataSource } = useDocumentProcessor();
 
   useEffect(() => {
     const fetchTemplate = async () => {
       setLoading(true);
       try {
-        const response = await processorApi.getTemplate(
-          currentDataSource?.id
-        );
-        setLabels(response.data.data.items);
+        const response = await processorApi.getTemplate(currentDataSource?.id);
+        setTemplateItems(response.data.data.items);
       } catch (error) {
         console.error("Error fetching template:", error);
       } finally {
@@ -65,7 +62,7 @@ const LabelSetupRow = ({ refreshPage }: LabelSetupRowProps) => {
           {loading ? (
             <Spin />
           ) : (
-            labels?.map((item, index) => (
+            templateItems?.map((item, index) => (
               <LabelTag
                 key={index}
                 id={index}

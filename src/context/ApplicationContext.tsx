@@ -9,13 +9,12 @@ import React, {
 } from "react";
 import { Application, DocumentType, TemplateItem } from "../types";
 import { getAppTypeFromStorage, setAppTypeInStorage } from "../utils/storage";
+import { determineDocumentType } from "../utils";
 
 interface ApplicationContextProps {
   currentApp: Application | null;
   documentType: DocumentType | null;
   setAppType: (app: Application) => void;
-  labels: TemplateItem[] | null;
-  setLabels: Dispatch<SetStateAction<TemplateItem[] | null>>;
 }
 
 interface ApplicationProviderProps {
@@ -30,10 +29,7 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
   children,
 }) => {
   const [currentApp, setCurrentApp] = useState<Application | null>(null);
-  const [labels, setLabels] = useState<TemplateItem[] | null>(null);
-
-  const documentType =
-    currentApp === "PURCHASE ORDER" ? "PURCHASE_ORDER" : currentApp;
+  const documentType = determineDocumentType(currentApp);
 
   useEffect(() => {
     setCurrentApp(getAppTypeFromStorage());
@@ -49,8 +45,6 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
       value={{
         currentApp,
         documentType,
-        labels,
-        setLabels,
         setAppType,
       }}
     >

@@ -6,7 +6,11 @@ import {
   useContext,
   useState,
 } from "react";
-import { DataSourceDetails, ProcessedDocument } from "../types";
+import {
+  DataSourceDetails,
+  DocumentType,
+  ProcessedDocument,
+} from "../types";
 import {
   DuplicateDocumentItemResponse,
   DuplicateDocumentsFileHashMap,
@@ -42,7 +46,7 @@ interface DocumentProcessorContextProps {
   setRegularFieldsData: Dispatch<SetStateAction<RegularField[]>>;
   setItemsFieldsData: Dispatch<SetStateAction<ItemField[]>>;
   loadingDataSource: boolean;
-  fetchDataSource: () => Promise<void>;
+  fetchDataSource: (docType?: DocumentType | null) => Promise<void>;
 }
 
 interface DocumentProcessorProviderProps {
@@ -81,10 +85,12 @@ export const DocumentProcessorProvider: React.FC<
 
   const { documentType } = useApplication();
 
-  const fetchDataSource = async () => {
+  const fetchDataSource = async (type?: DocumentType | null) => {
     try {
       setLoadingDataSource(true);
-      const response = await processorApi.getDataSourceDetails(documentType);
+      const response = await processorApi.getDataSourceDetails(
+        type || documentType
+      );
       const data = response.data.data;
       setCurrentDataSource(data[data.length - 1]);
     } catch (error) {

@@ -114,7 +114,9 @@ const ExtractedContent = ({
             </div>
           )}
       </div>
-      {extractionStatus?.toLowerCase() === "failed" ? (
+      {extractionStatus?.toLowerCase() === "failed" ||
+      extractionStatus?.toLowerCase() === "processing" ||
+      extractionStatus?.toLowerCase() === "retry_in_progress" ? (
         <FailedExtraction />
       ) : (
         <>
