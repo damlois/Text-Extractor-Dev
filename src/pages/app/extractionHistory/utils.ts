@@ -107,8 +107,7 @@ export const processExtractedContent = (
 
 export const extractJsonData = (documents: any[], templateItems: any[]) => {
   return documents.map((document) => {
-    const { rawData, confidence, overallConfidence, ...filteredData } =
-      document;
+    const { confidence, overallConfidence, ...filteredData } = document;
 
     const filteredResult = templateItems?.reduce<Record<string, any>>(
       (acc, { label }) => {
@@ -125,8 +124,9 @@ export const extractJsonData = (documents: any[], templateItems: any[]) => {
     );
 
     return {
+      fileName: filteredData.fileName,
       ...filteredResult,
-      overall_confidence: overallConfidence ?? "N/A",
+      overallConfidence: overallConfidence ?? "N/A",
     };
   });
 };
@@ -135,12 +135,17 @@ export const extractCsvData = (documents: any[], templateItems: any[]) => {
   return documents.map((document) => {
     const { rawData, ...filteredData } = document;
 
-    return templateItems?.reduce<Record<string, any>>((acc, { label }) => {
-      const key = camelCase(label);
-      if (filteredData[key]) {
-        acc[key] = filteredData[key];
-      }
-      return acc;
-    }, {});
+    const extractedData = templateItems?.reduce<Record<string, any>>(
+      (acc, { label }) => {
+        const key = camelCase(label);
+        if (filteredData[key]) {
+          acc[key] = filteredData[key];
+        }
+        return acc;
+      },
+      {}
+    );
+
+    return { fileName: filteredData.fileName, ...extractedData };
   });
 };

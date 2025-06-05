@@ -6,36 +6,60 @@ interface DownloadResultsProp {
 }
 
 const DownloadResults = ({ jsonData, csvData }: DownloadResultsProp) => {
-  const downloadAsCSV = () => {
-    if (csvData.length === 0) return;
-  
-    const csvRows: string[] = [];
-  
-    const headers = Object.keys(csvData[0]);
-    csvRows.push(headers.join(","));
-  
-    for (const row of csvData) {
-      const values = headers.map((header) => {
-        const raw = row[header];
-        const value = raw !== undefined && raw !== null ? String(raw) : "";
-  
-        return `"${value.replace(/"/g, '""')}"`;
-      });
-      csvRows.push(values.join(","));
+  console.log({jsonData})
+  const flatten = (obj: any, parentKey = "") => {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      const newKey = parentKey ? `${parentKey}.${key}` : key;
+
+      if (Array.isArray(value)) {
+        acc[newKey] = value
+          .map((v) => (typeof v === "object" ? JSON.stringify(v) : v))
+          .join("; ");
+      } else if (typeof value === "object" && value !== null) {
+        Object.assign(acc, flatten(value, newKey));
+      } else {
+        acc[newKey] = value;
+      }
+
+      return acc;
+    }, {} as any);
+  };
+
+  const downloadAsCsv = () => {
+    if (!Array.isArray(csvData) || csvData.length === 0) {
+      console.error("No data to download.");
+      return;
     }
-  
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-  
+
+    const headers = Object.keys(flatten(csvData[0]));
+    const csvRows: string[] = [
+      headers.join(","),
+      ...csvData.map((item) => {
+        const flatItem = flatten(item);
+        return headers
+          .map((header) => {
+            const cell = flatItem[header];
+            const safeCell =
+              cell === null || cell === undefined
+                ? ""
+                : String(cell).replace(/"/g, '""');
+            return `"${safeCell}"`;
+          })
+          .join(",");
+      }),
+    ];
+
+    const blob = new Blob([csvRows.join("\n")], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
+    link.href = url;
     link.download = "extraction-history.csv";
-    link.style.display = "none";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
-  
 
   const downloadAsJSON = () => {
     const jsonString = JSON.stringify(jsonData, null, 2);
@@ -56,7 +80,7 @@ const DownloadResults = ({ jsonData, csvData }: DownloadResultsProp) => {
       <div className="flex gap-0 mt-2 mb-9 border border-[#D9D9D9] rounded-sm w-fit tetx-[14px] font-normal">
         <span
           className="p-2 border-r border-[#D9D9D9] cursor-pointer"
-          onClick={downloadAsCSV}
+          onClick={downloadAsCsv}
         >
           <DownloadOutlined className="mr-[10px]" /> CSV
         </span>
