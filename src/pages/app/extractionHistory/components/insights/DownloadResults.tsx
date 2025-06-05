@@ -6,7 +6,6 @@ interface DownloadResultsProp {
 }
 
 const DownloadResults = ({ jsonData, csvData }: DownloadResultsProp) => {
-  console.log({jsonData})
   const flatten = (obj: any, parentKey = "") => {
     return Object.entries(obj).reduce((acc, [key, value]) => {
       const newKey = parentKey ? `${parentKey}.${key}` : key;
