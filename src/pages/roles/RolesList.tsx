@@ -102,14 +102,6 @@ const RolesList = () => {
                         </button>
                       ),
                     },
-                    {
-                      key: "2",
-                      label: (
-                        <button className="w-full text-left text-[#FF4D4F]">
-                          Delete
-                        </button>
-                      ),
-                    },
                   ],
                 }}
               >

@@ -2,7 +2,7 @@ import { useTemplate } from "../../../../../../context/TemplateContext";
 import { processExtractedContent } from "../../../utils";
 import ExtractedItemsTable from "./ExtractedItemsTable";
 import { useDocumentProcessor } from "../../../../../../context/DocumentProcessorContext";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { ReviewStatus } from "../../../types";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
@@ -42,33 +42,32 @@ const ExtractedContent = ({
   const {
     currentDataSource,
     fetchDataSource,
-    itemsFieldsData,
-    regularFieldsData,
     setItemsFieldsData,
     setRegularFieldsData,
   } = useDocumentProcessor();
+
 
   useEffect(() => {
     const handleFetchTemplate = async () => {
       if (!currentDataSource) {
         await fetchDataSource();
       }
-
       if (currentDataSource && (!templateItems || templateItems.length === 0)) {
         await fetchTemplate();
       }
     };
-
     handleFetchTemplate();
+  }, [currentDataSource, fetchDataSource, fetchTemplate, templateItems]);
 
-    const { regularFieldsData, itemsFieldsData } = processExtractedContent(
-      extractedContent,
-      templateItems
-    );
+  const { regularFieldsData: memoRegularFieldsData, itemsFieldsData: memoItemsFieldsData } = useMemo(
+    () => processExtractedContent(extractedContent, templateItems),
+    [extractedContent, templateItems]
+  );
 
-    setItemsFieldsData(itemsFieldsData);
-    setRegularFieldsData(regularFieldsData);
-  }, []);
+  useEffect(() => {
+    setItemsFieldsData(memoItemsFieldsData);
+    setRegularFieldsData(memoRegularFieldsData);
+  }, [memoItemsFieldsData, memoRegularFieldsData, setItemsFieldsData, setRegularFieldsData]);
 
   return (
     <div className="h-full flex flex-col">
@@ -129,7 +128,7 @@ const ExtractedContent = ({
           ) : (
             <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh]">
               <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
-                {regularFieldsData.map((item) => (
+                {memoRegularFieldsData.map((item) => (
                   <ExtractedItem
                     key={item.field}
                     field={item.field}
@@ -138,9 +137,9 @@ const ExtractedContent = ({
                 ))}
               </div>
 
-              {itemsFieldsData.length > 0 && (
+              {memoItemsFieldsData.length > 0 && (
                 <div className="mt-6 flex flex-col gap-6">
-                  {itemsFieldsData.map((itemField, idx) => (
+                  {memoItemsFieldsData.map((itemField, idx) => (
                     <ExtractedItemsTable
                       key={idx}
                       label={itemField.label}

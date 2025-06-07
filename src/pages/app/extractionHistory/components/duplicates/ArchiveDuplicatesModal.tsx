@@ -6,6 +6,7 @@ import {
   showNotification,
 } from "../../../../../utils/notification";
 import { useState } from "react";
+import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 
 interface ArchiveDuplicatesModalProps {
   open?: boolean;
@@ -23,14 +24,27 @@ const ArchiveDuplicatesModal = ({
   selectedCount,
 }: ArchiveDuplicatesModalProps) => {
   const [loading, setLoading] = useState(false);
+  const { duplicateMapByFileHash } = useDocumentProcessor();
+
+  const selectedIds = Object.values(selectedDocumentIds).flat();
+
+  const selectedDocs: any[] = [];
+  Object.values(duplicateMapByFileHash).forEach(({ documents }) => {
+    documents.forEach((doc) => {
+      if (selectedIds.includes(doc.id)) {
+        selectedDocs.push(doc);
+      }
+    });
+  });
+
+  const hasQAPassed = selectedDocs.some(
+    (doc) => doc.review_status === "reviewed"
+  );
 
   const handleArchive = async () => {
     try {
       setLoading(true);
-      await processorApi.updateDocumentStatus(
-        "archive",
-        Object.values(selectedDocumentIds).flat()
-      );
+      await processorApi.updateDocumentStatus("archive", selectedIds);
 
       onCancel();
       pageRefresh();
@@ -52,8 +66,11 @@ const ArchiveDuplicatesModal = ({
       title={
         <div className="flex items-center text-[16px] text-dark-gray font-medium">
           <InfoCircleOutlined className="text-deep-blue mr-4 text-[22px]" />
-          Are you sure you want to archive selected duplicate document
-          {selectedCount > 1 ? "s" : ""}?
+          {hasQAPassed
+            ? "QA Passed document present"
+            : `Are you sure you want to archive selected duplicate document${
+                selectedCount > 1 ? "s" : ""
+              }?`}
         </div>
       }
       open={open}
@@ -67,7 +84,7 @@ const ArchiveDuplicatesModal = ({
           Cancel
         </Button>,
         <Button
-          key="ignore-duplicates"
+          key="archive"
           type="primary"
           className="h-[32px] px-[15px] rounded-[2px]"
           onClick={handleArchive}
@@ -82,15 +99,18 @@ const ArchiveDuplicatesModal = ({
         content: { padding: "16px", borderRadius: "2px" },
       }}
     >
-      {selectedCount > 1 ? (
+      {hasQAPassed ? (
+        <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
+          QA Passed document present. This action will move a QA passed document
+          to archive. Do you want to proceed?
+        </p>
+      ) : selectedCount > 1 ? (
         <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
           This action will move the selected duplicate documents to the archive.
-          You can restore them later if needed.
         </p>
       ) : (
         <p className="text-dark-gray text-sm font-normal ml-[38px] mb-6">
           This action will move the selected duplicate document to the archive.
-          You can restore it later if needed.
         </p>
       )}
     </Modal>
