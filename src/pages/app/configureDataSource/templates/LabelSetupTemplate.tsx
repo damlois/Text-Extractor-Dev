@@ -82,6 +82,15 @@ const LabelSetupTemplate = ({
       const row = (await form.validateFields()) as LabelInfo;
       const newData = getTableData();
       const index = newData.findIndex((item) => key === item.key);
+      const isDuplicate = newData.some(
+        (item, idx) =>
+          idx !== index &&
+          item.label.trim().toLowerCase() === row.label.trim().toLowerCase()
+      );
+      if (isDuplicate) {
+        showNotification("error", "Field already exists");
+        return;
+      }
       if (index > -1) {
         newData.splice(index, 1, { ...newData[index], ...row });
         setTemplateItems(
@@ -104,6 +113,16 @@ const LabelSetupTemplate = ({
 
   const addNewRow = () => {
     if (editingKey) return;
+
+    // Prevent adding a new row if there is already an empty label row (pending edit)
+    const hasEmptyLabel = templateItems.some(
+      (item) => !item.label || item.label.trim() === ""
+    );
+
+    if (hasEmptyLabel) {
+      showNotification("error", "Field already exists");
+      return;
+    }
 
     const newData = getTableData();
     const newKey = newData.length.toString();

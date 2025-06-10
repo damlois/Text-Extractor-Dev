@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Alert, Dropdown, Table } from "antd";
-import type { TableColumnsType } from "antd";
+import { Alert, Table } from "antd";
 import AppButton from "../../../../../../components/AppButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import FilterHistoryModal from "./FilterHistoryModal";
@@ -16,18 +15,11 @@ import { manageSSE } from "../../../../../../service/sseClient";
 import { formatDocumentAndCreateMap } from "../../../utils";
 import { PERMISSIONS } from "../../../../../../constants/permissions";
 import { usePermission } from "../../../../../../context/PermissionContext";
-import { formatDateTime } from "../../../../../../utils";
-import ExtractionStatusItem from "./ExtractionStatusItem";
-import { StatusType } from "../../../types";
-import TableHeaderTooltip from "./TableHeaderTooltip";
-import ConfidenceIndicator from "./ConfidenceIndicator";
-import ReviewStatusBadge from "./ReviewStatusBadge";
 import DocumentInReviewModal from "./DocumentInReviewModal";
 import { useTemplate } from "../../../../../../context/TemplateContext";
 import keycloakService from "../../../../../../service/keycloakService";
-import ReviewButton from "./ReviewButton";
-import FileName from "./FileName";
 import { useApplication } from "../../../../../../context/ApplicationContext";
+import { getExtractionHistoryColumns } from "./constants";
 
 const ExtractionHistoryTable = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -37,9 +29,6 @@ const ExtractionHistoryTable = () => {
   const [originalDocuments, setOriginalDocuments] = useState<
     ProcessedDocument[]
   >([]);
-  const [displayDocuments, setDisplayDocuments] = useState<ProcessedDocument[]>(
-    []
-  );
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -120,64 +109,20 @@ const ExtractionHistoryTable = () => {
     }));
   };
 
-  useEffect(() => {
-    if (
-      !location.state?.fromInsightsPage &&
-      !location.state?.fromDuplicatesPage &&
-      !location.state?.fromReviewpage
-    ) {
-      sessionStorage.removeItem("hideDuplicatesAlert");
-      setShowAlert(true);
+  // Compute displayDocuments with useMemo for optimal rendering
+  const displayDocuments = useMemo(() => {
+    let docs = originalDocuments;
+    if (confidenceSort && confidenceSort !== "Reset") {
+      docs = [...docs].sort((a, b) => {
+        const aConfidence = a.extracted_content?.overall_confidence?.score ?? 0;
+        const bConfidence = b.extracted_content?.overall_confidence?.score ?? 0;
+        return confidenceSort === "Lowest to Highest"
+          ? aConfidence - bConfidence
+          : bConfidence - aConfidence;
+      });
     }
-
-    if (location.state?.fromReviewPage) {
-      setTimeout(() => {
-        // Status update delay
-      }, 4000);
-    }
-
-    handleTemplatesFetch();
-  }, []);
-
-  useEffect(() => {
-    if (!sseRef.current) {
-      setLoading(true);
-      sseRef.current = manageSSE(
-        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}&document_type=${documentType}`,
-        handleSSEMessage
-      );
-    }
-
-    return () => {
-      sseRef.current?.stop();
-      sseRef.current = null;
-    };
-  }, [pagination.current, pagination.pageSize]);
-
-  useEffect(() => {
-    if (originalDocuments.length) {
-      setDisplayDocuments(filterDocuments(originalDocuments, filters));
-    }
-  }, [filters, originalDocuments]);
-
-  useEffect(() => {
-    if (!confidenceSort || confidenceSort === "Reset") {
-      setDisplayDocuments(filterDocuments(originalDocuments, filters));
-      return;
-    }
-
-    const sorted = [...originalDocuments].sort((a, b) => {
-      const aConfidence = a.extracted_content?.overall_confidence?.score ?? 0;
-      const bConfidence = b.extracted_content?.overall_confidence?.score ?? 0;
-
-      return confidenceSort === "Lowest to Highest"
-        ? aConfidence - bConfidence
-        : bConfidence - aConfidence;
-    });
-
-    const filteredSorted = filterDocuments(sorted, filters);
-    setDisplayDocuments(filteredSorted);
-  }, [confidenceSort, filters, originalDocuments]);
+    return filterDocuments(docs, filters);
+  }, [originalDocuments, filters, confidenceSort]);
 
   const uniqueSenders = useMemo(() => {
     return Array.from(
@@ -234,105 +179,15 @@ const ExtractionHistoryTable = () => {
       }
     : undefined;
 
-  const extractionHistoryColumns: TableColumnsType<ProcessedDocument> = [
-    {
-      title: "File Name",
-      dataIndex: "file_name",
-      render: (_, record: ProcessedDocument) => <FileName record={record} />,
-    },
-    {
-      title: "Sender",
-      dataIndex: "email_metadata",
-      render: (data: { sender_email: string }) => (
-        <span className="text-dark-gray text-[14px] font-medium">
-          {data.sender_email}
-        </span>
-      ),
-    },
-    {
-      title: "Date",
-      dataIndex: "created_at",
-      render: (text: string) => (
-        <span className="text-[#28373] text-[14px]">
-          {formatDateTime(text)}
-        </span>
-      ),
-    },
-    {
-      title: (
-        <div className="flex items-center gap-1">
-          <span>Status</span>
-          <TableHeaderTooltip header="processing_status" />
-        </div>
-      ),
-      dataIndex: "processing_status",
-      render: (text: string) => (
-        <ExtractionStatusItem type={text.toLowerCase() as StatusType} />
-      ),
-    },
-    {
-      title: (
-        <Dropdown
-          menu={{
-            items: confidenceSortOptions.map((option, index) => ({
-              key: index,
-              label: (
-                <button
-                  className="w-full text-left text-dark-gray"
-                  onClick={() => setConfidenceSort(option)}
-                >
-                  {option}
-                </button>
-              ),
-            })),
-          }}
-          trigger={["click"]}
-        >
-          <div className="flex items-center gap-1 cursor-pointer">
-            <div className="flex">
-              <img src="/assets/icons/arrow-down.svg" alt="arrow-down" />
-              <img src="/assets/icons/arrow-up.svg" alt="arrow-up" />
-            </div>
-            <span>Confidence</span>
-            <TableHeaderTooltip header="confidence" />
-          </div>
-        </Dropdown>
-      ),
-      dataIndex: "overall_confidence",
-      render: (_: any, record: ProcessedDocument) => (
-        <ConfidenceIndicator record={record} />
-      ),
-    },
-    {
-      title: (
-        <div className="flex items-center gap-1">
-          <span>Review Status</span>
-          <TableHeaderTooltip header="review_status" />
-        </div>
-      ),
-      dataIndex: "review_status",
-      render: (_: any, record: ProcessedDocument) => (
-        <div className="min-w-[90px]">
-          <ReviewStatusBadge record={record} />
-        </div>
-      ),
-    },
-    ...(canPerformAction
-      ? [
-          {
-            title: "",
-            render: (_: any, record: ProcessedDocument) => (
-              <ReviewButton
-                record={record}
-                handleReview={handleDocumentReview}
-                hasEditPermission={canEditExtraction}
-                hasRetryPermission={canRetryExtraction}
-              />
-            ),
-          },
-        ]
-      : []),
-  ];
+  const extractionHistoryColumns = getExtractionHistoryColumns(
+    canPerformAction,
+    canEditExtraction,
+    canRetryExtraction,
+    canGenerateInsights,
+    confidenceSortOptions,
+    setConfidenceSort,
+    handleDocumentReview
+  );
 
   const handleTableChange = (newPagination: any) => {
     setPagination(newPagination);
@@ -342,6 +197,40 @@ const ExtractionHistoryTable = () => {
     setShowAlert(false);
     sessionStorage.setItem("hideDuplicatesAlert", "true");
   };
+
+  useEffect(() => {
+    if (
+      !location.state?.fromInsightsPage &&
+      !location.state?.fromDuplicatesPage &&
+      !location.state?.fromReviewpage
+    ) {
+      sessionStorage.removeItem("hideDuplicatesAlert");
+      setShowAlert(true);
+    }
+
+    if (location.state?.fromReviewPage) {
+      setTimeout(() => {
+        // Status update delay
+      }, 4000);
+    }
+
+    handleTemplatesFetch();
+  }, []);
+
+  useEffect(() => {
+    if (!sseRef.current) {
+      setLoading(true);
+      sseRef.current = manageSSE(
+        `/invoices/processed-stream?page=${pagination.current}&size=${pagination.pageSize}&document_type=${documentType}`,
+        handleSSEMessage
+      );
+    }
+
+    return () => {
+      sseRef.current?.stop();
+      sseRef.current = null;
+    };
+  }, [pagination.current, pagination.pageSize]);
 
   return (
     <div>

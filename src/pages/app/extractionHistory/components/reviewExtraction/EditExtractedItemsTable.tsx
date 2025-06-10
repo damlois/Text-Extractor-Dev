@@ -36,12 +36,14 @@ const EditExtractedItemsTable = ({
         )
       : [];
 
-
     if (cleanedData.length > 0) {
       setTableData(cleanedData);
       setColumns(Object.keys(cleanedData[0]));
+    } else {
+      setTableData([]);
+      setColumns([]);
     }
-  }, []);
+  }, [itemsFieldData]);
 
 
   const updateData = (newData: TableRow[]) => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDocumentProcessor } from "../../../../../context/DocumentProcessorContext";
 import { useTemplate } from "../../../../../context/TemplateContext";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -8,7 +8,6 @@ import EditExtractedItemsTable from "./EditExtractedItemsTable";
 import { ItemField, RegularField } from "../../types";
 import ConfidenceBadge from "./ConfidenceBadge";
 
-
 interface EditExtractedContentProps {
   extractedContent: any;
   reviewStatus?: string;
@@ -17,7 +16,6 @@ interface EditExtractedContentProps {
   onEdit: (editedFields: any) => void;
 }
 
-
 const EditExtractedContent = ({
   extractedContent,
   reviewStatus,
@@ -25,11 +23,12 @@ const EditExtractedContent = ({
   editTime,
   onEdit,
 }: EditExtractedContentProps) => {
-  const [updatedRegularFields, setUpdatedRegularFields] = useState<
-    RegularField[]
-  >([]);
-  const [updatedItemFields, setUpdatedItemsFields] = useState<ItemField[]>([]);
-
+  const [editedRegularFields, setEditedRegularFields] = useState<
+    RegularField[] | null
+  >(null);
+  const [editedItemFields, setEditedItemFields] = useState<ItemField[] | null>(
+    null
+  );
 
   const { templateItems, fetchTemplate } = useTemplate();
   const {
@@ -39,56 +38,29 @@ const EditExtractedContent = ({
     itemsFieldsData,
   } = useDocumentProcessor();
 
+  const displayedRegularFields = editedRegularFields ?? regularFieldsData;
+  const displayedItemFields = editedItemFields ?? itemsFieldsData;
 
-  useEffect(() => {
-    const handleFetchTemplate = async () => {
-      if (!currentDataSource) {
-        await fetchDataSource();
-      }
-      if (currentDataSource && (!templateItems || templateItems.length === 0)) {
-        await fetchTemplate();
-      }
-    };
-
-
-    handleFetchTemplate();
-  }, []);
-
-
-  useEffect(() => {
-    setUpdatedRegularFields(regularFieldsData);
-    setUpdatedItemsFields(itemsFieldsData);
-  }, [regularFieldsData, itemsFieldsData]);
-
-
-  useEffect(() => {
-    const regularFieldsObject = updatedRegularFields.reduce(
+  const mergedFields = useMemo(() => {
+    const regularFieldsObject = displayedRegularFields.reduce(
       (acc, { field, value }) => ({ ...acc, [field]: value }),
       {}
     );
-
-
-    const itemFieldsObject = updatedItemFields.reduce((acc, item) => {
+    const itemFieldsObject = displayedItemFields.reduce((acc, item) => {
       acc[item.label] = item.data;
       return acc;
     }, {} as Record<string, any>);
-
-
-    onEdit({
-      ...regularFieldsObject,
-      ...itemFieldsObject,
-    });
-  }, [updatedRegularFields, updatedItemFields]);
-
+    return { ...regularFieldsObject, ...itemFieldsObject };
+  }, [displayedRegularFields, displayedItemFields]);
 
   const updateRegularFieldValue = (field: string, value: string) => {
-    setUpdatedRegularFields((prevFields) =>
-      prevFields.map((item) =>
+    setEditedRegularFields((prevFields) => {
+      const base = prevFields ?? regularFieldsData;
+      return base.map((item) =>
         item.field === field ? { ...item, value } : item
-      )
-    );
+      );
+    });
   };
-
 
   const updateItemFieldValue = (
     itemIndex: number,
@@ -96,15 +68,12 @@ const EditExtractedContent = ({
     key: string,
     value: string
   ) => {
-    setUpdatedItemsFields((prevItems) =>
-      prevItems.map((item, index) => {
+    setEditedItemFields((prevItems) => {
+      const base = prevItems ?? itemsFieldsData;
+      return base.map((item, index) => {
         if (index !== itemIndex) return item;
-
-
         const data = item.data;
         let newData: any = [];
-
-
         const isArray = Array.isArray(data);
         const isArrayOfObjects =
           isArray &&
@@ -117,13 +86,9 @@ const EditExtractedContent = ({
           !isArray &&
           typeof data === "object" &&
           Object.keys(data).every((key) => /^\d+$/.test(key));
-
-
         if (isArrayOfObjects) {
           newData = data.map((row: any, rIndex: number) => {
             if (rIndex !== rowIndex) return row;
-
-
             const originalCell = row[key];
             return {
               ...row,
@@ -145,13 +110,29 @@ const EditExtractedContent = ({
             [rowIndex]: value,
           };
         }
-
-
         return { ...item, data: newData };
-      })
-    );
+      });
+    });
   };
 
+  useEffect(() => {
+    const handleFetchTemplate = async () => {
+      if (!currentDataSource) {
+        await fetchDataSource();
+      }
+      if (currentDataSource && (!templateItems || templateItems.length === 0)) {
+        await fetchTemplate();
+      }
+    };
+
+    handleFetchTemplate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    onEdit(mergedFields);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mergedFields]);
 
   if (!extractedContent || typeof extractedContent !== "object") {
     return (
@@ -160,7 +141,6 @@ const EditExtractedContent = ({
       </div>
     );
   }
-
 
   return (
     <div className="h-full flex flex-col">
@@ -194,10 +174,9 @@ const EditExtractedContent = ({
           )}
       </div>
 
-
       <div className="p-[18px] border-t border-[#F1F1F1] overflow-y-auto h-[80vh] flex flex-col gap-6">
         <div className="flex flex-col gap-4">
-          {updatedRegularFields.map(({ field, value, confidence }) => (
+          {displayedRegularFields.map(({ field, value, confidence }) => (
             <div key={field} className="flex flex-col gap-1">
               <label className="text-dark-gray text-[13px] font-bold">
                 {field}
@@ -212,9 +191,8 @@ const EditExtractedContent = ({
           ))}
         </div>
 
-
         <div className="flex flex-col gap-6">
-          {updatedItemFields.map((item, itemIndex) => (
+          {displayedItemFields.map((item, itemIndex) => (
             <EditExtractedItemsTable
               key={itemIndex}
               label={item.label}
@@ -224,11 +202,12 @@ const EditExtractedContent = ({
                 updateItemFieldValue(itemIndex, rowIndex, key, value)
               }
               onDataUpdate={(updatedData) =>
-                setUpdatedItemsFields((prevItems) =>
-                  prevItems.map((itm, idx) =>
+                setEditedItemFields((prevItems) => {
+                  const base = prevItems ?? itemsFieldsData;
+                  return base.map((itm, idx) =>
                     idx === itemIndex ? { ...itm, data: updatedData } : itm
-                  )
-                )
+                  );
+                })
               }
             />
           ))}
@@ -237,6 +216,5 @@ const EditExtractedContent = ({
     </div>
   );
 };
-
 
 export default EditExtractedContent;
