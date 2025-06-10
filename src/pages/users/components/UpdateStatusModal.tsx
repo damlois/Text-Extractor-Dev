@@ -3,11 +3,14 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { UserResponse } from "../../../types";
 import { ModalType } from "../types";
 import { useEffect, useState } from "react";
+import { handleError } from "../../../utils/notification";
+import { processorApi } from "../../../api";
 
 interface UpdateStatusModalProps {
   user: UserResponse | undefined;
   open: boolean;
   onCancel: () => void;
+  refresh: () => void;
   toggleModal: (type: ModalType) => void;
 }
 
@@ -15,15 +18,29 @@ const UpdateStatusModal = ({
   user,
   open,
   onCancel,
+  refresh,
   toggleModal,
 }: UpdateStatusModalProps) => {
+  const [loading, setLoading] = useState(false);
   const [isUpdateDone, setIsUpdateDone] = useState(false);
 
   const userIsActive = user?.status.toLowerCase() === "active";
 
-  const handleUpdate = () => {
-    setIsUpdateDone(true);
-    onCancel();
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      await processorApi.updateUserStatus(user?.id as string, {
+        status: userIsActive ? "inactive" : "active",
+      });
+
+      refresh();
+      setIsUpdateDone(true);
+      onCancel();
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -61,6 +78,7 @@ const UpdateStatusModal = ({
           onClick={handleUpdate}
           className={`h-[32px] px-[15px] rounded-[2px]`}
           style={{ backgroundColor: userIsActive ? "#FF4D4F" : "#006A94" }}
+          loading={loading}
         >
           {userIsActive ? "Deactivate" : "Activate"}
         </Button>,

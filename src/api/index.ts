@@ -20,7 +20,7 @@ import {
   DocumentType,
 } from "../types";
 import apiClient from "../service/apiClient";
-import { ReviewStatus } from "../pages/app/extractionHistory/types";
+import { ReviewStatus, UserStatus } from "../pages/app/extractionHistory/types";
 import keycloakService from "../service/keycloakService";
 
 export const processorApi = {
@@ -194,4 +194,7 @@ export const processorApi = {
       console.error("Error updating review status:", error);
     }
   },
+
+  updateUserStatus: async (userId: string, data: { status: UserStatus }) =>
+    await apiClient.patch(`/users/${userId}/status`, data),
 };

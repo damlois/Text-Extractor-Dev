@@ -42,6 +42,8 @@ export type StatusType = "successful" | "processing" | "failed" | "retry_in_prog
 
 export type Header = "processing_status" | "confidence" | "review_status";
 
+export type UserStatus = 'active' | 'inactive';
+
 export type ReviewStatus =
   | "pending"
   | "in_review"

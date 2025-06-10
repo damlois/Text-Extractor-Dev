@@ -169,6 +169,7 @@ const UsersList = () => {
         open={shouldOpenModal("update_status")}
         onCancel={() => toggleModal("update_status")}
         toggleModal={toggleModal}
+        refresh={() => setRefresh(!refresh)}
       />
       <UpdateSuccessfulModal
         user={selectedUser}
