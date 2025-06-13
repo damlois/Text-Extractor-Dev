@@ -197,4 +197,7 @@ export const processorApi = {
 
   updateUserStatus: async (userId: string, data: { status: UserStatus }) =>
     await apiClient.patch(`/users/${userId}/status`, data),
+
+  resendInvite: async (userId: string) =>
+    await apiClient.post(`/users/${userId}/resend-invitation`),
 };
