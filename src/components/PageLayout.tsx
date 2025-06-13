@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, Menu, Avatar, Button, Dropdown } from "antd";
+import { Layout, Menu, Avatar, Button, Dropdown, Spin } from "antd";
 import {
   UserOutlined,
   MenuOutlined,
@@ -14,6 +14,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import SignOutModal from "./SignOutModal";
 import { PERMISSIONS } from "../constants/permissions";
 import { usePermission } from "../context/PermissionContext";
+import { useApplication } from "../context/ApplicationContext";
 
 const { Sider, Content } = Layout;
 
@@ -29,6 +30,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
   const location = useLocation();
 
   const { userHasPermission } = usePermission();
+  const { appLoading } = useApplication();
 
   const canViewUsers = userHasPermission(PERMISSIONS.VIEW_USER);
   const canViewRoles = userHasPermission(PERMISSIONS.VIEW_ROLE);
@@ -135,9 +137,15 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
             </div>
 
             <Content
-              className="overflow-auto bg-white shadow-sm"
+              className="overflow-auto bg-white shadow-sm relative"
               style={{ height: "calc(100vh - 300px)" }}
             >
+              {appLoading && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70">
+                  <Spin tip="Loading..." size="large" />
+                </div>
+              )}
+
               <Outlet />
             </Content>
           </Layout>
@@ -149,9 +157,15 @@ const PageLayout: React.FC<PageLayoutProps> = ({ hideLayout }) => {
         </>
       ) : (
         <Content
-          className="overflow-auto bg-white shadow-sm"
+          className="overflow-auto bg-white shadow-sm relative"
           style={{ height: "calc(100vh - 64px)" }}
         >
+          {appLoading && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70">
+              <Spin tip="Loading..." size="large" />
+            </div>
+          )}
+
           <Outlet />
         </Content>
       )}

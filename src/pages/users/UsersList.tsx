@@ -8,9 +8,10 @@ import UpdateStatusModal from "./components/UpdateStatusModal";
 import UpdateSuccessfulModal from "./components/UpdateSuccessfulModal";
 import { ModalConfig, ModalType } from "./types";
 import { processorApi } from "../../api";
-import { handleError } from "../../utils/notification";
+import { handleError, showNotification } from "../../utils/notification";
 import { PERMISSIONS } from "../../constants/permissions";
 import { usePermission } from "../../context/PermissionContext";
+import { useApplication } from "../../context/ApplicationContext";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserResponse[]>([]);
@@ -23,6 +24,8 @@ const UsersList = () => {
   });
 
   const { userHasPermission } = usePermission();
+  const { setAppLoading } = useApplication();
+
   const canAddUser =
     userHasPermission(PERMISSIONS.ADD_USER) &&
     userHasPermission(PERMISSIONS.VIEW_ROLE);
@@ -92,7 +95,20 @@ const UsersList = () => {
                 menu={{
                   items:
                     record.status.toLowerCase() === "pending"
-                      ? []
+                      ? [
+                          {
+                            key: "1",
+                            label: (
+                              <button
+                                className={`w-full text-left text-dark-gray
+                                `}
+                                onClick={() => handleResend(record)}
+                              >
+                                Resend Invite
+                              </button>
+                            ),
+                          },
+                        ]
                       : [
                           {
                             key: "1",
@@ -136,6 +152,18 @@ const UsersList = () => {
   const handleUpdate = (record: UserResponse) => {
     setSelectedUser(record);
     toggleModal("update_status");
+  };
+
+  const handleResend = async (record: UserResponse) => {
+    setAppLoading(true);
+    try {
+      await processorApi.resendInvite(record.id);
+      showNotification("success", "Invite has been resent successfully");
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setAppLoading(false);
+    }
   };
 
   return (

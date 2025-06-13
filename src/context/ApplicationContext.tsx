@@ -15,6 +15,8 @@ interface ApplicationContextProps {
   currentApp: Application | null;
   documentType: DocumentType | null;
   setAppType: (app: Application) => void;
+  appLoading: boolean;
+  setAppLoading: (loaidng: boolean) => void;
 }
 
 interface ApplicationProviderProps {
@@ -29,6 +31,7 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
   children,
 }) => {
   const [currentApp, setCurrentApp] = useState<Application | null>(null);
+  const [appLoading, setAppLoading] = useState<boolean>(false);
   const documentType = determineDocumentType(currentApp);
 
   useEffect(() => {
@@ -46,6 +49,8 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({
         currentApp,
         documentType,
         setAppType,
+        appLoading,
+        setAppLoading,
       }}
     >
       {children}
